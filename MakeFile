@@ -1,0 +1,20 @@
+BINARY_NAME=profiler
+
+build_all:
+     GOOS=darwin GOARCH=arm64 go build -o bin/{BINARY_NAME}-darwin-arm64 cmd/main.go
+     GOOS=linux GOARCH=amd64 go build -o bin/{BINARY_NAME}-linux-amd64 cmd/main.go
+
+build:
+     GOOS=darwin GOARCH=arm64 go build -o bin/{BINARY_NAME}-darwin-arm64 cmd/main.go
+
+run:
+	go run cmd/main.go
+
+test:
+	go test ./...
+
+test_cover:
+	go test -cover ./...
+
+test_cover_html:
+	go test -coverprofile=resources/coverage.out ./... && go tool cover -html=resources/coverage.out
