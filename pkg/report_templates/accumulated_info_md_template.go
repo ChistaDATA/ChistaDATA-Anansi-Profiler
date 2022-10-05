@@ -2,17 +2,17 @@ package report_templates
 
 const AccumulatedInfoMDTemplate = `
 # Profiler output
-* Current date: {{.CurrentDate}}</br>
-* Hostname: {{.Hostname}}</br>
-* Files: </br>
+* Current date: {{.CurrentDate}}
+* Hostname: {{.Hostname}}
+* Files:
 {{.Files}}
 * Query
 	* Overall: {{.TotalQueryCount}}
 	* Unique: {{.TotalUniqueQueryCount}}
-	* QPS: {{.TotalQPS}}</br>
+	* QPS: {{.TotalQPS}}
 * Time range 
 	* From: {{.FromTimestamp}}
-	* To: {{.ToTimestamp}}</br>
+	* To: {{.ToTimestamp}}
 
 | Attribute | total | min | max | avg | 95% | stddev | median |
 |-----------|-------|-----|-----|-----|-----|--------|--------|

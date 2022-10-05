@@ -1,4 +1,4 @@
-package types
+package stucts
 
 import (
 	"time"
@@ -7,7 +7,7 @@ import (
 type ClickHouseLog struct {
 	Timestamp time.Time
 	ThreadId  int
-	QueryId   string //uuid.UUID
+	QueryId   string
 	LogLevel  string
 	Message   string
 }

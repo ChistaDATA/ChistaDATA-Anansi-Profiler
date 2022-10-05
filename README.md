@@ -2,11 +2,14 @@
 
 log format
 ===========
-2022.09.08 05:09:25.696359 [ 46 ] {add4a8af-c695-4378-9e55-5345bdea5998} <Debug> executeQuery: (from 127.0.0.1:57216) select * from system.tables; (stage: Complete)
-2022.09.08 05:09:25.715277 [ 46 ] {add4a8af-c695-4378-9e55-5345bdea5998} <Information> executeQuery: Read 87 rows, 107.73 KiB in 0.018809208 sec., 4625 rows/sec., 5.59 MiB/sec.
+2022.09.08 05:09:25.696359 [ 46 ] {add4a8af-c695-4378-9e55-5345bdea5998} <Debug> executeQuery: (from 127.0.0.1:57216)
+select * from system.tables; (stage: Complete)
+2022.09.08 05:09:25.715277 [ 46 ] {add4a8af-c695-4378-9e55-5345bdea5998} <Information> executeQuery: Read 87 rows,
+107.73 KiB in 0.018809208 sec., 4625 rows/sec., 5.59 MiB/sec.
 
 json format (should we flatten it?)
 ===========
+
 ```
 {
     "timestamp": "time",
@@ -37,6 +40,7 @@ json format (should we flatten it?)
 ```
 
 output
+
 ```
 # Query 1: 0 QPS, ID 0x89576B4D8EDF8A30
 # Time range: all events occurred at 2020-07-29 16:07:33
@@ -67,6 +71,7 @@ select count(1) from 2873_contact_0 where _73 like '%some' and _74 like '%aaaaa%
 
 Reference output
 =================
+
 ```
 # Query 1: 0 QPS, 0x concurrency{{Q1}}, ID 0x89576B4D8EDF8A30 at byte 6934038 __{{Q2}}
 # This item is included in the report because it matches --limit.
@@ -106,15 +111,17 @@ select count(1) from 2873_contact_0 where _73 like '%some' and _74 like '%aaaaa%
 
 Info
 =====
+
 * R/Call is Average response time per call.
 
 * We can provide an error list
-    query id, error code, message, stacktrace
+  query id, error code, message, stacktrace
 
 * Add support for cluster. (Aggregation of server logs)
 
 Questions
 ===========
+
 1. What is 0x concurrency ?
 
 2. WHat is at byte 6934038 __ ?

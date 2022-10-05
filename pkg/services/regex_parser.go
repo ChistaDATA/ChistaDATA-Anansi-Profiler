@@ -1,15 +1,16 @@
-package parsers
+package services
 
 import (
 	"errors"
-	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/types"
+	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/regexs"
+	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/stucts"
 	"strconv"
 	"time"
 )
 
-func ParseClickHouseLog(logLine string) (types.ClickHouseLog, error) {
-	var clickHouseLog types.ClickHouseLog
-	if parts := ClickHouseLogRegEx.FindStringSubmatch(logLine); len(parts) == 6 {
+func ParseClickHouseLog(logLine string) (stucts.ClickHouseLog, error) {
+	var clickHouseLog stucts.ClickHouseLog
+	if parts := regexs.ClickHouseLogRegEx.FindStringSubmatch(logLine); len(parts) == 6 {
 		var partParsingError error
 		clickHouseLog.Timestamp, partParsingError = parseTimestampFromClickHouseLog(parts[1])
 		if partParsingError != nil {
@@ -24,8 +25,8 @@ func ParseClickHouseLog(logLine string) (types.ClickHouseLog, error) {
 	return clickHouseLog, errors.New("error parsing ClickHouse log, part size not 6")
 }
 
-func ParseMessageWithQuery(message string, query *types.Query) error {
-	if parts := LogMessageWithQueryInfoRegEx.FindStringSubmatch(message); len(parts) == 10 {
+func ParseMessageWithQuery(message string, query *stucts.Query) error {
+	if parts := regexs.LogMessageWithQueryInfoRegEx.FindStringSubmatch(message); len(parts) == 10 {
 		query.Query = parts[8]
 		query.ClientHost = parts[1]
 		query.ClientPort, _ = strconv.Atoi(parts[2])
@@ -39,8 +40,8 @@ func ParseMessageWithQuery(message string, query *types.Query) error {
 	return errors.New("error parsing message as ExecuteQueryLogMessageWithQueryRegEx")
 }
 
-func ParseMessageWithDataInfo(message string, query *types.Query) error {
-	if parts := LogMessageWithDataRegEx.FindStringSubmatch(message); len(parts) == 7 {
+func ParseMessageWithDataInfo(message string, query *stucts.Query) error {
+	if parts := regexs.LogMessageWithDataRegEx.FindStringSubmatch(message); len(parts) == 7 {
 		var partError error
 		query.ReadRows, _ = strconv.Atoi(parts[1])
 		query.ReadBytes, partError = formattedSizeToBytes(parts[2], parts[4])
@@ -54,8 +55,8 @@ func ParseMessageWithDataInfo(message string, query *types.Query) error {
 	return errors.New("error parsing message as LogMessageWithDataRegEx")
 }
 
-func ParseMessageWithPeakMemory(message string, query *types.Query) error {
-	if parts := LogMessageWithPeakMemoryRegEx.FindStringSubmatch(message); len(parts) == 5 {
+func ParseMessageWithPeakMemory(message string, query *stucts.Query) error {
+	if parts := regexs.LogMessageWithPeakMemoryRegEx.FindStringSubmatch(message); len(parts) == 5 {
 		var partError error
 		query.PeakMemoryUsage, partError = formattedSizeToBytes(parts[2], parts[4])
 		if partError != nil {
@@ -66,8 +67,8 @@ func ParseMessageWithPeakMemory(message string, query *types.Query) error {
 	return errors.New("error parsing message as LogMessageWithPeakMemoryRegEx")
 }
 
-func ParseMessageWithErrorInfo(message string, query *types.Query) error {
-	if parts := LogMessageWithErrorRegEx.FindStringSubmatch(message); len(parts) == 9 {
+func ParseMessageWithErrorInfo(message string, query *stucts.Query) error {
+	if parts := regexs.LogMessageWithErrorRegEx.FindStringSubmatch(message); len(parts) == 9 {
 		query.ErrorCompleteText = parts[1]
 		query.ErrorCode = parts[3]
 		query.ErrorMessage = parts[4]
@@ -77,8 +78,8 @@ func ParseMessageWithErrorInfo(message string, query *types.Query) error {
 	return errors.New("error parsing message as LogMessageWithErrorRegEx")
 }
 
-func ParseMessageWithAccessInfo(message string, query *types.Query) error {
-	if parts := LogMessageWithAccessInfoRegEx.FindStringSubmatch(message); len(parts) == 3 {
+func ParseMessageWithAccessInfo(message string, query *stucts.Query) error {
+	if parts := regexs.LogMessageWithAccessInfoRegEx.FindStringSubmatch(message); len(parts) == 3 {
 		query.Databases.Add(parts[1])
 		query.Tables.Add(parts[2])
 		return nil

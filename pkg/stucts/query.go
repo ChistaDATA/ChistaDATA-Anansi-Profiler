@@ -1,6 +1,7 @@
-package types
+package stucts
 
 import (
+	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/types"
 	"strings"
 	"time"
 )
@@ -22,14 +23,14 @@ type Query struct {
 	ReadBytes         float64
 	Duration          float64
 	InitialQueryId    string
-	Databases         StringSet
-	Tables            StringSet
-	ThreadIds         IntSet
+	Databases         types.StringSet
+	Tables            types.StringSet
+	ThreadIds         types.IntSet
 }
 
 func (query *Query) GetTransformedQuery() string {
 	queryString := strings.TrimSpace(query.Query)
-	if queryString[len(queryString)-1] == ';' {
+	if len(queryString) > 0 && queryString[len(queryString)-1] == ';' {
 		queryString = queryString[:len(queryString)-1]
 		queryString = strings.TrimSpace(queryString)
 	}

@@ -1,10 +1,10 @@
 package report_templates
 
-var QueryInfoMDTemplate = `
+const QueryInfoMDTemplate = `
 # Query {{.Pos}}
 ` + "`" + `
 {{.Query}}
-` + "`" + `</br>
+` + "`" + `
 * QPS: {{.QPS}}
 * Time range:
       * From {{.FromTimestamp}}
@@ -18,9 +18,10 @@ var QueryInfoMDTemplate = `
 | Bytes read | {{.ReadBytes.Total}} | {{.ReadBytes.Min}} | {{.ReadBytes.Max}} | {{.ReadBytes.Avg}} | {{.ReadBytes.Percentile95}} | {{.ReadBytes.StdDev}} | {{.ReadBytes.Median}} |
 | Peak Memory |  | {{.PeakMemoryUsage.Min}} | {{.PeakMemoryUsage.Max}} | {{.PeakMemoryUsage.Avg}} | {{.PeakMemoryUsage.Percentile95}} | {{.PeakMemoryUsage.StdDev}} | {{.PeakMemoryUsage.Median}} |
 
-Databases:    {{.DatabaseInfo}}</br>
-Hosts:        {{.HostInfo}}</br>
-Users:        {{.UserInfo}}</br>
+* Databases:    {{.DatabaseInfo}}
+* Hosts:        {{.HostInfo}}
+* Users:        {{.UserInfo}}
+* Completion:   {{.CompletedInfo}}
 
 Query_time distribution
 ` + "```" + ` 

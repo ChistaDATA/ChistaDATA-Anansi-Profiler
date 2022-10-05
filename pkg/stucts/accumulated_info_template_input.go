@@ -1,13 +1,16 @@
-package types
+package stucts
 
 import (
+	"fmt"
 	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/formatters"
+	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/utils"
 	"github.com/montanaflynn/stats"
 	"os"
 	"sort"
 	"time"
 )
 
+// AccumulatedInfoTemplateInput Input struct for AccumulatedInfoTemplate
 type AccumulatedInfoTemplateInput struct {
 	CurrentDate           string
 	Hostname              string
@@ -24,11 +27,8 @@ type AccumulatedInfoTemplateInput struct {
 	TotalDuration         float64
 }
 
-func InitAccumulatedInfoTemplateInput(queryInfos []*QueryInfo, filePaths []string) AccumulatedInfoTemplateInput {
-	hostname, err := os.Hostname()
-	if err != nil {
-		hostname = ""
-	}
+func InitAccumulatedInfoTemplateInput(queryInfos SimilarQueryInfoList, filePaths []string) AccumulatedInfoTemplateInput {
+	hostname, _ := os.Hostname()
 
 	var durations []float64
 	var readRows []int
@@ -43,7 +43,8 @@ func InitAccumulatedInfoTemplateInput(queryInfos []*QueryInfo, filePaths []strin
 		readRows = append(readRows, info.ReadRows...)
 		readBytes = append(readBytes, info.ReadBytes...)
 		peakMemoryUsages = append(peakMemoryUsages, info.PeakMemoryUsages...)
-		timeStamps = append(timeStamps, info.Timestamps...)
+		timeStamps = append(timeStamps, *info.FromTimestamp)
+		timeStamps = append(timeStamps, *info.ToTimestamp)
 	}
 
 	sort.Slice(timeStamps, func(i, j int) bool {
@@ -61,15 +62,15 @@ func InitAccumulatedInfoTemplateInput(queryInfos []*QueryInfo, filePaths []strin
 		PeakMemoryUsage:       getPeakMemoryUsageInfo(peakMemoryUsages),
 		FromTimestamp:         timeStamps[0].String(),
 		ToTimestamp:           timeStamps[len(timeStamps)-1].String(),
-		TotalQueryCount:       formatters.IntToKMilBilTri(totalQueryCount, 7),
-		TotalUniqueQueryCount: formatters.IntToKMilBilTri(len(queryInfos), 7),
+		TotalQueryCount:       fmt.Sprintf("%d", totalQueryCount),
+		TotalUniqueQueryCount: fmt.Sprintf("%d", len(queryInfos)),
 		TotalQPS:              getTotalQPS(totalQueryCount, timeStamps),
 	}
 }
 
 func getTotalQPS(totalQueryCount int, timeStamps []time.Time) string {
 	diff := timeStamps[len(timeStamps)-1].Sub(timeStamps[0])
-	return formatters.Float64ToKMilBilTri(float64(totalQueryCount)/diff.Seconds(), 7)
+	return formatters.Float64ToKMilBilTri(float64(totalQueryCount) / diff.Seconds())
 }
 
 func getAccumulatedTotalDuration(durations []float64) float64 {
@@ -80,9 +81,9 @@ func getAccumulatedTotalDuration(durations []float64) float64 {
 
 func getPeakMemoryUsageInfo(dataArray []float64) QueryInfoTemplateInputPeakMemoryUsage {
 	data := stats.LoadRawData(dataArray)
-	sum, min, max, avg, per95, stdDev, median := FindMatrices(data)
+	sum, min, max, avg, per95, stdDev, median := utils.FindMatrices(data)
 	formatToString := func(f float64) string {
-		return formatters.PrefixSpace(formatters.Float64ByteSizeToString(f, 7), 7)
+		return formatters.PrefixSpace(formatters.Float64ByteSizeToString(f), 7)
 	}
 	return QueryInfoTemplateInputPeakMemoryUsage{
 		Total:        formatToString(sum),
@@ -97,9 +98,9 @@ func getPeakMemoryUsageInfo(dataArray []float64) QueryInfoTemplateInputPeakMemor
 
 func getReadBytesInfo(dataArray []float64) QueryInfoTemplateInputReadBytes {
 	data := stats.LoadRawData(dataArray)
-	sum, min, max, avg, per95, stdDev, median := FindMatrices(data)
+	sum, min, max, avg, per95, stdDev, median := utils.FindMatrices(data)
 	formatToString := func(f float64) string {
-		return formatters.PrefixSpace(formatters.Float64ByteSizeToString(f, 7), 7)
+		return formatters.PrefixSpace(formatters.Float64ByteSizeToString(f), 7)
 	}
 	return QueryInfoTemplateInputReadBytes{
 		Total:        formatToString(sum),
@@ -114,9 +115,9 @@ func getReadBytesInfo(dataArray []float64) QueryInfoTemplateInputReadBytes {
 
 func getReadRowsInfo(dataArray []int) QueryInfoTemplateInputReadRows {
 	data := stats.LoadRawData(dataArray)
-	sum, min, max, avg, per95, stdDev, median := FindMatrices(data)
+	sum, min, max, avg, per95, stdDev, median := utils.FindMatrices(data)
 	formatToString := func(f float64) string {
-		return formatters.PrefixSpace(formatters.Float64ToKMilBilTri(f, 7), 7)
+		return formatters.PrefixSpace(formatters.Float64ToKMilBilTri(f), 7)
 	}
 	return QueryInfoTemplateInputReadRows{
 		Total:        formatToString(sum),
@@ -131,9 +132,9 @@ func getReadRowsInfo(dataArray []int) QueryInfoTemplateInputReadRows {
 
 func getDurationInfo(dataArray []float64) QueryInfoTemplateInputDuration {
 	data := stats.LoadRawData(dataArray)
-	sum, min, max, avg, per95, stdDev, median := FindMatrices(data)
+	sum, min, max, avg, per95, stdDev, median := utils.FindMatrices(data)
 	formatToString := func(f float64) string {
-		return formatters.PrefixSpace(formatters.Float64SecondsToString(f, 7), 7)
+		return formatters.PrefixSpace(formatters.Float64SecondsToString(f), 7)
 	}
 	return QueryInfoTemplateInputDuration{
 		Total:        formatToString(sum),
@@ -144,17 +145,6 @@ func getDurationInfo(dataArray []float64) QueryInfoTemplateInputDuration {
 		StdDev:       formatToString(stdDev),
 		Median:       formatToString(median),
 	}
-}
-
-func FindMatrices(data stats.Float64Data) (float64, float64, float64, float64, float64, float64, float64) {
-	sum, _ := data.Sum()
-	min, _ := data.Min()
-	max, _ := data.Max()
-	avg, _ := data.Mean()
-	per95, _ := data.Percentile(95)
-	stdDev, _ := data.StandardDeviation()
-	median, _ := data.Median()
-	return sum, min, max, avg, per95, stdDev, median
 }
 
 func filePathsToString(filePaths []string) string {
