@@ -81,7 +81,7 @@ func (reportGenerator ReportGenerator) GenerateReport() {
 	// like create, insert queries and queries with count less than minimum count
 	var keysToRemove []string
 	for s, info := range simplifiedQueryInfoList {
-		if shouldDiscardQuery(info.Query) || info.Count < reportGenerator.CliConfig.MinimumQueryCount {
+		if shouldDiscardQuery(info.Query) || info.Count < reportGenerator.CliConfig.MinimumQueryCallCount {
 			keysToRemove = append(keysToRemove, s)
 		}
 	}

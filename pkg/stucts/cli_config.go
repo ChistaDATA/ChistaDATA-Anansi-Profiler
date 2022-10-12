@@ -18,10 +18,10 @@ const (
 var ReportTypes = [...]string{ReportTypeText, ReportTypeMD}
 
 type CliConfig struct {
-	TopQueryCount     int      `short:"n" help:"Count of queries for top x table" default:"10"`
-	ReportType        string   `short:"r" help:"Report type to be generated, types: md, text" default:"text"`
-	FilePaths         []string `arg:"" required:"" help:"Paths of log files" type:"existingfile"`
-	MinimumQueryCount int      `short:"c" help:"Minimum no of query calls needed" default:"1"`
+	TopQueryCount         int      `short:"n" help:"Count of queries for top x table" default:"10"`
+	ReportType            string   `short:"r" help:"Report type to be generated, types: md, text" default:"text"`
+	FilePaths             []string `arg:"" required:"" help:"Paths of log files" type:"existingfile"`
+	MinimumQueryCallCount int      `short:"c" help:"Minimum no of query calls needed" default:"1"`
 }
 
 func InitializeCliConfig() CliConfig {
@@ -52,8 +52,8 @@ func (cliConfig *CliConfig) validateCliConfig() {
 		cliConfig.TopQueryCount = TopQueryCountDefault
 	}
 
-	if cliConfig.MinimumQueryCount <= 0 {
+	if cliConfig.MinimumQueryCallCount <= 0 {
 		log.Warningln("Invalid Minimum Query Count, Falling back to default")
-		cliConfig.MinimumQueryCount = MinimumQueryCountDefault
+		cliConfig.MinimumQueryCallCount = MinimumQueryCountDefault
 	}
 }
