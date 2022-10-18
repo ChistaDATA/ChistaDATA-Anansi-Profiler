@@ -3,6 +3,7 @@ package stucts
 import (
 	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/types"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -26,6 +27,7 @@ type Query struct {
 	Databases         types.StringSet
 	Tables            types.StringSet
 	ThreadIds         types.IntSet
+	Lock              sync.Mutex
 }
 
 func (query *Query) GetTransformedQuery() string {
