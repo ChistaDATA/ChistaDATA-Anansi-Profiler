@@ -6,6 +6,7 @@ import (
 	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/types"
 	log "github.com/sirupsen/logrus"
 	"os"
+	"runtime"
 	"sync"
 )
 
@@ -35,17 +36,21 @@ func readFileAndParseLogs(filePath string, queryList *stucts.QueryList) {
 	scanner := bufio.NewScanner(f)
 
 	var wg sync.WaitGroup
+	maxLogLines := 1000
+	maxGoroutines := runtime.NumCPU()
 	var lines []string
+	guard := make(chan struct{}, maxGoroutines)
 	for scanner.Scan() {
 		lines = append(lines, scanner.Text())
-		if len(lines) >= 10000 {
+		if len(lines) == maxLogLines {
+			guard <- struct{}{}
 			wg.Add(1)
-			go processLines(lines, &wg, queryList)
+			go processLines(lines, &wg, queryList, &guard)
 			lines = []string{}
 		}
 	}
 	wg.Add(1)
-	go processLines(lines, &wg, queryList)
+	go processLines(lines, &wg, queryList, &guard)
 	wg.Wait()
 
 	if err := scanner.Err(); err != nil {
@@ -54,11 +59,12 @@ func readFileAndParseLogs(filePath string, queryList *stucts.QueryList) {
 	}
 }
 
-func processLines(lines []string, wg *sync.WaitGroup, queryList *stucts.QueryList) {
+func processLines(lines []string, wg *sync.WaitGroup, queryList *stucts.QueryList, guard *chan struct{}) {
 	for _, line := range lines {
 		parseLogAndAdd(line, queryList)
 	}
 	wg.Done()
+	<-*guard
 }
 
 // parseLogAndAdd Parses a log line, checks it with multiple regexes, if matched adds extracted data to query list
