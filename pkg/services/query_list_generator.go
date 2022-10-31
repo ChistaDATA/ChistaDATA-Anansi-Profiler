@@ -6,6 +6,8 @@ import (
 	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/types"
 	log "github.com/sirupsen/logrus"
 	"os"
+	"runtime"
+	"sync"
 )
 
 func GenerateQueryList(config *stucts.CliConfig) stucts.QueryList {
@@ -33,14 +35,36 @@ func readFileAndParseLogs(filePath string, queryList *stucts.QueryList) {
 
 	scanner := bufio.NewScanner(f)
 
+	var wg sync.WaitGroup
+	maxLogLines := 1000
+	maxGoroutines := runtime.NumCPU()
+	var lines []string
+	guard := make(chan struct{}, maxGoroutines)
 	for scanner.Scan() {
-		parseLogAndAdd(scanner.Text(), queryList)
+		lines = append(lines, scanner.Text())
+		if len(lines) == maxLogLines {
+			guard <- struct{}{}
+			wg.Add(1)
+			go processLines(lines, &wg, queryList, &guard)
+			lines = []string{}
+		}
 	}
+	wg.Add(1)
+	go processLines(lines, &wg, queryList, &guard)
+	wg.Wait()
 
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 		panic(err)
 	}
+}
+
+func processLines(lines []string, wg *sync.WaitGroup, queryList *stucts.QueryList, guard *chan struct{}) {
+	for _, line := range lines {
+		parseLogAndAdd(line, queryList)
+	}
+	wg.Done()
+	<-*guard
 }
 
 // parseLogAndAdd Parses a log line, checks it with multiple regexes, if matched adds extracted data to query list
@@ -49,11 +73,21 @@ func parseLogAndAdd(logLine string, queryList *stucts.QueryList) {
 	if err != nil {
 		log.Traceln(err)
 	} else {
-		q, ok := (*queryList)[cl.QueryId]
+		queryList.Lock.RLock()
+		q, ok := queryList.List[cl.QueryId]
+		queryList.Lock.RUnlock()
 		if !ok {
-			q = &stucts.Query{QueryId: cl.QueryId, Databases: types.InitStringSet(), Tables: types.InitStringSet(), ThreadIds: types.InitIntSet()}
-			(*queryList)[cl.QueryId] = q
+			queryList.Lock.Lock()
+			q, ok = queryList.List[cl.QueryId]
+			if !ok {
+				q = &stucts.Query{QueryId: cl.QueryId, Databases: types.InitStringSet(), Tables: types.InitStringSet(), ThreadIds: types.InitIntSet()}
+				queryList.List[cl.QueryId] = q
+			}
+			queryList.Lock.Unlock()
 		}
+
+		q.Lock.Lock()
+		defer q.Lock.Unlock()
 
 		q.ThreadIds.Add(cl.ThreadId)
 

@@ -70,7 +70,7 @@ func initReportTemplates(topQueryRecordTemplate string, accumulatedTemplate stri
 func (reportGenerator ReportGenerator) GenerateReport() {
 	// There can be queries that are similar, so making a list of similar queries
 	simplifiedQueryInfoList := stucts.InitSimilarQueryInfoList()
-	for _, query := range *reportGenerator.QueryList {
+	for _, query := range reportGenerator.QueryList.List {
 		simplifiedQueryInfoList.Add(query)
 	}
 

@@ -1,8 +1,14 @@
 package stucts
 
-type QueryList map[string]*Query
+import "sync"
+
+type QueryList struct {
+	List map[string]*Query
+	Lock sync.RWMutex
+}
 
 func InitQueryList() QueryList {
-	queryList := map[string]*Query{}
-	return queryList
+	return QueryList{
+		List: map[string]*Query{},
+	}
 }
