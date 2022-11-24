@@ -15,7 +15,7 @@ import (
 
 type ReportGenerator struct {
 	CliConfig           *stucts.CliConfig
-	QueryList           *stucts.QueryList
+	InfoCorpus          *stucts.InfoCorpus
 	ReportTemplates     ReportTemplates
 	OutputFileExtension string
 }
@@ -27,10 +27,10 @@ type ReportTemplates struct {
 	QueryInfoTemplate      *template.Template
 }
 
-func InitReportGenerator(cliConfig *stucts.CliConfig, list *stucts.QueryList) ReportGenerator {
+func InitReportGenerator(cliConfig *stucts.CliConfig, infoCorpus *stucts.InfoCorpus) ReportGenerator {
 	reportGenerator := ReportGenerator{
-		CliConfig: cliConfig,
-		QueryList: list,
+		CliConfig:  cliConfig,
+		InfoCorpus: infoCorpus,
 	}
 
 	if cliConfig.ReportType == stucts.ReportTypeText {
@@ -70,7 +70,7 @@ func initReportTemplates(topQueryRecordTemplate string, accumulatedTemplate stri
 func (reportGenerator ReportGenerator) GenerateReport() {
 	// There can be queries that are similar, so making a list of similar queries
 	simplifiedQueryInfoList := stucts.InitSimilarQueryInfoList()
-	for _, query := range reportGenerator.QueryList.List {
+	for _, query := range reportGenerator.InfoCorpus.Queries.GetList() {
 		simplifiedQueryInfoList.Add(query)
 	}
 

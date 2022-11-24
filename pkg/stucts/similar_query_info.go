@@ -68,11 +68,11 @@ func (similarQueryInfo *SimilarQueryInfo) Add(query *Query) {
 	similarQueryInfo.ClientHosts = append(similarQueryInfo.ClientHosts, query.ClientHost)
 	similarQueryInfo.Users = append(similarQueryInfo.Users, query.User)
 	similarQueryInfo.PeakMemoryUsages = append(similarQueryInfo.PeakMemoryUsages, query.PeakMemoryUsage)
-	if similarQueryInfo.FromTimestamp == nil || query.Timestamp.Before(*similarQueryInfo.FromTimestamp) {
+	if similarQueryInfo.FromTimestamp == nil || (query.Timestamp != time.Time{} && query.Timestamp.Before(*similarQueryInfo.FromTimestamp)) {
 		t := query.Timestamp
 		similarQueryInfo.FromTimestamp = &t
 	}
-	if similarQueryInfo.ToTimestamp == nil || query.Timestamp.After(*similarQueryInfo.ToTimestamp) {
+	if similarQueryInfo.ToTimestamp == nil || (query.Timestamp != time.Time{} && query.Timestamp.After(*similarQueryInfo.ToTimestamp)) {
 		t := query.Timestamp
 		similarQueryInfo.ToTimestamp = &t
 	}

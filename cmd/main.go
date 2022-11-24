@@ -21,7 +21,8 @@ func init() {
 
 func main() {
 	cliConfig := stucts.InitializeCliConfig()
-	queries := services.GenerateQueryList(&cliConfig)
-	reportGenerator := services.InitReportGenerator(&cliConfig, &queries)
+	infoCorpusGenerator := services.InitInfoCorpusGenerator(&cliConfig)
+	infoCorpus := infoCorpusGenerator.GenerateInfoCorpus()
+	reportGenerator := services.InitReportGenerator(&cliConfig, infoCorpus)
 	reportGenerator.GenerateReport()
 }
