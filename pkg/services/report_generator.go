@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/regexs"
+	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/parsers/clickhouse"
 	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/report_templates"
 	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/stucts"
 	log "github.com/sirupsen/logrus"
@@ -145,7 +145,7 @@ func (reportGenerator ReportGenerator) GenerateReport() {
 }
 
 func shouldDiscardQuery(query string) bool {
-	if regexs.QueriesToDiscardRegEx.MatchString(strings.TrimSpace(query)) {
+	if clickhouse.QueriesToDiscardRegEx.MatchString(strings.TrimSpace(query)) {
 		return true
 	}
 	return false

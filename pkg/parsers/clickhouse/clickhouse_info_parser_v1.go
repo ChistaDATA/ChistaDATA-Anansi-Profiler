@@ -2,7 +2,6 @@ package clickhouse
 
 import (
 	"errors"
-	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/regexs"
 	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/stucts"
 	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/types"
 	"strconv"
@@ -10,7 +9,7 @@ import (
 
 func ParseMessageWithQueryV1(extractedLog stucts.ExtractedLog, infoCorpus *stucts.InfoCorpus) error {
 	query := stucts.PartialQuery{}
-	if parts := regexs.LogMessageWithQueryInfoRegEx.FindStringSubmatch(extractedLog.Message); len(parts) == 10 {
+	if parts := LogMessageWithQueryInfoRegEx.FindStringSubmatch(extractedLog.Message); len(parts) == 10 {
 		query.Query = &parts[8]
 		query.ClientHost = &parts[1]
 		clientPort, _ := strconv.Atoi(parts[2])
@@ -28,7 +27,7 @@ func ParseMessageWithQueryV1(extractedLog stucts.ExtractedLog, infoCorpus *stuct
 
 func ParseMessageWithDataInfoV1(extractedLog stucts.ExtractedLog, infoCorpus *stucts.InfoCorpus) error {
 	query := stucts.PartialQuery{}
-	if parts := regexs.LogMessageWithDataRegEx.FindStringSubmatch(extractedLog.Message); len(parts) == 7 {
+	if parts := LogMessageWithDataRegEx.FindStringSubmatch(extractedLog.Message); len(parts) == 7 {
 		var partError error
 		readRows, _ := strconv.Atoi(parts[1])
 		query.ReadRows = &readRows
@@ -49,7 +48,7 @@ func ParseMessageWithDataInfoV1(extractedLog stucts.ExtractedLog, infoCorpus *st
 
 func ParseMessageWithPeakMemoryV1(extractedLog stucts.ExtractedLog, infoCorpus *stucts.InfoCorpus) error {
 	query := stucts.PartialQuery{}
-	if parts := regexs.LogMessageWithPeakMemoryRegEx.FindStringSubmatch(extractedLog.Message); len(parts) == 5 {
+	if parts := LogMessageWithPeakMemoryRegEx.FindStringSubmatch(extractedLog.Message); len(parts) == 5 {
 		var partError error
 		peakMemoryUsage, partError := formattedSizeToBytes(parts[2], parts[4])
 		query.PeakMemoryUsage = &peakMemoryUsage
@@ -64,7 +63,7 @@ func ParseMessageWithPeakMemoryV1(extractedLog stucts.ExtractedLog, infoCorpus *
 
 func ParseMessageWithErrorInfoV1(extractedLog stucts.ExtractedLog, infoCorpus *stucts.InfoCorpus) error {
 	query := stucts.PartialQuery{}
-	if parts := regexs.LogMessageWithErrorRegEx.FindStringSubmatch(extractedLog.Message); len(parts) == 9 {
+	if parts := LogMessageWithErrorRegEx.FindStringSubmatch(extractedLog.Message); len(parts) == 9 {
 		query.ErrorCompleteText = &parts[1]
 		query.ErrorCode = &parts[3]
 		query.ErrorMessage = &parts[4]
@@ -79,7 +78,7 @@ func ParseMessageWithAccessInfoV1(extractedLog stucts.ExtractedLog, infoCorpus *
 	databases := types.InitStringSet()
 	tables := types.InitStringSet()
 	query := stucts.PartialQuery{Databases: &databases, Tables: &tables}
-	if parts := regexs.LogMessageWithAccessInfoRegEx.FindStringSubmatch(extractedLog.Message); len(parts) == 3 {
+	if parts := LogMessageWithAccessInfoRegEx.FindStringSubmatch(extractedLog.Message); len(parts) == 3 {
 		query.Databases.Add(parts[1])
 		query.Tables.Add(parts[2])
 		infoCorpus.Queries.Add(query, extractedLog)

@@ -18,10 +18,10 @@ type InfoCorpusGenerator struct {
 
 func InitInfoCorpusGenerator(config *stucts.CliConfig) *InfoCorpusGenerator {
 	infoCorpus := stucts.InitInfoCorpus()
-	parser, error := parsers.GetParser(config.DatabaseVersion, config.DatabaseName)
-	if error != nil {
-		log.Error(error)
-		panic(error)
+	parser, err := parsers.GetParser(config.DatabaseVersion, config.DatabaseName)
+	if err != nil {
+		log.Error(err)
+		panic(err)
 	}
 	parser.SetInfoCorpus(infoCorpus)
 

@@ -2,7 +2,6 @@ package clickhouse
 
 import (
 	"errors"
-	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/regexs"
 	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/stucts"
 	"strconv"
 	"time"
@@ -10,7 +9,7 @@ import (
 
 func ParseLogV1(logLine string) (stucts.ExtractedLog, error) {
 	var clickHouseLog stucts.ExtractedLog
-	if parts := regexs.ClickHouseLogRegEx.FindStringSubmatch(logLine); len(parts) == 6 {
+	if parts := ClickHouseLogRegEx.FindStringSubmatch(logLine); len(parts) == 6 {
 		var partParsingError error
 		clickHouseLog.Timestamp, partParsingError = parseTimestampFromClickHouseLog(parts[1])
 		if partParsingError != nil {
