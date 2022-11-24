@@ -41,7 +41,6 @@ func ParseMessageWithDataInfoV1(extractedLog stucts.ExtractedLog, infoCorpus *st
 		query.Duration = &duration
 		completed := true
 		query.Completed = &completed
-		query.Timestamp = &extractedLog.Timestamp
 		infoCorpus.Queries.Add(query, extractedLog)
 		return nil
 	}
@@ -89,10 +88,11 @@ func ParseMessageWithAccessInfoV1(extractedLog stucts.ExtractedLog, infoCorpus *
 	return errors.New("error parsing message as LogMessageWithAccessInfoRegEx")
 }
 
-func ParseThreadIdV1(extractedLog stucts.ExtractedLog, infoCorpus *stucts.InfoCorpus) error {
+func ParseThreadIdAndTimeV1(extractedLog stucts.ExtractedLog, infoCorpus *stucts.InfoCorpus) error {
 	threadIds := types.InitIntSet()
 	query := stucts.PartialQuery{ThreadIds: &threadIds}
 	query.ThreadIds.Add(extractedLog.ThreadId)
+	query.Timestamp = &extractedLog.Timestamp
 	infoCorpus.Queries.Add(query, extractedLog)
 	return nil
 }

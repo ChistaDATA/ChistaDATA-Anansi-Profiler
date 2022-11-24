@@ -11,7 +11,7 @@ func InitClickHouseParserV1() *Parser {
 		"clickhouse",
 		clickhouse.ParseLogV1,
 		[]InfoParserFunc{
-			clickhouse.ParseThreadIdV1,
+			clickhouse.ParseThreadIdAndTimeV1,
 		},
 		[]InfoParserFunc{
 			clickhouse.ParseMessageWithAccessInfoV1,
