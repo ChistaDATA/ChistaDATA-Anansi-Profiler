@@ -14,7 +14,7 @@ import (
 )
 
 type ReportGenerator struct {
-	CliConfig           *stucts.CliConfig
+	Config              *stucts.CliConfig
 	InfoCorpus          *stucts.InfoCorpus
 	ReportTemplates     ReportTemplates
 	OutputFileExtension string
@@ -29,7 +29,7 @@ type ReportTemplates struct {
 
 func InitReportGenerator(cliConfig *stucts.CliConfig, infoCorpus *stucts.InfoCorpus) ReportGenerator {
 	reportGenerator := ReportGenerator{
-		CliConfig:  cliConfig,
+		Config:     cliConfig,
 		InfoCorpus: infoCorpus,
 	}
 
@@ -75,13 +75,13 @@ func (reportGenerator ReportGenerator) GenerateReport() {
 	}
 
 	// making accumulated info of all queries
-	accumulatedInfoTemplateInput := stucts.InitAccumulatedInfoTemplateInput(simplifiedQueryInfoList, reportGenerator.CliConfig.FilePaths)
+	accumulatedInfoTemplateInput := stucts.InitAccumulatedInfoTemplateInput(simplifiedQueryInfoList, reportGenerator.Config.FilePaths)
 
 	// There are certain queries that are not important for profiler
 	// like create, insert queries and queries with count less than minimum count
 	var keysToRemove []string
 	for s, info := range simplifiedQueryInfoList {
-		if shouldDiscardQuery(info.Query) || info.Count < reportGenerator.CliConfig.MinimumQueryCallCount {
+		if shouldDiscardQuery(info.Query) || info.Count < reportGenerator.Config.MinimumQueryCallCount {
 			keysToRemove = append(keysToRemove, s)
 		}
 	}
@@ -90,12 +90,12 @@ func (reportGenerator ReportGenerator) GenerateReport() {
 	}
 
 	// Sorting remaining values in simplifiedQueryInfoList, and converting the map to an actual list
-	sortedSimilarQueryInfos := simplifiedQueryInfoList.SortQueryInfoByDuration()
+	sortedSimilarQueryInfos := reportGenerator.sortSimplifiedQueryInfoList(simplifiedQueryInfoList, accumulatedInfoTemplateInput.TotalDuration)
 	var queryInfoTemplateInputs []stucts.QueryInfoTemplateInput
 
 	// Generating Input structs for all templates
 
-	for i := 0; i < len(sortedSimilarQueryInfos) && i < reportGenerator.CliConfig.TopQueryCount; i++ {
+	for i := 0; i < len(sortedSimilarQueryInfos) && i < reportGenerator.Config.TopQueryCount; i++ {
 		queryInfoTemplateInputs = append(queryInfoTemplateInputs, stucts.InitQueryInfoTemplateInput(i, sortedSimilarQueryInfos[i], accumulatedInfoTemplateInput.TotalDuration))
 	}
 
@@ -142,6 +142,10 @@ func (reportGenerator ReportGenerator) GenerateReport() {
 	w := bufio.NewWriter(f)
 	w.WriteString(bf.String())
 	w.Flush()
+}
+
+func (reportGenerator ReportGenerator) sortSimplifiedQueryInfoList(list stucts.SimilarQueryInfoList, totalDuration float64) []*stucts.SimilarQueryInfo {
+	return list.Sort(reportGenerator.Config.SortField, reportGenerator.Config.SortFieldOperation, reportGenerator.Config.SortOrder, totalDuration)
 }
 
 func shouldDiscardQuery(query string) bool {

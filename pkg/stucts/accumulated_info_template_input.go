@@ -81,9 +81,9 @@ func InitAccumulatedInfoTemplateInput(queryInfos SimilarQueryInfoList, filePaths
 func getTotalQPS(totalQueryCount int, timeStamps []*time.Time) string {
 	diff := (*timeStamps[len(timeStamps)-1]).Sub(*timeStamps[0])
 	if diff == 0 {
-		formatters.Float64ToKMilBilTri(float64(totalQueryCount))
+		formatters.Float64ToNumberWithSIMultipliers(float64(totalQueryCount))
 	}
-	return formatters.Float64ToKMilBilTri(float64(totalQueryCount) / diff.Seconds())
+	return formatters.Float64ToNumberWithSIMultipliers(float64(totalQueryCount) / diff.Seconds())
 }
 
 func getAccumulatedTotalDuration(durations []float64) float64 {
@@ -130,7 +130,7 @@ func getReadRowsInfo(dataArray []int) QueryInfoTemplateInputReadRows {
 	data := stats.LoadRawData(dataArray)
 	sum, min, max, avg, per95, stdDev, median := utils.FindMatrices(data)
 	formatToString := func(f float64) string {
-		return formatters.PrefixSpace(formatters.Float64ToKMilBilTri(f), 7)
+		return formatters.PrefixSpace(formatters.Float64ToNumberWithSIMultipliers(f), 7)
 	}
 	return QueryInfoTemplateInputReadRows{
 		Total:        formatToString(sum),

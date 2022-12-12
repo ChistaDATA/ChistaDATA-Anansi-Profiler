@@ -18,12 +18,11 @@ type InfoCorpusGenerator struct {
 
 func InitInfoCorpusGenerator(config *stucts.CliConfig) *InfoCorpusGenerator {
 	infoCorpus := stucts.InitInfoCorpus()
-	parser, err := parsers.GetParser(config.DatabaseVersion, config.DatabaseName)
+	parser, err := parsers.GetParser(config.DatabaseVersion, config.DatabaseName, infoCorpus)
 	if err != nil {
 		log.Error(err)
 		panic(err)
 	}
-	parser.SetInfoCorpus(infoCorpus)
 
 	return &InfoCorpusGenerator{
 		infoCorpus:  infoCorpus,
@@ -39,6 +38,7 @@ func (icg *InfoCorpusGenerator) GenerateInfoCorpus() *stucts.InfoCorpus {
 }
 
 // readFileAndParseLogs Reads a file, extracts queries line by line
+// TODO externalise parallelization parameters
 func (icg *InfoCorpusGenerator) iterateDataAndParse() {
 	defer icg.dataHandler.Close()
 
@@ -59,7 +59,6 @@ func (icg *InfoCorpusGenerator) iterateDataAndParse() {
 	wg.Add(1)
 	go processLines(lines, &wg, icg.parser, &guard)
 	wg.Wait()
-
 }
 
 func processLines(lines []string, wg *sync.WaitGroup, parser parsers.IParser, guard *chan struct{}) {

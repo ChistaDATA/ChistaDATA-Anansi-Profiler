@@ -7,7 +7,11 @@ import (
 	"os"
 )
 
+var cliConfig stucts.CliConfig
+
 func init() {
+
+	cliConfig = stucts.InitializeCliConfig()
 	// Log as JSON instead of the default ASCII formatter.
 	//log.SetFormatter(&log.JSONFormatter{})
 
@@ -16,11 +20,10 @@ func init() {
 	log.SetOutput(os.Stdout) // TODO add file log supports
 
 	// Only log the warning severity or above.
-	log.SetLevel(log.ErrorLevel) // TODO make configurable
+	log.SetLevel(log.Level(stucts.LogLevels[cliConfig.LogLevel])) // TODO make configurable
 }
 
 func main() {
-	cliConfig := stucts.InitializeCliConfig()
 	infoCorpusGenerator := services.InitInfoCorpusGenerator(&cliConfig)
 	infoCorpus := infoCorpusGenerator.GenerateInfoCorpus()
 	reportGenerator := services.InitReportGenerator(&cliConfig, infoCorpus)
