@@ -4,6 +4,7 @@ import (
 	"sort"
 )
 
+// SimilarQueryInfoList list of SimilarQueryInfo
 type SimilarQueryInfoList map[string]*SimilarQueryInfo
 
 func InitSimilarQueryInfoList() SimilarQueryInfoList {
@@ -30,27 +31,6 @@ func (similarQueryInfoList *SimilarQueryInfoList) Add(query *Query) {
 	}
 	singleQueryInfo.Add(query)
 }
-
-//func (similarQueryInfoList *SimilarQueryInfoList) applySort(sortValues sort.Interface, sortDesc bool) {
-//	if sortDesc {
-//		sort.Sort(sort.Reverse(sortValues))
-//	} else {
-//		sort.Sort(sortValues)
-//	}
-//}
-//
-//func (similarQueryInfoList *SimilarQueryInfoList) SortQueryInfoByMaxDuration(sortDesc bool) []*SimilarQueryInfo {
-//	sortedVals := byMaxDuration(similarQueryInfoList.GetList())
-//	similarQueryInfoList.applySort(sortedVals, sortDesc)
-//	return sortedVals
-//}
-//
-//// byMaxDuration implements sort.Interface based on the GetMaxDuration.
-//type byMaxDuration []*SimilarQueryInfo
-//
-//func (a byMaxDuration) Len() int           { return len(a) }
-//func (a byMaxDuration) Less(i, j int) bool { return a[i].GetMaxDuration() < a[j].GetMaxDuration() }
-//func (a byMaxDuration) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 
 func getSortFunc(sortField string, sortFieldOperation string, totalDuration float64) func(info *SimilarQueryInfo) float64 {
 	if sortField == SortFieldExecTime {

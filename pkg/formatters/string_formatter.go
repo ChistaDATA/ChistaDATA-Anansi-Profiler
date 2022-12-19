@@ -10,8 +10,6 @@ import (
 
 var byteSizeExtensions = [...]string{"B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB"}
 
-//var kMilBilTriExtensions = [...]string{"", "K", "M", "B", "T"}
-
 var secondsExtension = [...]string{"", "m", "µ", "n", "p"}
 
 var siMultiplierPrefixes = map[float64]string{24: "Y", 21: "Z", 18: "E", 15: "P", 12: "T", 9: "G", 6: "M", 3: "k", 0: "", -3: "m", -6: "µ", -9: "n", -12: "p", -15: "f", -18: "a", -21: "z", -24: "y"}
@@ -35,21 +33,6 @@ func init() {
 }
 
 // Float64SecondsToString Converts Seconds to readable string format.
-// s, ms, µs, ns, ps are possible values
-//func Float64SecondsToString(s float64) string {
-//	extensionIndex := 0
-//	for s < 0 && extensionIndex < len(secondsExtension) {
-//		s *= 1000
-//		extensionIndex += 1
-//	}
-//	if extensionIndex >= len(secondsExtension) {
-//		extensionIndex = len(secondsExtension) - 1
-//		return fmt.Sprintf("%.2f%ss", s, secondsExtension[extensionIndex])
-//	}
-//	return fmt.Sprintf("%.2f%ss", s, secondsExtension[extensionIndex])
-//}
-
-// Float64SecondsToString2 Converts Seconds to readable string format.
 // s, ms, µs, ns, ps are possible values
 func Float64SecondsToString(f float64) string {
 	sf, u := Float64ToString(f)
@@ -130,13 +113,6 @@ func PrefixSpace(s string, limit int) string {
 		s = " " + s
 	}
 	return s[:limit]
-}
-
-func PrefixSpaceUnit(s string, unit string, limit int) string {
-	for len(fmt.Sprintf("%s%s", s, unit)) < limit && len(s) > 0 {
-		s = s[:len(s)-1]
-	}
-	return fmt.Sprintf("%s%s", s, unit)
 }
 
 // PercentageToCharRep function represent a certain percentage in a specific character as bar graph

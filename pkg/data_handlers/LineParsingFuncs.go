@@ -2,11 +2,13 @@ package data_handlers
 
 import "bufio"
 
+// ILineParsingFunc is an interface custom line parsing for different databases and versions
 type ILineParsingFunc interface {
 	GetFunc() bufio.SplitFunc
 	IsUsable(databaseType string, version string) bool
 }
 
+// LineParsingFunc is the implementation for ILineParsingFunc interface
 type LineParsingFunc struct {
 	databaseType string
 	minVersion   string

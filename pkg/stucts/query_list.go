@@ -5,6 +5,7 @@ import (
 	"sync"
 )
 
+// QueryList list of all queries, Query
 type QueryList struct {
 	list map[string]*Query
 	lock sync.RWMutex

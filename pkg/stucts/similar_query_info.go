@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// SimilarQueryInfo all important information of similar queries
 type SimilarQueryInfo struct {
 	Query            string
 	Count            int

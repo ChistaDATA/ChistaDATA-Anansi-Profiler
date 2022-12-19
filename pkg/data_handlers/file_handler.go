@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+// FileHandler is a wrapper to handle a single file
 type FileHandler struct {
 	file      *os.File
 	scanner   *bufio.Scanner

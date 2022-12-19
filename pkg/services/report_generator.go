@@ -13,11 +13,12 @@ import (
 	"text/template"
 )
 
+// ReportGenerator it is used to generate a report using the given *stucts.CliConfig and *stucts.DBPerfInfoRepository
 type ReportGenerator struct {
-	Config              *stucts.CliConfig
-	InfoCorpus          *stucts.InfoCorpus
-	ReportTemplates     ReportTemplates
-	OutputFileExtension string
+	Config               *stucts.CliConfig
+	DBPerfInfoRepository *stucts.DBPerfInfoRepository
+	ReportTemplates      ReportTemplates
+	OutputFileExtension  string
 }
 
 type ReportTemplates struct {
@@ -27,10 +28,10 @@ type ReportTemplates struct {
 	QueryInfoTemplate      *template.Template
 }
 
-func InitReportGenerator(cliConfig *stucts.CliConfig, infoCorpus *stucts.InfoCorpus) ReportGenerator {
+func InitReportGenerator(cliConfig *stucts.CliConfig, dBPerfInfoRepository *stucts.DBPerfInfoRepository) ReportGenerator {
 	reportGenerator := ReportGenerator{
-		Config:     cliConfig,
-		InfoCorpus: infoCorpus,
+		Config:               cliConfig,
+		DBPerfInfoRepository: dBPerfInfoRepository,
 	}
 
 	if cliConfig.ReportType == stucts.ReportTypeText {
@@ -70,7 +71,7 @@ func initReportTemplates(topQueryRecordTemplate string, accumulatedTemplate stri
 func (reportGenerator ReportGenerator) GenerateReport() {
 	// There can be queries that are similar, so making a list of similar queries
 	simplifiedQueryInfoList := stucts.InitSimilarQueryInfoList()
-	for _, query := range reportGenerator.InfoCorpus.Queries.GetList() {
+	for _, query := range reportGenerator.DBPerfInfoRepository.Queries.GetList() {
 		simplifiedQueryInfoList.Add(query)
 	}
 
@@ -133,6 +134,7 @@ func (reportGenerator ReportGenerator) GenerateReport() {
 
 	// Persisting the output to a file, from buffer
 
+	// TODO externalise output file location
 	f, err := os.Create("output." + reportGenerator.OutputFileExtension)
 	if err != nil {
 		fmt.Println(err)

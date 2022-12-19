@@ -7,25 +7,22 @@ import (
 	"os"
 )
 
-var cliConfig stucts.CliConfig
+var config stucts.CliConfig
 
 func init() {
 
-	cliConfig = stucts.InitializeCliConfig()
-	// Log as JSON instead of the default ASCII formatter.
-	//log.SetFormatter(&log.JSONFormatter{})
+	// configuring application on startup
+	config = stucts.InitializeCliConfig()
 
-	// Output to stdout instead of the default stderr
-	// Can be any io.Writer, see below for File example
-	log.SetOutput(os.Stdout) // TODO add file log supports
+	// TODO add file log supports
+	log.SetOutput(os.Stdout)
 
-	// Only log the warning severity or above.
-	log.SetLevel(log.Level(stucts.LogLevels[cliConfig.LogLevel])) // TODO make configurable
+	log.SetLevel(log.Level(stucts.LogLevels[config.LogLevel]))
 }
 
 func main() {
-	infoCorpusGenerator := services.InitInfoCorpusGenerator(&cliConfig)
-	infoCorpus := infoCorpusGenerator.GenerateInfoCorpus()
-	reportGenerator := services.InitReportGenerator(&cliConfig, infoCorpus)
+	dBPerfInfoRepositoryGenerator := services.InitDBPerfInfoRepositoryGenerator(&config)
+	dBPerfInfoRepository := dBPerfInfoRepositoryGenerator.GenerateDBPerfInfoRepository()
+	reportGenerator := services.InitReportGenerator(&config, dBPerfInfoRepository)
 	reportGenerator.GenerateReport()
 }

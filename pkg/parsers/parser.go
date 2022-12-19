@@ -5,8 +5,9 @@ import (
 )
 
 type ParseLogFunc func(logLine string) (stucts.ExtractedLog, error)
-type InfoParserFunc func(extractedLog stucts.ExtractedLog, infoCorpus *stucts.InfoCorpus) error
+type InfoParserFunc func(extractedLog stucts.ExtractedLog, dBPerfInfoRepository *stucts.DBPerfInfoRepository) error
 
+// Parser is a IParser implementation
 type Parser struct {
 	minVersion              string
 	maxVersion              string
@@ -14,7 +15,7 @@ type Parser struct {
 	parseLog                ParseLogFunc
 	infoExecuteAllFunctions []InfoParserFunc
 	infoExecuteOneFunctions []InfoParserFunc
-	infoCorpus              *stucts.InfoCorpus
+	dBPerfInfoRepository    *stucts.DBPerfInfoRepository
 }
 
 func InitParser(minVersion string, maxVersion string, database string, parseLog ParseLogFunc, infoExecuteAllFunctions []InfoParserFunc, infoExecuteOneFunctions []InfoParserFunc) *Parser {
@@ -28,18 +29,18 @@ func InitParser(minVersion string, maxVersion string, database string, parseLog 
 	}
 }
 
-func (p *Parser) SetInfoCorpus(infoCorpus *stucts.InfoCorpus) {
-	p.infoCorpus = infoCorpus
+func (p *Parser) SetDBPerfInfoRepository(DBPerfInfoRepository *stucts.DBPerfInfoRepository) {
+	p.dBPerfInfoRepository = DBPerfInfoRepository
 }
 
-func (p *Parser) GetInfoCorpus() *stucts.InfoCorpus {
-	return p.infoCorpus
+func (p *Parser) GetDBPerfInfoRepository() *stucts.DBPerfInfoRepository {
+	return p.dBPerfInfoRepository
 }
 
 func (p *Parser) Parse(logLine string) {
 	log, err := p.parseLog(logLine)
 	if err == nil {
-		p.extractInfoFromLog(log, p.infoCorpus)
+		p.extractInfoFromLog(log, p.dBPerfInfoRepository)
 	}
 }
 
@@ -50,13 +51,13 @@ func (p *Parser) IsUsable(version string, database string) bool {
 	return false
 }
 
-func (p *Parser) extractInfoFromLog(extractedLog stucts.ExtractedLog, infoCorpus *stucts.InfoCorpus) error {
+func (p *Parser) extractInfoFromLog(extractedLog stucts.ExtractedLog, DBPerfInfoRepository *stucts.DBPerfInfoRepository) error {
 	for _, function := range p.infoExecuteAllFunctions {
-		function(extractedLog, infoCorpus)
+		function(extractedLog, DBPerfInfoRepository)
 	}
 
 	for _, function := range p.infoExecuteOneFunctions {
-		err := function(extractedLog, infoCorpus)
+		err := function(extractedLog, DBPerfInfoRepository)
 		if err == nil {
 			return err
 		}

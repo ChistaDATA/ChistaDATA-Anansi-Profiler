@@ -4,6 +4,7 @@ import (
 	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/parsers/clickhouse"
 )
 
+// InitClickHouseParserV1 is Parser object which is a IParser implementation for clickhouse version 0 - 2.10
 func InitClickHouseParserV1() *Parser {
 	return InitParser(
 		"0",

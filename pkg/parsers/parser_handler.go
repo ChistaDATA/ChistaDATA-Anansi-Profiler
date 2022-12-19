@@ -10,10 +10,10 @@ var parsers = [...]IParser{
 	InitClickHouseParserV1(),
 }
 
-func GetParser(version string, database string, infoCorpus *stucts.InfoCorpus) (IParser, error) {
+func GetParser(version string, database string, dBPerfInfoRepository *stucts.DBPerfInfoRepository) (IParser, error) {
 	for _, parser := range parsers {
 		if parser.IsUsable(version, database) {
-			parser.SetInfoCorpus(infoCorpus)
+			parser.SetDBPerfInfoRepository(dBPerfInfoRepository)
 			return parser, nil
 		}
 	}

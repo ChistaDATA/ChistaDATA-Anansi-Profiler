@@ -4,6 +4,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// LocalFilesDataHandler It implements IDataHandler interface, acts as a wrapper for local files
 type LocalFilesDataHandler struct {
 	databaseType    string
 	databaseVersion string

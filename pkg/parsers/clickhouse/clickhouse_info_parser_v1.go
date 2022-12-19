@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func ParseMessageWithQueryV1(extractedLog stucts.ExtractedLog, infoCorpus *stucts.InfoCorpus) error {
+func ParseMessageWithQueryV1(extractedLog stucts.ExtractedLog, dBPerfInfoRepository *stucts.DBPerfInfoRepository) error {
 	query := stucts.PartialQuery{}
 	if parts := LogMessageWithQueryInfoRegEx.FindStringSubmatch(extractedLog.Message); len(parts) == 10 {
 		query.Query = &parts[8]
@@ -19,13 +19,13 @@ func ParseMessageWithQueryV1(extractedLog stucts.ExtractedLog, infoCorpus *stuct
 			parts[4] = "default"
 		}
 		query.User = &parts[4]
-		infoCorpus.Queries.Add(query, extractedLog)
+		dBPerfInfoRepository.Queries.Add(query, extractedLog)
 		return nil
 	}
 	return errors.New("error parsing message as ExecuteQueryLogMessageWithQueryRegEx")
 }
 
-func ParseMessageWithDataInfoV1(extractedLog stucts.ExtractedLog, infoCorpus *stucts.InfoCorpus) error {
+func ParseMessageWithDataInfoV1(extractedLog stucts.ExtractedLog, dBPerfInfoRepository *stucts.DBPerfInfoRepository) error {
 	query := stucts.PartialQuery{}
 	if parts := LogMessageWithDataRegEx.FindStringSubmatch(extractedLog.Message); len(parts) == 7 {
 		var partError error
@@ -40,13 +40,13 @@ func ParseMessageWithDataInfoV1(extractedLog stucts.ExtractedLog, infoCorpus *st
 		query.Duration = &duration
 		completed := true
 		query.Completed = &completed
-		infoCorpus.Queries.Add(query, extractedLog)
+		dBPerfInfoRepository.Queries.Add(query, extractedLog)
 		return nil
 	}
 	return errors.New("error parsing message as LogMessageWithDataRegEx")
 }
 
-func ParseMessageWithPeakMemoryV1(extractedLog stucts.ExtractedLog, infoCorpus *stucts.InfoCorpus) error {
+func ParseMessageWithPeakMemoryV1(extractedLog stucts.ExtractedLog, dBPerfInfoRepository *stucts.DBPerfInfoRepository) error {
 	query := stucts.PartialQuery{}
 	if parts := LogMessageWithPeakMemoryRegEx.FindStringSubmatch(extractedLog.Message); len(parts) == 5 {
 		var partError error
@@ -55,44 +55,44 @@ func ParseMessageWithPeakMemoryV1(extractedLog stucts.ExtractedLog, infoCorpus *
 		if partError != nil {
 			return partError
 		}
-		infoCorpus.Queries.Add(query, extractedLog)
+		dBPerfInfoRepository.Queries.Add(query, extractedLog)
 		return nil
 	}
 	return errors.New("error parsing message as LogMessageWithPeakMemoryRegEx")
 }
 
-func ParseMessageWithErrorInfoV1(extractedLog stucts.ExtractedLog, infoCorpus *stucts.InfoCorpus) error {
+func ParseMessageWithErrorInfoV1(extractedLog stucts.ExtractedLog, dBPerfInfoRepository *stucts.DBPerfInfoRepository) error {
 	query := stucts.PartialQuery{}
 	if parts := LogMessageWithErrorRegEx.FindStringSubmatch(extractedLog.Message); len(parts) == 9 {
 		query.ErrorCompleteText = &parts[1]
 		query.ErrorCode = &parts[3]
 		query.ErrorMessage = &parts[4]
 		query.ErrorStackTrace = &parts[8]
-		infoCorpus.Queries.Add(query, extractedLog)
+		dBPerfInfoRepository.Queries.Add(query, extractedLog)
 		return nil
 	}
 	return errors.New("error parsing message as LogMessageWithErrorRegEx")
 }
 
-func ParseMessageWithAccessInfoV1(extractedLog stucts.ExtractedLog, infoCorpus *stucts.InfoCorpus) error {
+func ParseMessageWithAccessInfoV1(extractedLog stucts.ExtractedLog, dBPerfInfoRepository *stucts.DBPerfInfoRepository) error {
 	databases := types.InitStringSet()
 	tables := types.InitStringSet()
 	query := stucts.PartialQuery{Databases: &databases, Tables: &tables}
 	if parts := LogMessageWithAccessInfoRegEx.FindStringSubmatch(extractedLog.Message); len(parts) == 3 {
 		query.Databases.Add(parts[1])
 		query.Tables.Add(parts[2])
-		infoCorpus.Queries.Add(query, extractedLog)
+		dBPerfInfoRepository.Queries.Add(query, extractedLog)
 		return nil
 	}
 	return errors.New("error parsing message as LogMessageWithAccessInfoRegEx")
 }
 
-func ParseThreadIdAndTimeV1(extractedLog stucts.ExtractedLog, infoCorpus *stucts.InfoCorpus) error {
+func ParseThreadIdAndTimeV1(extractedLog stucts.ExtractedLog, dBPerfInfoRepository *stucts.DBPerfInfoRepository) error {
 	threadIds := types.InitIntSet()
 	query := stucts.PartialQuery{ThreadIds: &threadIds}
 	query.ThreadIds.Add(extractedLog.ThreadId)
 	query.Timestamp = &extractedLog.Timestamp
-	infoCorpus.Queries.Add(query, extractedLog)
+	dBPerfInfoRepository.Queries.Add(query, extractedLog)
 	return nil
 }
 

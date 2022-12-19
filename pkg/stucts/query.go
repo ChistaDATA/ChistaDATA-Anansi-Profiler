@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// Query all the information regarding a query is captured using this struct
 type Query struct {
 	Timestamp         time.Time
 	QueryId           string

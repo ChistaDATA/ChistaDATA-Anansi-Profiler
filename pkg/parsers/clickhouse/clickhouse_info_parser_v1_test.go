@@ -15,7 +15,7 @@ func TestParseMessageWithQuery(t *testing.T) {
 	}
 
 	for message, want := range messageQueryMap {
-		got := stucts.InitInfoCorpus()
+		got := stucts.InitDBPerfInfoRepository()
 		err := ParseMessageWithQueryV1(stucts.ExtractedLog{Message: message}, got)
 		if err != nil || got.Queries.GetQuery(message).ClientHost != want.ClientHost || got.Queries.GetQuery(message).ClientPort != want.ClientPort || got.Queries.GetQuery(message).Query != want.Query || got.Queries.GetQuery(message).User != want.User || got.Queries.GetQuery(message).InitialQueryId != want.InitialQueryId {
 			t.Errorf("for message %s: error: %s, got %v, want %v", message, err, got, want)
@@ -30,7 +30,7 @@ func TestParseMessageWithQuery(t *testing.T) {
 	}
 
 	for message, want := range messageErrorMap {
-		got := ParseMessageWithQueryV1(stucts.ExtractedLog{Message: message}, stucts.InitInfoCorpus())
+		got := ParseMessageWithQueryV1(stucts.ExtractedLog{Message: message}, stucts.InitDBPerfInfoRepository())
 		if !(got == nil && want == "") && (got == nil || got.Error() != want) {
 			t.Errorf("for message %s: got %s, want %s", message, got, want)
 		}
@@ -48,7 +48,7 @@ func TestParseMessageWithDataInfo(t *testing.T) {
 	}
 
 	for message, want := range messageQueryMap {
-		got := stucts.InitInfoCorpus()
+		got := stucts.InitDBPerfInfoRepository()
 		err := ParseMessageWithDataInfoV1(stucts.ExtractedLog{Message: message}, got)
 		if err != nil || got.Queries.GetQuery(message).ReadRows != want.ReadRows || got.Queries.GetQuery(message).ReadBytes != want.ReadBytes || got.Queries.GetQuery(message).Duration != want.Duration {
 			t.Errorf("for message %s: error: %s, got %v, want %v", message, err, got, want)
@@ -61,7 +61,7 @@ func TestParseMessageWithDataInfo(t *testing.T) {
 	}
 
 	for message, want := range messageErrorMap {
-		got := ParseMessageWithDataInfoV1(stucts.ExtractedLog{Message: message}, stucts.InitInfoCorpus())
+		got := ParseMessageWithDataInfoV1(stucts.ExtractedLog{Message: message}, stucts.InitDBPerfInfoRepository())
 		if !(got == nil && want == "") && (got == nil || got.Error() != want) {
 			t.Errorf("for message %s: got %s, want %s", message, got, want)
 		}
@@ -79,7 +79,7 @@ func TestParseMessageWithPeakMemory(t *testing.T) {
 	}
 
 	for message, want := range messageQueryMap {
-		got := stucts.InitInfoCorpus()
+		got := stucts.InitDBPerfInfoRepository()
 		err := ParseMessageWithPeakMemoryV1(stucts.ExtractedLog{Message: message}, got)
 		if err != nil || got.Queries.GetQuery(message).PeakMemoryUsage != want {
 			t.Errorf("for message %s: error: %s, got %v, want %v", message, err, got.Queries.GetQuery(message).PeakMemoryUsage, want)
@@ -92,7 +92,7 @@ func TestParseMessageWithPeakMemory(t *testing.T) {
 	}
 
 	for message, want := range messageErrorMap {
-		got := ParseMessageWithPeakMemoryV1(stucts.ExtractedLog{Message: message}, stucts.InitInfoCorpus())
+		got := ParseMessageWithPeakMemoryV1(stucts.ExtractedLog{Message: message}, stucts.InitDBPerfInfoRepository())
 		if !(got == nil && want == "") && (got == nil || got.Error() != want) {
 			t.Errorf("for message %s: got %s, want %s", message, got, want)
 		}
@@ -108,7 +108,7 @@ func TestParseMessageWithErrorInfo(t *testing.T) {
 	}
 
 	for message, want := range messageQueryMap {
-		got := stucts.InitInfoCorpus()
+		got := stucts.InitDBPerfInfoRepository()
 		err := ParseMessageWithErrorInfoV1(stucts.ExtractedLog{Message: message}, got)
 		if err != nil || got.Queries.GetQuery(message).ErrorMessage != want.ErrorMessage || got.Queries.GetQuery(message).ErrorCode != want.ErrorCode || got.Queries.GetQuery(message).ErrorCompleteText != want.ErrorCompleteText || got.Queries.GetQuery(message).ErrorStackTrace != want.ErrorStackTrace {
 			t.Errorf("for message %s: error: %s, got %v, want %v", message, err, got, want)
@@ -120,7 +120,7 @@ func TestParseMessageWithErrorInfo(t *testing.T) {
 	}
 
 	for message, want := range messageErrorMap {
-		got := ParseMessageWithErrorInfoV1(stucts.ExtractedLog{Message: message}, stucts.InitInfoCorpus())
+		got := ParseMessageWithErrorInfoV1(stucts.ExtractedLog{Message: message}, stucts.InitDBPerfInfoRepository())
 		if !(got == nil && want == "") && (got == nil || got.Error() != want) {
 			t.Errorf("for message %s: got %s, want %s", message, got, want)
 		}
@@ -135,7 +135,7 @@ func TestParseMessageWithAccessInfo(t *testing.T) {
 	}
 
 	for message, want := range messageQueryMap {
-		got := stucts.InitInfoCorpus()
+		got := stucts.InitDBPerfInfoRepository()
 		err := ParseMessageWithAccessInfoV1(stucts.ExtractedLog{Message: message}, got)
 		if err != nil || !reflect.DeepEqual(got.Queries.GetQuery(message).Tables, want.Tables) || !reflect.DeepEqual(got.Queries.GetQuery(message).Databases, want.Databases) {
 			t.Errorf("for message %s: error: %s, got %v, want %v", message, err, got, want)
@@ -147,7 +147,7 @@ func TestParseMessageWithAccessInfo(t *testing.T) {
 	}
 
 	for message, want := range messageErrorMap {
-		got := ParseMessageWithAccessInfoV1(stucts.ExtractedLog{Message: message}, stucts.InitInfoCorpus())
+		got := ParseMessageWithAccessInfoV1(stucts.ExtractedLog{Message: message}, stucts.InitDBPerfInfoRepository())
 		if !(got == nil && want == "") && (got == nil || got.Error() != want) {
 			t.Errorf("for message %s: got %s, want %s", message, got, want)
 		}
