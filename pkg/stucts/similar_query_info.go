@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// SimilarQueryInfo all important information of similar queries
 type SimilarQueryInfo struct {
 	Query            string
 	Count            int
@@ -68,11 +69,11 @@ func (similarQueryInfo *SimilarQueryInfo) Add(query *Query) {
 	similarQueryInfo.ClientHosts = append(similarQueryInfo.ClientHosts, query.ClientHost)
 	similarQueryInfo.Users = append(similarQueryInfo.Users, query.User)
 	similarQueryInfo.PeakMemoryUsages = append(similarQueryInfo.PeakMemoryUsages, query.PeakMemoryUsage)
-	if similarQueryInfo.FromTimestamp == nil || query.Timestamp.Before(*similarQueryInfo.FromTimestamp) {
+	if similarQueryInfo.FromTimestamp == nil || (query.Timestamp != time.Time{} && query.Timestamp.Before(*similarQueryInfo.FromTimestamp)) {
 		t := query.Timestamp
 		similarQueryInfo.FromTimestamp = &t
 	}
-	if similarQueryInfo.ToTimestamp == nil || query.Timestamp.After(*similarQueryInfo.ToTimestamp) {
+	if similarQueryInfo.ToTimestamp == nil || (query.Timestamp != time.Time{} && query.Timestamp.After(*similarQueryInfo.ToTimestamp)) {
 		t := query.Timestamp
 		similarQueryInfo.ToTimestamp = &t
 	}
@@ -85,12 +86,24 @@ func (similarQueryInfo *SimilarQueryInfo) CompleteProcessing() {
 	sort.Float64s(similarQueryInfo.ReadBytes)
 }
 
-func (similarQueryInfo *SimilarQueryInfo) GetQPS(totalDuration float64) float64 {
+func GetQPS(similarQueryInfo *SimilarQueryInfo, totalDuration float64) float64 {
 	diff := similarQueryInfo.ToTimestamp.Sub(*similarQueryInfo.FromTimestamp)
 	if diff.Seconds() == 0 {
 		return float64(similarQueryInfo.Count)
 	}
 	return float64(similarQueryInfo.Count) / totalDuration
+}
+
+//func GetQPS(similarQueryInfo *SimilarQueryInfo) float64 {
+//	diff := similarQueryInfo.ToTimestamp.Sub(*similarQueryInfo.FromTimestamp)
+//	if diff.Seconds() == 0 {
+//		return float64(similarQueryInfo.Count)
+//	}
+//	return float64(similarQueryInfo.Count) / GetTotalDuration(similarQueryInfo)
+//}
+
+func GetCount(similarQueryInfo *SimilarQueryInfo) float64 {
+	return float64(similarQueryInfo.Count)
 }
 
 func (similarQueryInfo *SimilarQueryInfo) GetDurationMatrices() (float64, float64, float64, float64, float64, float64, float64) {
@@ -129,22 +142,144 @@ func (similarQueryInfo *SimilarQueryInfo) GetCompletedCount() int {
 	return similarQueryInfo.Completed
 }
 
-func (similarQueryInfo *SimilarQueryInfo) GetMaxDuration() float64 {
-	var max float64
-	for i := 0; i < len(similarQueryInfo.Durations); i++ {
-		if max < similarQueryInfo.Durations[i] {
-			max = similarQueryInfo.Durations[i]
-		}
-	}
+func GetTotalDuration(similarQueryInfo *SimilarQueryInfo) float64 {
+	sum, _ := stats.LoadRawData(similarQueryInfo.Durations).Sum()
+	return sum
+}
+
+func GetMaxDuration(similarQueryInfo *SimilarQueryInfo) float64 {
+	max, _ := stats.LoadRawData(similarQueryInfo.Durations).Max()
 	return max
 }
 
-func (similarQueryInfo *SimilarQueryInfo) GetTotalDuration() float64 {
-	var sum float64
-	for i := 0; i < len(similarQueryInfo.Durations); i++ {
-		sum += similarQueryInfo.Durations[i]
-	}
+func GetMinDuration(similarQueryInfo *SimilarQueryInfo) float64 {
+	min, _ := stats.LoadRawData(similarQueryInfo.Durations).Min()
+	return min
+}
+
+func GetAvgDuration(similarQueryInfo *SimilarQueryInfo) float64 {
+	avg, _ := stats.LoadRawData(similarQueryInfo.Durations).Min()
+	return avg
+}
+
+func GetPer95Duration(similarQueryInfo *SimilarQueryInfo) float64 {
+	per95, _ := stats.LoadRawData(similarQueryInfo.Durations).Percentile(95)
+	return per95
+}
+
+func GetStdDevDuration(similarQueryInfo *SimilarQueryInfo) float64 {
+	stdDev, _ := stats.LoadRawData(similarQueryInfo.Durations).StandardDeviation()
+	return stdDev
+}
+
+func GetMedianDuration(similarQueryInfo *SimilarQueryInfo) float64 {
+	median, _ := stats.LoadRawData(similarQueryInfo.Durations).Median()
+	return median
+}
+
+func GetTotalReadBytes(similarQueryInfo *SimilarQueryInfo) float64 {
+	sum, _ := stats.LoadRawData(similarQueryInfo.ReadBytes).Sum()
 	return sum
+}
+
+func GetMaxReadBytes(similarQueryInfo *SimilarQueryInfo) float64 {
+	max, _ := stats.LoadRawData(similarQueryInfo.ReadBytes).Max()
+	return max
+}
+
+func GetMinReadBytes(similarQueryInfo *SimilarQueryInfo) float64 {
+	min, _ := stats.LoadRawData(similarQueryInfo.ReadBytes).Min()
+	return min
+}
+
+func GetAvgReadBytes(similarQueryInfo *SimilarQueryInfo) float64 {
+	avg, _ := stats.LoadRawData(similarQueryInfo.ReadBytes).Min()
+	return avg
+}
+
+func GetPer95ReadBytes(similarQueryInfo *SimilarQueryInfo) float64 {
+	per95, _ := stats.LoadRawData(similarQueryInfo.ReadBytes).Percentile(95)
+	return per95
+}
+
+func GetStdDevReadBytes(similarQueryInfo *SimilarQueryInfo) float64 {
+	stdDev, _ := stats.LoadRawData(similarQueryInfo.ReadBytes).StandardDeviation()
+	return stdDev
+}
+
+func GetMedianReadBytes(similarQueryInfo *SimilarQueryInfo) float64 {
+	median, _ := stats.LoadRawData(similarQueryInfo.ReadBytes).Median()
+	return median
+}
+
+func GetTotalReadRows(similarQueryInfo *SimilarQueryInfo) float64 {
+	sum, _ := stats.LoadRawData(similarQueryInfo.ReadRows).Sum()
+	return sum
+}
+
+func GetMaxReadRows(similarQueryInfo *SimilarQueryInfo) float64 {
+	max, _ := stats.LoadRawData(similarQueryInfo.ReadRows).Max()
+	return max
+}
+
+func GetMinReadRows(similarQueryInfo *SimilarQueryInfo) float64 {
+	min, _ := stats.LoadRawData(similarQueryInfo.ReadRows).Min()
+	return min
+}
+
+func GetAvgReadRows(similarQueryInfo *SimilarQueryInfo) float64 {
+	avg, _ := stats.LoadRawData(similarQueryInfo.ReadRows).Min()
+	return avg
+}
+
+func GetPer95ReadRows(similarQueryInfo *SimilarQueryInfo) float64 {
+	per95, _ := stats.LoadRawData(similarQueryInfo.ReadRows).Percentile(95)
+	return per95
+}
+
+func GetStdDevReadRows(similarQueryInfo *SimilarQueryInfo) float64 {
+	stdDev, _ := stats.LoadRawData(similarQueryInfo.ReadRows).StandardDeviation()
+	return stdDev
+}
+
+func GetMedianReadRows(similarQueryInfo *SimilarQueryInfo) float64 {
+	median, _ := stats.LoadRawData(similarQueryInfo.ReadRows).Median()
+	return median
+}
+
+func GetTotalPeakMemory(similarQueryInfo *SimilarQueryInfo) float64 {
+	sum, _ := stats.LoadRawData(similarQueryInfo.PeakMemoryUsages).Sum()
+	return sum
+}
+
+func GetMaxPeakMemory(similarQueryInfo *SimilarQueryInfo) float64 {
+	max, _ := stats.LoadRawData(similarQueryInfo.PeakMemoryUsages).Max()
+	return max
+}
+
+func GetMinPeakMemory(similarQueryInfo *SimilarQueryInfo) float64 {
+	min, _ := stats.LoadRawData(similarQueryInfo.PeakMemoryUsages).Min()
+	return min
+}
+
+func GetAvgPeakMemory(similarQueryInfo *SimilarQueryInfo) float64 {
+	avg, _ := stats.LoadRawData(similarQueryInfo.PeakMemoryUsages).Min()
+	return avg
+}
+
+func GetPer95PeakMemory(similarQueryInfo *SimilarQueryInfo) float64 {
+	per95, _ := stats.LoadRawData(similarQueryInfo.PeakMemoryUsages).Percentile(95)
+	return per95
+}
+
+func GetStdDevPeakMemory(similarQueryInfo *SimilarQueryInfo) float64 {
+	stdDev, _ := stats.LoadRawData(similarQueryInfo.PeakMemoryUsages).StandardDeviation()
+	return stdDev
+}
+
+func GetMedianPeakMemory(similarQueryInfo *SimilarQueryInfo) float64 {
+	median, _ := stats.LoadRawData(similarQueryInfo.PeakMemoryUsages).Median()
+	return median
 }
 
 func getStringCountPair(sa []string) types.StringCountPairArray {

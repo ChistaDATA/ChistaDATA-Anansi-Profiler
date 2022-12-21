@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/regexs"
+	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/parsers/clickhouse"
 	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/report_templates"
 	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/stucts"
 	log "github.com/sirupsen/logrus"
@@ -13,11 +13,12 @@ import (
 	"text/template"
 )
 
+// ReportGenerator it is used to generate a report using the given *stucts.CliConfig and *stucts.DBPerfInfoRepository
 type ReportGenerator struct {
-	CliConfig           *stucts.CliConfig
-	QueryList           *stucts.QueryList
-	ReportTemplates     ReportTemplates
-	OutputFileExtension string
+	Config               *stucts.CliConfig
+	DBPerfInfoRepository *stucts.DBPerfInfoRepository
+	ReportTemplates      ReportTemplates
+	OutputFileExtension  string
 }
 
 type ReportTemplates struct {
@@ -27,10 +28,10 @@ type ReportTemplates struct {
 	QueryInfoTemplate      *template.Template
 }
 
-func InitReportGenerator(cliConfig *stucts.CliConfig, list *stucts.QueryList) ReportGenerator {
+func InitReportGenerator(cliConfig *stucts.CliConfig, dBPerfInfoRepository *stucts.DBPerfInfoRepository) ReportGenerator {
 	reportGenerator := ReportGenerator{
-		CliConfig: cliConfig,
-		QueryList: list,
+		Config:               cliConfig,
+		DBPerfInfoRepository: dBPerfInfoRepository,
 	}
 
 	if cliConfig.ReportType == stucts.ReportTypeText {
@@ -70,18 +71,18 @@ func initReportTemplates(topQueryRecordTemplate string, accumulatedTemplate stri
 func (reportGenerator ReportGenerator) GenerateReport() {
 	// There can be queries that are similar, so making a list of similar queries
 	simplifiedQueryInfoList := stucts.InitSimilarQueryInfoList()
-	for _, query := range reportGenerator.QueryList.List {
+	for _, query := range reportGenerator.DBPerfInfoRepository.Queries.GetList() {
 		simplifiedQueryInfoList.Add(query)
 	}
 
 	// making accumulated info of all queries
-	accumulatedInfoTemplateInput := stucts.InitAccumulatedInfoTemplateInput(simplifiedQueryInfoList, reportGenerator.CliConfig.FilePaths)
+	accumulatedInfoTemplateInput := stucts.InitAccumulatedInfoTemplateInput(simplifiedQueryInfoList, reportGenerator.Config.FilePaths)
 
 	// There are certain queries that are not important for profiler
 	// like create, insert queries and queries with count less than minimum count
 	var keysToRemove []string
 	for s, info := range simplifiedQueryInfoList {
-		if shouldDiscardQuery(info.Query) || info.Count < reportGenerator.CliConfig.MinimumQueryCallCount {
+		if shouldDiscardQuery(info.Query) || info.Count < reportGenerator.Config.MinimumQueryCallCount {
 			keysToRemove = append(keysToRemove, s)
 		}
 	}
@@ -90,12 +91,12 @@ func (reportGenerator ReportGenerator) GenerateReport() {
 	}
 
 	// Sorting remaining values in simplifiedQueryInfoList, and converting the map to an actual list
-	sortedSimilarQueryInfos := simplifiedQueryInfoList.SortQueryInfoByDuration()
+	sortedSimilarQueryInfos := reportGenerator.sortSimplifiedQueryInfoList(simplifiedQueryInfoList, accumulatedInfoTemplateInput.TotalDuration)
 	var queryInfoTemplateInputs []stucts.QueryInfoTemplateInput
 
 	// Generating Input structs for all templates
 
-	for i := 0; i < len(sortedSimilarQueryInfos) && i < reportGenerator.CliConfig.TopQueryCount; i++ {
+	for i := 0; i < len(sortedSimilarQueryInfos) && i < reportGenerator.Config.TopQueryCount; i++ {
 		queryInfoTemplateInputs = append(queryInfoTemplateInputs, stucts.InitQueryInfoTemplateInput(i, sortedSimilarQueryInfos[i], accumulatedInfoTemplateInput.TotalDuration))
 	}
 
@@ -133,6 +134,7 @@ func (reportGenerator ReportGenerator) GenerateReport() {
 
 	// Persisting the output to a file, from buffer
 
+	// TODO externalise output file location
 	f, err := os.Create("output." + reportGenerator.OutputFileExtension)
 	if err != nil {
 		fmt.Println(err)
@@ -144,8 +146,12 @@ func (reportGenerator ReportGenerator) GenerateReport() {
 	w.Flush()
 }
 
+func (reportGenerator ReportGenerator) sortSimplifiedQueryInfoList(list stucts.SimilarQueryInfoList, totalDuration float64) []*stucts.SimilarQueryInfo {
+	return list.Sort(reportGenerator.Config.SortField, reportGenerator.Config.SortFieldOperation, reportGenerator.Config.SortOrder, totalDuration)
+}
+
 func shouldDiscardQuery(query string) bool {
-	if regexs.QueriesToDiscardRegEx.MatchString(strings.TrimSpace(query)) {
+	if clickhouse.QueriesToDiscardRegEx.MatchString(strings.TrimSpace(query)) {
 		return true
 	}
 	return false

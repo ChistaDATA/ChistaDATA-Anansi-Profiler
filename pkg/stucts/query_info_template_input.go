@@ -32,10 +32,10 @@ func InitQueryInfoTemplateInput(index int, info *SimilarQueryInfo, totalDuration
 	return QueryInfoTemplateInput{
 		Query:                 info.Query,
 		Pos:                   strconv.Itoa(index + 1),
-		QPS:                   fmt.Sprintf("%.03f", info.GetQPS(totalDuration)),
+		QPS:                   fmt.Sprintf("%.03f", GetQPS(info, totalDuration)),
 		FromTimestamp:         info.FromTimestamp.String(),
 		ToTimestamp:           info.ToTimestamp.String(),
-		Count:                 formatters.PrefixSpace(formatters.IntToKMilBilTri(info.Count), 7),
+		Count:                 formatters.PrefixSpace(formatters.IntToNumberWithSIMultipliers(info.Count), 7),
 		Duration:              InitQueryInfoTemplateInputDuration(info),
 		ReadRows:              InitQueryInfoTemplateInputReadRows(info),
 		ReadBytes:             InitQueryInfoTemplateInputReadBytes(info),
@@ -161,7 +161,7 @@ type QueryInfoTemplateInputReadRows struct {
 func InitQueryInfoTemplateInputReadRows(info *SimilarQueryInfo) QueryInfoTemplateInputReadRows {
 	sum, min, max, avg, per95, stdDev, median := info.GetReadRowsMatrices()
 	formatToString := func(f float64) string {
-		return formatters.PrefixSpace(formatters.Float64ToKMilBilTri(f), 7)
+		return formatters.PrefixSpace(formatters.Float64ToNumberWithSIMultipliers(f), 7)
 	}
 	return QueryInfoTemplateInputReadRows{
 		Total:        formatToString(sum),

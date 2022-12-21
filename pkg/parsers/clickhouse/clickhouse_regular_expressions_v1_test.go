@@ -1,4 +1,4 @@
-package regexs
+package clickhouse
 
 import (
 	"testing"

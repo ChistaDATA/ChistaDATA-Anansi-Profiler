@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type ClickHouseLog struct {
+type ExtractedLog struct {
 	Timestamp time.Time
 	ThreadId  int
 	QueryId   string

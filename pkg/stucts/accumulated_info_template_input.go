@@ -34,8 +34,9 @@ func InitAccumulatedInfoTemplateInput(queryInfos SimilarQueryInfoList, filePaths
 	var readRows []int
 	var readBytes []float64
 	var peakMemoryUsages []float64
-	var timeStamps []time.Time
+	var timeStamps []*time.Time
 	totalQueryCount := 0
+	t := time.Time{}
 
 	for _, info := range queryInfos {
 		totalQueryCount += info.Count
@@ -43,13 +44,22 @@ func InitAccumulatedInfoTemplateInput(queryInfos SimilarQueryInfoList, filePaths
 		readRows = append(readRows, info.ReadRows...)
 		readBytes = append(readBytes, info.ReadBytes...)
 		peakMemoryUsages = append(peakMemoryUsages, info.PeakMemoryUsages...)
-		timeStamps = append(timeStamps, *info.FromTimestamp)
-		timeStamps = append(timeStamps, *info.ToTimestamp)
+		if *info.FromTimestamp != t {
+			timeStamps = append(timeStamps, info.FromTimestamp)
+		}
+
+		if *info.ToTimestamp != t {
+			timeStamps = append(timeStamps, info.ToTimestamp)
+		}
 	}
 
 	sort.Slice(timeStamps, func(i, j int) bool {
-		return timeStamps[i].Before(timeStamps[j])
+		return (*timeStamps[i]).Before(*timeStamps[j])
 	})
+
+	for len(timeStamps) < 2 {
+		timeStamps = append(timeStamps, &t)
+	}
 
 	return AccumulatedInfoTemplateInput{
 		TotalDuration:         getAccumulatedTotalDuration(durations),
@@ -68,9 +78,12 @@ func InitAccumulatedInfoTemplateInput(queryInfos SimilarQueryInfoList, filePaths
 	}
 }
 
-func getTotalQPS(totalQueryCount int, timeStamps []time.Time) string {
-	diff := timeStamps[len(timeStamps)-1].Sub(timeStamps[0])
-	return formatters.Float64ToKMilBilTri(float64(totalQueryCount) / diff.Seconds())
+func getTotalQPS(totalQueryCount int, timeStamps []*time.Time) string {
+	diff := (*timeStamps[len(timeStamps)-1]).Sub(*timeStamps[0])
+	if diff == 0 {
+		formatters.Float64ToNumberWithSIMultipliers(float64(totalQueryCount))
+	}
+	return formatters.Float64ToNumberWithSIMultipliers(float64(totalQueryCount) / diff.Seconds())
 }
 
 func getAccumulatedTotalDuration(durations []float64) float64 {
@@ -117,7 +130,7 @@ func getReadRowsInfo(dataArray []int) QueryInfoTemplateInputReadRows {
 	data := stats.LoadRawData(dataArray)
 	sum, min, max, avg, per95, stdDev, median := utils.FindMatrices(data)
 	formatToString := func(f float64) string {
-		return formatters.PrefixSpace(formatters.Float64ToKMilBilTri(f), 7)
+		return formatters.PrefixSpace(formatters.Float64ToNumberWithSIMultipliers(f), 7)
 	}
 	return QueryInfoTemplateInputReadRows{
 		Total:        formatToString(sum),
