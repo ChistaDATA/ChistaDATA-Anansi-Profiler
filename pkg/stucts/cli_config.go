@@ -57,7 +57,7 @@ type CliConfig struct {
 	MinimumQueryCallCount int      `short:"c" help:"Minimum no of query calls needed" default:"1"`
 	DatabaseName          string   `help:"database type" default:"clickhouse"`
 	DatabaseVersion       string   `help:"database version" default:"0"` //TODO make this a supported stable version
-	SortField             string   `help:"Sort queries by the given field, possible values: ExecTime,RowsRead,BytesRead,PeakMemory" default:"ExecTime"`
+	SortField             string   `help:"Sort queries by the given field, possible values: ExecTime, RowsRead, BytesRead, PeakMemory, QPS, QueryCount" default:"ExecTime"`
 	SortFieldOperation    string   `help:"Sort queries by the given operation on field, possible values: sum, min, max, avg, per95, stdDev, median" default:"max"`
 	SortOrder             string   `help:"Sort order, possible values: asc, desc" default:"desc"`
 	LogLevel              string   `help:"log level, possible values: panic, fatal, error, warn, info, debug, trace" default:"error"`

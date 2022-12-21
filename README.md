@@ -130,14 +130,15 @@ Arguments:
 
 Flags:
 ```
--h, --help                          Show context-sensitive help.
--n, --top-query-count=10            Count of queries for top x table
--r, --report-type="text"            Report type to be generated, types: md, text
--c, --minimum-query-call-count=1    Minimum no of query calls needed
-    --database-name="clickhouse"    database type
-    --database-version="0"          database version
-    --sort-field="ExecTime"         Sort queries by the given field, possible values: ExecTime,RowsRead,BytesRead,PeakMemory
-    --sort-field-operation="max"    Sort queries by the given operation on field, possible values: sum, min, max, avg, per95, stdDev, median
-    --sort-order="desc"             Sort order, possible values: asc, desc
-    --log-level="error"             log level, possible values: panic, fatal, error, warn, info, debug, trace
+Flags:
+  -h, --help                          Show context-sensitive help.
+  -n, --top-query-count=10            Count of queries for top x table
+  -r, --report-type="text"            Report type to be generated, types: md, text
+  -c, --minimum-query-call-count=1    Minimum no of query calls needed
+      --database-name="clickhouse"    database type
+      --database-version="0"          database version
+      --sort-field="ExecTime"         Sort queries by the given field, possible values: ExecTime, RowsRead, BytesRead, PeakMemory, QPS, QueryCount
+      --sort-field-operation="max"    Sort queries by the given operation on field, possible values: sum, min, max, avg, per95, stdDev, median
+      --sort-order="desc"             Sort order, possible values: asc, desc
+      --log-level="error"             log level, possible values: panic, fatal, error, warn, info, debug, trace
 ```
