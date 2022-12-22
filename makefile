@@ -4,22 +4,15 @@ clean:
 	rm -f output.md && rm -f output.txt && rm -f bin/* && rm -f profiler && rm -f main
 
 build:
+	go get ./... && go build -o ${BINARY_NAME} cmd/main.go
+
+build-bins:
 	GOOS=darwin GOARCH=arm64 go build -o bin/${BINARY_NAME}-darwin-arm64 cmd/main.go
 	GOOS=linux GOARCH=amd64 go build -o bin/${BINARY_NAME}-linux-amd64 cmd/main.go
 	GOOS=windows GOARCH=amd64 go build -o bin/${BINARY_NAME}-windows-amd64 cmd/main.go
 
 start:
-	go run cmd/main.go -n 20 -r md -c 100 /Users/chistadata/sandbox/ClickBench/clickhouse-local/logs/server_2.log
-
-start1024:
-	go run cmd/main.go -n 20 -r md -c 100 /Users/chistadata/sandbox/ClickBench/clickhouse-local/split/s1024.log
-
-
-run:
-	bin/${BINARY_NAME}-darwin-arm64 -n 20 -r md /Users/chistadata/sandbox/ClickBench/clickhouse-local/logs/server.log
-
-run_md:
-	bin/${BINARY_NAME}-darwin-arm64 md /Users/chistadata/sandbox/ChistaDATA-Profiler-for-ClickHouse/resources/logs/clickhouse-server-2.log
+	go run cmd/main.go -n 20 -r md -c 100 sample.log
 
 test:
 	go test ./...

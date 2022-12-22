@@ -5,3 +5,5 @@ output.md
 output.txt
 profiler
 main
+*.log
+.DS_Store

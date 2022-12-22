@@ -17,18 +17,17 @@ like execution time, memory usage, bytes read and other basic but crucial inform
 ##### Prerequisites
 * `Go`
 * `git`
+* `make`
 ##### Clone the repo
 ```shell
 git clone https://github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git
 ```
-##### Get all dependencies
-```shell
-go get ./...
-```
 ##### Build
 ```shell
-go build -o profiler cmd/main.go
+make build
 ```
+
+Your executable profiler will be generated in the working directory.
 
 ## Example
 ##### Run with a sample file
