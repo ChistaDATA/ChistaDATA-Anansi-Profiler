@@ -27,12 +27,12 @@ git clone https://github.com/ChistaDATA/ChistaDATA-Anansi-Profiler.git
 make build
 ```
 
-Your executable `anansi` will be generated in the working directory.
+Your executable `anansi-profiler` will be generated in the working directory.
 
 ## Example
 ##### Run with a sample file
 ```shell
-./anansi -n 2 ./server.log
+./anansi-profiler -n 2 ./server.log
 ```
 ##### Output
 ```
@@ -119,7 +119,7 @@ select min(amount) from salary where rand > 10000
 
 ## Usage
 ```
-anansi <file-paths> ...
+anansi-profiler <file-paths> ...
 ```
 
 Arguments:

@@ -1,4 +1,4 @@
-BINARY_NAME=anansi
+BINARY_NAME=anansi-profiler
 
 clean:
 	rm -f output.md && rm -f output.txt && rm -f bin/* && rm -f ${BINARY_NAME} && rm -f main

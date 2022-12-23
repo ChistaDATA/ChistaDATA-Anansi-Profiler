@@ -7,4 +7,4 @@ profiler
 main
 *.log
 .DS_Store
-anansi
+anansi-profiler
