@@ -1,7 +1,7 @@
-BINARY_NAME=profiler
+BINARY_NAME=anansi
 
 clean:
-	rm -f output.md && rm -f output.txt && rm -f bin/* && rm -f profiler && rm -f main
+	rm -f output.md && rm -f output.txt && rm -f bin/* && rm -f ${BINARY_NAME} && rm -f main
 
 build:
 	go get ./... && go build -o ${BINARY_NAME} cmd/main.go
