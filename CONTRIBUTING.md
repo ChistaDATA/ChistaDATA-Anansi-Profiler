@@ -6,7 +6,7 @@ Thank you for considering contributing to the Anansi! Whether it's a bug report,
 
 If you find a bug in the Anansi, please report it by following these steps:
 
-1. Check if the issue has already been reported by searching the [issue tracker](https://github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse/issues).
+1. Check if the issue has already been reported by searching the [issue tracker](https://github.com/ChistaDATA/ChistaDATA-Anansi-Profiler/issues).
 2. If the issue has not yet been reported, create a new issue using the provided template. Be sure to include as much information as possible, including:
     - A clear and concise description of the issue
     - Steps to reproduce the issue
@@ -19,7 +19,7 @@ If you find a bug in the Anansi, please report it by following these steps:
 
 If you have an idea for a new feature or improvement for the Anansi, we'd love to hear about it! Please follow these steps to suggest a feature:
 
-1. Check if the feature has already been suggested by searching the [issue tracker](https://github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse/issues).
+1. Check if the feature has already been suggested by searching the [issue tracker](https://github.com/ChistaDATA/ChistaDATA-Anansi-Profiler/issues).
 2. If the feature has not yet been suggested, create a new issue using the provided template. Be sure to include:
     - A clear and concise description of the feature
     - Use cases for the feature and how it would improve the Anansi
@@ -29,7 +29,7 @@ If you have an idea for a new feature or improvement for the Anansi, we'd love t
 
 We welcome contributions to the Anansi in the form of pull requests. If you're interested in contributing code, please follow these steps:
 
-1. Check the [issue tracker](https://github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse/issues) to see if the change you're planning has been discussed or suggested. If not, consider opening an issue to discuss the change with the community before you start working on it.
+1. Check the [issue tracker](https://github.com/ChistaDATA/ChistaDATA-Anansi-Profiler/issues) to see if the change you're planning has been discussed or suggested. If not, consider opening an issue to discuss the change with the community before you start working on it.
 2. Fork the repository and create a new branch for your changes.
 3. Make your changes and follow the [coding style guidelines](#coding-style-guidelines).
 4. Run the tests to ensure that your changes haven't broken anything.
