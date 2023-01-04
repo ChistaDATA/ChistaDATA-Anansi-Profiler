@@ -15,7 +15,7 @@ import (
 
 // ReportGenerator it is used to generate a report using the given *stucts.CliConfig and *stucts.DBPerfInfoRepository
 type ReportGenerator struct {
-	Config               *stucts.CliConfig
+	Config               *stucts.Config
 	DBPerfInfoRepository *stucts.DBPerfInfoRepository
 	ReportTemplates      ReportTemplates
 	OutputFileExtension  string
@@ -28,13 +28,13 @@ type ReportTemplates struct {
 	QueryInfoTemplate      *template.Template
 }
 
-func InitReportGenerator(cliConfig *stucts.CliConfig, dBPerfInfoRepository *stucts.DBPerfInfoRepository) ReportGenerator {
+func InitReportGenerator(config *stucts.Config, dBPerfInfoRepository *stucts.DBPerfInfoRepository) ReportGenerator {
 	reportGenerator := ReportGenerator{
-		Config:               cliConfig,
+		Config:               config,
 		DBPerfInfoRepository: dBPerfInfoRepository,
 	}
 
-	if cliConfig.ReportType == stucts.ReportTypeText {
+	if config.ReportType == stucts.ReportTypeText {
 		reportGenerator.ReportTemplates = initReportTemplates(report_templates.TopQueryRecord, report_templates.AccumulatedInfoTemplate, report_templates.TopQueriesTemplate, report_templates.QueryInfoTemplate)
 		reportGenerator.OutputFileExtension = "txt"
 	} else {
@@ -75,8 +75,12 @@ func (reportGenerator ReportGenerator) GenerateReport() {
 		simplifiedQueryInfoList.Add(query)
 	}
 
+	var filePaths []string
+	filePaths = append(filePaths, reportGenerator.Config.FilePaths...)
+	filePaths = append(filePaths, reportGenerator.Config.S3Config.FileLocations...)
+
 	// making accumulated info of all queries
-	accumulatedInfoTemplateInput := stucts.InitAccumulatedInfoTemplateInput(simplifiedQueryInfoList, reportGenerator.Config.FilePaths)
+	accumulatedInfoTemplateInput := stucts.InitAccumulatedInfoTemplateInput(simplifiedQueryInfoList, filePaths)
 
 	// There are certain queries that are not important for profiler
 	// like create, insert queries and queries with count less than minimum count

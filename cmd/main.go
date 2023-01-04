@@ -7,12 +7,12 @@ import (
 	"os"
 )
 
-var config stucts.CliConfig
+var config *stucts.Config
 
 func init() {
 
 	// configuring application on startup
-	config = stucts.InitializeCliConfig()
+	config = stucts.InitConfigFromCli(stucts.InitializeCliConfig())
 
 	// TODO add file log supports
 	log.SetOutput(os.Stdout)
@@ -21,8 +21,8 @@ func init() {
 }
 
 func main() {
-	dBPerfInfoRepositoryGenerator := services.InitDBPerfInfoRepositoryGenerator(&config)
+	dBPerfInfoRepositoryGenerator := services.InitDBPerfInfoRepositoryGenerator(config)
 	dBPerfInfoRepository := dBPerfInfoRepositoryGenerator.GenerateDBPerfInfoRepository()
-	reportGenerator := services.InitReportGenerator(&config, dBPerfInfoRepository)
+	reportGenerator := services.InitReportGenerator(config, dBPerfInfoRepository)
 	reportGenerator.GenerateReport()
 }
