@@ -53,7 +53,7 @@ var DatabaseNames = [...]string{ClickHouseDatabase}
 type CliConfig struct {
 	TopQueryCount         int      `short:"n" help:"Count of queries for top x table" default:"10"`
 	ReportType            string   `short:"r" help:"Report type to be generated, types: md, text" default:"text"`
-	FilePaths             []string `arg:"" required:"" help:"Paths of log files" type:"existingfile"`
+	FilePaths             []string `arg:"" optional:"" help:"Paths of log files" type:"existingfile"`
 	MinimumQueryCallCount int      `short:"c" help:"Minimum no of query calls needed" default:"1"`
 	DatabaseName          string   `help:"database type" default:"clickhouse"`
 	DatabaseVersion       string   `help:"database version" default:"0"` //TODO make this a supported stable version
@@ -61,13 +61,18 @@ type CliConfig struct {
 	SortFieldOperation    string   `help:"Sort queries by the given operation on field, possible values: sum, min, max, avg, per95, stdDev, median" default:"max"`
 	SortOrder             string   `help:"Sort order, possible values: asc, desc" default:"desc"`
 	LogLevel              string   `help:"log level, possible values: panic, fatal, error, warn, info, debug, trace" default:"error"`
+	S3AccessKeyID         string   `name:"s3-access-key-id"`
+	S3SecretAccessKey     string   `name:"s3-secret-access-key"`
+	S3SessionToken        string   `name:"s3-session-token"`
+	S3Region              string   `name:"s3-region"`
+	S3FileLocations       []string `name:"s3-object-urls"`
 }
 
-func InitializeCliConfig() CliConfig {
+func InitializeCliConfig() *CliConfig {
 	cliConfig := CliConfig{}
 	kong.Parse(&cliConfig)
 	cliConfig.validateCliConfig()
-	return cliConfig
+	return &cliConfig
 }
 
 // validateCliConfig Validating CliConfig inputs from user

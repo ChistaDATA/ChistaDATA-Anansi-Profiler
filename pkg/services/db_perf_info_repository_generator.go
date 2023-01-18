@@ -13,11 +13,11 @@ import (
 type DBPerfInfoRepositoryGenerator struct {
 	dBPerfInfoRepository *stucts.DBPerfInfoRepository
 	parser               parsers.IParser
-	config               *stucts.CliConfig
+	config               *stucts.Config
 	dataHandler          data_handlers.IDataHandler
 }
 
-func InitDBPerfInfoRepositoryGenerator(config *stucts.CliConfig) *DBPerfInfoRepositoryGenerator {
+func InitDBPerfInfoRepositoryGenerator(config *stucts.Config) *DBPerfInfoRepositoryGenerator {
 	dBPerfInfoRepository := stucts.InitDBPerfInfoRepository()
 	parser, err := parsers.GetParser(config.DatabaseVersion, config.DatabaseName, dBPerfInfoRepository)
 	if err != nil {
