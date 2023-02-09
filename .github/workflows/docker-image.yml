@@ -1,0 +1,22 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag chistadata-anansi-profiler:$(date +%s)
+    - name: Install Trivy
+      run: wget https://github.com/aquasecurity/trivy/releases/download/v0.37.1/trivy_0.37.1_Linux-64bit.deb && sudo dpkg -i ./trivy_0.37.1_Linux-64bit.deb && rm -f trivy_0.37.1_Linux-64bit.deb
+    - name: Scan Image
+      run: trivy image --scanners vuln  --format table --exit-code  1 --vuln-type  os,library --severity  CRITICAL,HIGH chistadata-anansi-profiler:$(docker images | grep chistadata-anansi-profiler | head -n 1 | awk '{print $2}')
