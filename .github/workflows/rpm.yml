@@ -1,0 +1,55 @@
+name: Build and Publish RPM Package
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up RPM build environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y rpm wget git make
+    - name: Install golang
+      run: |
+        wget https://golang.org/dl/go1.19.linux-amd64.tar.gz -O /tmp/golang1.19.tar.gz
+        tar --transform=s,go,go1.19, -zxf /tmp/golang1.19.tar.gz
+        rm -rf /usr/local/go*
+        sudo mv go1.19 /usr/local/
+        sudo ln -fs /usr/local/go1.19 /usr/local/go
+        sudo ln -fs /usr/local/go/bin/go /usr/bin/go
+    - name: Build RPM package
+      run: |
+        cd ../
+        cp -r ChistaDATA-Anansi-Profiler anansi-profiler
+        tar -zcvf anansi-profiler.tar.gz anansi-profiler
+        mkdir -vp rpmbuild/{SOURCES,SPECS,BUILD,SRPMS,RPMS}
+        cp anansi-profiler.tar.gz rpmbuild/SOURCES/
+        cd rpmbuild/SPECS/
+        tar vxzf ../SOURCES/anansi-profiler.tar.gz --wildcards '*/packaging/rpm/*.spec' --strip=3
+        sed -i 's:BuildRequires:#BuildRequires:' anansi-profiler.spec
+        cd ../../
+        rpmbuild -bs --define "_topdir $PWD/rpmbuild" rpmbuild/SPECS/anansi-profiler.spec
+        SRC=$(ls rpmbuild/SRPMS/ | grep src.rpm)
+        rpmbuild --define "_topdir $PWD/rpmbuild" --rebuild rpmbuild/SRPMS/$SRC
+        mv rpmbuild ChistaDATA-Anansi-Profiler/
+        cd ChistaDATA-Anansi-Profiler/
+    - name: Publish SRPM package
+      uses: actions/upload-artifact@v2
+      with:
+        name: anansi-profiler-${{ github.sha }}.srpm
+        path: rpmbuild/SRPMS/*.src.rpm
+        
+    - name: Publish RPM package
+      uses: actions/upload-artifact@v2
+      with:
+        name: anansi-profiler-${{ github.sha }}.rpm
+        path: rpmbuild/RPMS/x86_64/anansi-profiler*.rpm
+Update
