@@ -1,0 +1,10 @@
+Source: anansi-profiler
+Section: utils
+Priority: optional
+Maintainer: John Doe <john.doe@example.com>
+
+Package: anansi-profiler
+Version: 0.0.1-1
+Architecture: all
+Depends: make, golang
+Description: ChistaDATA-Anansi-Profiler is a tool for profiling applications.
