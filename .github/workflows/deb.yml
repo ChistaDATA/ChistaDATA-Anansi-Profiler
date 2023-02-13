@@ -1,0 +1,43 @@
+name: Deb
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.19
+    - name: Set up build environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y rpm wget git make build-essential devscripts debhelper
+    - name: Prepare builddir
+      run: cp -r packaging/debian ./; mkdir deb; mkdir src_deb
+      
+    - name: Build
+      run: dpkg-buildpackage -rfakeroot -us -uc -ui
+
+    - name: Put packages
+      run: mv ../anansi-profiler_*_all.deb deb/; mv ../anansi-profiler* src_deb/
+      
+    - name: Publish Source Deb
+      uses: actions/upload-artifact@v2
+      with:
+        name: anansi-profiler-${{ github.sha }}.source_deb
+        path: src_deb/*
+        
+    - name: Publish Deb Package
+      uses: actions/upload-artifact@v2
+      with:
+        name: anansi-profiler-${{ github.sha }}.deb
+        path: deb/*
