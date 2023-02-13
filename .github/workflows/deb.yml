@@ -24,6 +24,12 @@ jobs:
     - name: Prepare builddir
       run: cp -r packaging/debian ./; mkdir deb; mkdir src_deb
       
+    - name: Prepare Changelog
+      run: |
+          echo "anansi-profiler (0.0.1-1) unstable; urgency=low" > debian/changelog
+          echo "  * Initial Release." >> debian/changelog
+          echo " -- JohnDoe <john.doe@example.com> $(date -R)" >> debian/changelog
+      
     - name: Build
       run: dpkg-buildpackage -rfakeroot -us -uc -ui
 
