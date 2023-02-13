@@ -28,5 +28,5 @@ jobs:
     - name: Publish Tarball
       uses: actions/upload-artifact@v2
       with:
-        name: anansi-profiler-${{ github.sha }}.rpm
+        name: anansi-profiler-${{ github.sha }}.zip
         path: anansi-profiler
