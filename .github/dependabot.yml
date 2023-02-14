@@ -1,0 +1,12 @@
+version: 2
+updates:
+  - schedule:
+      interval: "daily"
+    package-ecosystem: "go"
+    directory: "/"
+    schedule-ignore-file: ".dependabot/schedule-ignore.yml"
+    labels:
+      - "dependencies"
+    open-pull-requests-limit: 50
+    allow-same-version: true
+    allow-security-updates: true
