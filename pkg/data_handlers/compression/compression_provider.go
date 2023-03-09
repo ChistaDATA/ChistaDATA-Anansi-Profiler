@@ -1,6 +1,6 @@
 package compression
 
-var compressionHandlers = []CompressionHandler{ZipCompressionHandler{}}
+var compressionHandlers = []CompressionHandler{ZipCompressionHandler{}, GZipCompressionHandler{}, BZip2CompressionHandler{}}
 
 // GetUncompressedFiles gets suitable compression handler
 func GetUncompressedFiles(filePath string) []string {

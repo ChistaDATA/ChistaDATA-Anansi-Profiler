@@ -14,7 +14,7 @@ type ZipCompressionHandler struct {
 }
 
 func (z ZipCompressionHandler) CanUncompress(filepath string) bool {
-	return strings.HasSuffix(filepath, "zip")
+	return strings.HasSuffix(filepath, ".zip")
 }
 
 func (z ZipCompressionHandler) Uncompress(filePath string) []string {
