@@ -15,10 +15,10 @@ type S3DataHandler struct {
 	s3filePaths     []string
 	s3Handler       *S3Handler
 	currentFilePos  int
-	fileHandler     *FileHandler
+	fileHandler     IFileHandler
 }
 
-func InitS3DataHandler(s3Config *stucts.S3Config, databaseType string, databaseVersion string) *S3DataHandler {
+func InitS3DataHandler(s3Config *stucts.S3Config, databaseType string, databaseVersion string) IDataHandler {
 
 	s3Handler := InitS3Handler(s3Config)
 
@@ -75,7 +75,7 @@ func (sdh *S3DataHandler) SetNewFileHandler() {
 		return
 	}
 
-	sdh.fileHandler, err = InitFileHandler(file.Name(), sdh.databaseType, sdh.databaseVersion)
+	sdh.fileHandler, err = InitFileHandlerWithCompression(file.Name(), sdh.databaseType, sdh.databaseVersion)
 	sdh.currentFilePos += 1
 	if err != nil {
 		log.Error(err)
@@ -88,7 +88,7 @@ func (sdh *S3DataHandler) Close() {
 		if err != nil {
 			log.Error(err)
 		}
-		err = os.RemoveAll(sdh.fileHandler.file.Name())
+		err = os.RemoveAll(sdh.fileHandler.GetPath())
 		if err != nil {
 			log.Error(err)
 		}
@@ -97,6 +97,6 @@ func (sdh *S3DataHandler) Close() {
 }
 
 func getS3TempFileLocationFromObjectURL(s3ObjectURL string) string {
-	tempFile, _ := filepath.Abs(filepath.Join(stucts.TEMP_FOLDER, s3ObjectURL[len("https://"):]))
+	tempFile, _ := filepath.Abs(filepath.Join(stucts.TempFolder, s3ObjectURL[len("https://"):]))
 	return tempFile
 }

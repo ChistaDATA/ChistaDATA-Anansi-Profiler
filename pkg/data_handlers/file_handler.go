@@ -8,13 +8,20 @@ import (
 
 // FileHandler is a wrapper to handle a single file
 type FileHandler struct {
+	filePath  string
 	file      *os.File
 	scanner   *bufio.Scanner
 	splitFunc ILineParsingFunc
 }
 
-func InitFileHandler(filePath string, databaseType string, databaseVersion string) (*FileHandler, error) {
-	fh := FileHandler{}
+func (fh *FileHandler) GetPath() string {
+	return fh.filePath
+}
+
+func InitFileHandler(filePath string, databaseType string, databaseVersion string) (IFileHandler, error) {
+	fh := FileHandler{
+		filePath: filePath,
+	}
 	var err error
 	fh.file, err = os.Open(filePath)
 	if err != nil {
@@ -46,4 +53,12 @@ func (fh *FileHandler) Err() error {
 
 func (fh *FileHandler) Close() error {
 	return fh.file.Close()
+}
+
+type IFileHandler interface {
+	Scan() bool
+	Text() string
+	//Err() error
+	Close() error
+	GetPath() string
 }

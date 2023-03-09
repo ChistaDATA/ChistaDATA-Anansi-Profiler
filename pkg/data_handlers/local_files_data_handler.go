@@ -10,10 +10,10 @@ type LocalFilesDataHandler struct {
 	databaseVersion string
 	filePaths       []string
 	currentFilePos  int
-	fileHandler     *FileHandler
+	fileHandler     IFileHandler
 }
 
-func InitLocalFilesDataHandler(filePaths []string, databaseType string, databaseVersion string) *LocalFilesDataHandler {
+func InitLocalFilesDataHandler(filePaths []string, databaseType string, databaseVersion string) IDataHandler {
 	return &LocalFilesDataHandler{
 		filePaths:       filePaths,
 		databaseType:    databaseType,
@@ -40,9 +40,8 @@ func (fh *LocalFilesDataHandler) GetLine() string {
 
 func (fh *LocalFilesDataHandler) SetNewFileHandler() {
 	fh.Close()
-
 	var err error
-	fh.fileHandler, err = InitFileHandler(fh.filePaths[fh.currentFilePos], fh.databaseType, fh.databaseVersion)
+	fh.fileHandler, err = InitFileHandlerWithCompression(fh.filePaths[fh.currentFilePos], fh.databaseType, fh.databaseVersion)
 	fh.currentFilePos += 1
 	if err != nil {
 		log.Error(err)
