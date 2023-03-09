@@ -53,15 +53,17 @@ func (fh *FileHandlerWithCompression) Text() string {
 func (fh *FileHandlerWithCompression) SetNewFileHandler() {
 	fh.Close()
 	var err error
-	if compression.IsCompressed(fh.filePaths[fh.currentFilePos]) {
-		fh.filePaths = append(fh.filePaths, compression.GetUncompressedFiles(fh.filePaths[fh.currentFilePos])...)
-		fh.currentFilePos += 1
-		fh.SetNewFileHandler()
-	} else {
-		fh.fileHandler, err = InitFileHandler(fh.filePaths[fh.currentFilePos], fh.databaseType, fh.databaseVersion)
-		fh.currentFilePos += 1
-		if err != nil {
-			log.Error(err)
+	if fh.isNextFile() {
+		if compression.IsCompressed(fh.filePaths[fh.currentFilePos]) {
+			fh.filePaths = append(fh.filePaths, compression.GetUncompressedFiles(fh.filePaths[fh.currentFilePos])...)
+			fh.currentFilePos += 1
+			fh.SetNewFileHandler()
+		} else {
+			fh.fileHandler, err = InitFileHandler(fh.filePaths[fh.currentFilePos], fh.databaseType, fh.databaseVersion)
+			fh.currentFilePos += 1
+			if err != nil {
+				log.Error(err)
+			}
 		}
 	}
 }
