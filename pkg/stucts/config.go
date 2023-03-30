@@ -1,6 +1,6 @@
 package stucts
 
-const TEMP_FOLDER = "./temp"
+var TempFolder string
 
 type Config struct {
 	TopQueryCount         int
