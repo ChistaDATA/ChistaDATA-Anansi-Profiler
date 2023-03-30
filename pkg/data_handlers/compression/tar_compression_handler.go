@@ -17,7 +17,6 @@ func (z TarCompressionHandler) CanUncompress(filepath string) bool {
 }
 
 func (z TarCompressionHandler) Uncompress(filePath string) []string {
-	var filepaths []string
 	dst, err := os.MkdirTemp(stucts.TempFolder, "*")
 	if err != nil {
 		panic(err)
@@ -31,6 +30,11 @@ func (z TarCompressionHandler) Uncompress(filePath string) []string {
 
 	tarReader := tar.NewReader(tarFile)
 
+	return tarExpander(tarReader, dst)
+}
+
+func tarExpander(tarReader *tar.Reader, dst string) []string {
+	var filepaths []string
 	for {
 		header, err := tarReader.Next()
 
@@ -85,6 +89,5 @@ func (z TarCompressionHandler) Uncompress(filePath string) []string {
 			filepaths = append(filepaths, targetFilePath)
 		}
 	}
-
 	return filepaths
 }
