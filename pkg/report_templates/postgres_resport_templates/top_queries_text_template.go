@@ -1,4 +1,4 @@
-package report_templates
+package postgres_resport_templates
 
 const TopQueriesTemplate = `
 # Profile

@@ -10,4 +10,5 @@ type ExtractedLog struct {
 	QueryId   string
 	LogLevel  string
 	Message   string
+	ProcessID int64
 }

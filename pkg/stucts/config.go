@@ -14,6 +14,7 @@ type Config struct {
 	SortOrder             string
 	LogLevel              string
 	S3Config              *S3Config
+	LogPrefix             string
 }
 
 func InitConfigFromCli(cliConfig *CliConfig) *Config {

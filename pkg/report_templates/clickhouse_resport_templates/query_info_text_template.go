@@ -1,4 +1,4 @@
-package report_templates
+package clickhouse_resport_templates
 
 const QueryInfoTemplate = `
 # Query {{.Pos}} : {{.QPS}} QPS

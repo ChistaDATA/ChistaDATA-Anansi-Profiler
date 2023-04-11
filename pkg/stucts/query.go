@@ -29,6 +29,7 @@ type Query struct {
 	Tables            types.StringSet
 	ThreadIds         types.IntSet
 	Lock              sync.Mutex
+	ProcessIDs        types.IntSet
 }
 
 type PartialQuery struct {
@@ -51,6 +52,7 @@ type PartialQuery struct {
 	Databases         *types.StringSet
 	Tables            *types.StringSet
 	ThreadIds         *types.IntSet
+	ProcessIDs        *types.IntSet
 }
 
 func (query *Query) Add(extractedQueryInfo PartialQuery) {
@@ -117,6 +119,15 @@ func (query *Query) Add(extractedQueryInfo PartialQuery) {
 		} else {
 			for k, _ := range *extractedQueryInfo.ThreadIds {
 				query.ThreadIds.Add(k)
+			}
+		}
+	}
+	if extractedQueryInfo.ProcessIDs != nil {
+		if query.ProcessIDs == nil {
+			query.ProcessIDs = *extractedQueryInfo.ProcessIDs
+		} else {
+			for k, _ := range *extractedQueryInfo.ProcessIDs {
+				query.ProcessIDs.Add(k)
 			}
 		}
 	}

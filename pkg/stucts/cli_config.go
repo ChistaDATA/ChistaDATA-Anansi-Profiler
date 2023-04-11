@@ -13,6 +13,7 @@ const (
 	ReportTypeDefault        = ReportTypeText
 	MinimumQueryCountDefault = 1
 	ClickHouseDatabase       = "clickhouse"
+	PostgresDatabase         = "postgres"
 	SortFieldExecTime        = "ExecTime"
 	SortFieldRowsRead        = "RowsRead"
 	SortFieldBytesRead       = "BytesRead"
@@ -46,7 +47,7 @@ var LogLevels = map[string]uint32{LogLevelPanic: 0, LogLevelFatal: 1, LogLevelEr
 // ReportTypes List of supported report types
 var ReportTypes = [...]string{ReportTypeText, ReportTypeMD}
 
-var DatabaseNames = [...]string{ClickHouseDatabase}
+var DatabaseNames = [...]string{ClickHouseDatabase, PostgresDatabase}
 
 // TODO : construct config from cli-config
 
@@ -55,7 +56,7 @@ type CliConfig struct {
 	ReportType            string   `short:"r" help:"Report type to be generated, types: md, text" default:"text"`
 	FilePaths             []string `arg:"" optional:"" help:"Paths of log files" type:"existingfile"`
 	MinimumQueryCallCount int      `short:"c" help:"Minimum no of query calls needed" default:"1"`
-	DatabaseName          string   `help:"database type" default:"clickhouse"`
+	DatabaseName          string   `help:"database type, possible values: clickhouse, postgres" default:"clickhouse"`
 	DatabaseVersion       string   `help:"database version" default:"0"` //TODO make this a supported stable version
 	SortField             string   `help:"Sort queries by the given field, possible values: ExecTime, RowsRead, BytesRead, PeakMemory, QPS, QueryCount" default:"ExecTime"`
 	SortFieldOperation    string   `help:"Sort queries by the given operation on field, possible values: sum, min, max, avg, per95, stdDev, median" default:"max"`

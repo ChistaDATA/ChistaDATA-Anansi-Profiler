@@ -5,7 +5,8 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/parsers/clickhouse"
-	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/report_templates"
+	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/report_templates/clickhouse_resport_templates"
+	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/report_templates/postgres_resport_templates"
 	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/stucts"
 	log "github.com/sirupsen/logrus"
 	"os"
@@ -34,12 +35,22 @@ func InitReportGenerator(config *stucts.Config, dBPerfInfoRepository *stucts.DBP
 		DBPerfInfoRepository: dBPerfInfoRepository,
 	}
 
-	if config.ReportType == stucts.ReportTypeText {
-		reportGenerator.ReportTemplates = initReportTemplates(report_templates.TopQueryRecord, report_templates.AccumulatedInfoTemplate, report_templates.TopQueriesTemplate, report_templates.QueryInfoTemplate)
-		reportGenerator.OutputFileExtension = "txt"
+	if config.DatabaseName == stucts.ClickHouseDatabase {
+		if config.ReportType == stucts.ReportTypeText {
+			reportGenerator.ReportTemplates = initReportTemplates(clickhouse_resport_templates.TopQueryRecord, clickhouse_resport_templates.AccumulatedInfoTemplate, clickhouse_resport_templates.TopQueriesTemplate, clickhouse_resport_templates.QueryInfoTemplate)
+			reportGenerator.OutputFileExtension = "txt"
+		} else {
+			reportGenerator.ReportTemplates = initReportTemplates(clickhouse_resport_templates.TopQueryMDRecord, clickhouse_resport_templates.AccumulatedInfoMDTemplate, clickhouse_resport_templates.TopQueriesMDTemplate, clickhouse_resport_templates.QueryInfoMDTemplate)
+			reportGenerator.OutputFileExtension = "md"
+		}
 	} else {
-		reportGenerator.ReportTemplates = initReportTemplates(report_templates.TopQueryMDRecord, report_templates.AccumulatedInfoMDTemplate, report_templates.TopQueriesMDTemplate, report_templates.QueryInfoMDTemplate)
-		reportGenerator.OutputFileExtension = "md"
+		if config.ReportType == stucts.ReportTypeText {
+			reportGenerator.ReportTemplates = initReportTemplates(postgres_resport_templates.TopQueryRecord, postgres_resport_templates.AccumulatedInfoTemplate, postgres_resport_templates.TopQueriesTemplate, postgres_resport_templates.QueryInfoTemplate)
+			reportGenerator.OutputFileExtension = "txt"
+		} else {
+			reportGenerator.ReportTemplates = initReportTemplates(postgres_resport_templates.TopQueryMDRecord, postgres_resport_templates.AccumulatedInfoMDTemplate, postgres_resport_templates.TopQueriesMDTemplate, postgres_resport_templates.QueryInfoMDTemplate)
+			reportGenerator.OutputFileExtension = "md"
+		}
 	}
 
 	return reportGenerator
@@ -113,27 +124,9 @@ func (reportGenerator ReportGenerator) GenerateReport() {
 
 	// Generating output from templates, to a buffer
 
-	var err error
-	var bf bytes.Buffer
-	err = reportGenerator.ReportTemplates.AccumulatedTemplate.Execute(&bf, accumulatedInfoTemplateInput)
+	reportString, err := reportGenerator.executeTemplates(accumulatedInfoTemplateInput, topQueriesTemplateInput, queryInfoTemplateInputs)
 	if err != nil {
-		log.Fatalln(err.Error())
-		return
-	}
-
-	err = reportGenerator.ReportTemplates.TopQueriesTemplate.Execute(&bf, topQueriesTemplateInput)
-	if err != nil {
-		log.Fatalln(err.Error())
-		return
-	}
-
-	for i := 0; i < len(queryInfoTemplateInputs); i++ {
-		err = reportGenerator.ReportTemplates.QueryInfoTemplate.Execute(&bf, queryInfoTemplateInputs[i])
-		if err != nil {
-			log.Fatalln(err.Error())
-			return
-		}
-		log.Infoln(bf.String())
+		log.Fatalln(err)
 	}
 
 	// Persisting the output to a file, from buffer
@@ -146,8 +139,34 @@ func (reportGenerator ReportGenerator) GenerateReport() {
 	defer f.Close()
 
 	w := bufio.NewWriter(f)
-	w.WriteString(bf.String())
+	w.WriteString(reportString)
 	w.Flush()
+}
+
+func (reportGenerator ReportGenerator) executeTemplates(accumulatedInfoTemplateInput stucts.AccumulatedInfoTemplateInput, topQueriesTemplateInput stucts.TopQueriesTemplateInput, queryInfoTemplateInputs []stucts.QueryInfoTemplateInput) (string, error) {
+	var err error
+	var bf bytes.Buffer
+	err = reportGenerator.ReportTemplates.AccumulatedTemplate.Execute(&bf, accumulatedInfoTemplateInput)
+	if err != nil {
+		log.Fatalln(err.Error())
+		return "", err
+	}
+
+	err = reportGenerator.ReportTemplates.TopQueriesTemplate.Execute(&bf, topQueriesTemplateInput)
+	if err != nil {
+		log.Fatalln(err.Error())
+		return "", err
+	}
+
+	for i := 0; i < len(queryInfoTemplateInputs); i++ {
+		err = reportGenerator.ReportTemplates.QueryInfoTemplate.Execute(&bf, queryInfoTemplateInputs[i])
+		if err != nil {
+			log.Fatalln(err.Error())
+			return "", err
+		}
+		//log.Infoln(bf.String())
+	}
+	return bf.String(), nil
 }
 
 func (reportGenerator ReportGenerator) sortSimplifiedQueryInfoList(list stucts.SimilarQueryInfoList, totalDuration float64) []*stucts.SimilarQueryInfo {
