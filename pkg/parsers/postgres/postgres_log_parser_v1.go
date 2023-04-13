@@ -50,8 +50,8 @@ var partSymbolMap map[int]string
 func SetParseLogV1Params(PostgresLogPrefix string) error {
 	// Default value of PostgresLogPrefix
 	if PostgresLogPrefix == "" {
-		//PostgresLogPrefix = "%m [%p] "
-		PostgresLogPrefix = "%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h "
+		PostgresLogPrefix = "%m [%p] "
+		//PostgresLogPrefix = "%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h "
 	}
 	logRegex = postgresLogPrefixToLogRegex(PostgresLogPrefix)
 

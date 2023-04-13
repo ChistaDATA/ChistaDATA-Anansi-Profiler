@@ -37,5 +37,6 @@ func InitConfigFromCli(cliConfig *CliConfig) *Config {
 			Region:          cliConfig.S3Region,
 			FileLocations:   cliConfig.S3FileLocations,
 		},
+		LogPrefix: cliConfig.LogPrefix,
 	}
 }

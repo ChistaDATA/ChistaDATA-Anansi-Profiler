@@ -62,6 +62,7 @@ type CliConfig struct {
 	SortFieldOperation    string   `help:"Sort queries by the given operation on field, possible values: sum, min, max, avg, per95, stdDev, median" default:"max"`
 	SortOrder             string   `help:"Sort order, possible values: asc, desc" default:"desc"`
 	LogLevel              string   `help:"log level, possible values: panic, fatal, error, warn, info, debug, trace" default:"error"`
+	LogPrefix             string   `help:"prefix of log" default:""`
 	S3AccessKeyID         string   `name:"s3-access-key-id"`
 	S3SecretAccessKey     string   `name:"s3-secret-access-key"`
 	S3SessionToken        string   `name:"s3-session-token"`
