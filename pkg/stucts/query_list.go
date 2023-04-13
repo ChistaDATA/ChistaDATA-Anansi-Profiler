@@ -29,7 +29,11 @@ func (queryList *QueryList) Add(pq PartialQuery, log ExtractedLog) {
 		queryList.lock.Lock()
 		q, ok = queryList.list[queryId]
 		if !ok {
-			q = &Query{QueryId: queryId, Databases: types.InitStringSet(), Tables: types.InitStringSet(), ThreadIds: types.InitIntSet()}
+			databases := types.InitStringSet()
+			if log.DatabaseName != "" {
+				databases.Add(log.DatabaseName)
+			}
+			q = &Query{QueryId: queryId, Databases: databases, Tables: types.InitStringSet(), ThreadIds: types.InitIntSet(), User: log.UserName, ClientHost: log.RemoteHost}
 			queryList.list[queryId] = q
 		}
 		queryList.lock.Unlock()

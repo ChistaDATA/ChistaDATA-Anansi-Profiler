@@ -43,7 +43,7 @@ func InitTopQueriesTemplateInputRecord(info *SimilarQueryInfo, queryInfoTemplate
 	return TopQueriesTemplateInputRecord{
 		Query:                   info.Query[:queryLengthLimit],
 		Pos:                     formatters.PrefixSpace(strings.TrimSpace(queryInfoTemplateInput.Pos), 4),
-		TotalDuration:           formatters.PrefixSpace(formatters.Float64SecondsToString(GetMaxDuration(info)), 7),
+		TotalDuration:           formatters.PrefixSpace(formatters.Float64SecondsToString(GetTotalDuration(info)), 7),
 		Count:                   formatters.PrefixSpace(strconv.Itoa(info.Count), 5),
 		TotalDurationPercentage: formatters.PrefixSpace(fmt.Sprintf("%.2f%s", GetTotalDuration(info)*100/totalExecutionTime, "%"), 7),
 		ResponseTimePerCall:     formatters.PrefixSpace(formatters.Float64SecondsToString(GetTotalDuration(info)/float64(info.Count)), 6),

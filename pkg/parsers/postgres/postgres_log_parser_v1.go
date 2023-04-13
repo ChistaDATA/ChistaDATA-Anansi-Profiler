@@ -12,8 +12,14 @@ import (
 )
 
 var prefixMap map[string]string = map[string]string{
-	"%m": `(\d{4}-\d{2}-\d{2}[\sT]\d{2}:\d{2}:\d{2}\.\d+(?:[ \+\-][A-Z\+\-\d]{3,6})?)`, // timestamp with milliseconds
-	"%p": `(\d+)`,
+	"%m": `(\d{4}-\d{2}-\d{2}[\sT]\d{2}:\d{2}:\d{2}\.\d+(?:[ \+\-][A-Z\+\-\d]{3,6})?)`,     // timestamp with milliseconds
+	"%p": `(\d+)`,                                                                          // process ID
+	"%t": `(\d{4}-\d{2}-\d{2}[\sT]\d{2}:\d{2}:\d{2}[Z]*(?:[ \+\-][A-Z\+\-\d]{3,6})?)`,      // timestamp without milliseconds
+	"%l": `(\d+)`,                                                                          // session line number
+	"%u": `([0-9a-zA-Z\_\[\]\-\.]*)`,                                                       // user name
+	"%d": `([0-9a-zA-Z\_\[\]\-\.]*)`,                                                       // database name
+	"%a": `(.*?)`,                                                                          // application name
+	"%h": `([a-zA-Z0-9\-\.]+|\[local\]|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|[0-9a-fA-F:]+)?`, // remote host
 }
 
 //'%a' => [('t_appname',    "(.*?)"  )],
@@ -35,6 +41,8 @@ var prefixMap map[string]string = map[string]string{
 //'%e' => [('t_sqlstate',	  '([0-9a-zA-Z]+)')],					      # SQL state
 //'%b' => [('t_backend_type',	  '(.*?)')],					      # backend type
 
+//%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h
+
 var logRegex *regexp.Regexp
 var logPartsLen int
 var partSymbolMap map[int]string
@@ -42,7 +50,8 @@ var partSymbolMap map[int]string
 func SetParseLogV1Params(PostgresLogPrefix string) error {
 	// Default value of PostgresLogPrefix
 	if PostgresLogPrefix == "" {
-		PostgresLogPrefix = "%m [%p] "
+		//PostgresLogPrefix = "%m [%p] "
+		PostgresLogPrefix = "%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h "
 	}
 	logRegex = postgresLogPrefixToLogRegex(PostgresLogPrefix)
 
@@ -89,14 +98,69 @@ func ParseLogV1(logLine string) (stucts.ExtractedLog, error) {
 			case "message":
 				clickHouseLog.Message = parts[i]
 				break
+			case "%t":
+				timestampWithoutMilliseconds(parts[i], &clickHouseLog)
+				break
+			case "%l":
+				parseSessionLineNumber(parts[i], &clickHouseLog)
+				break
+			case "%u":
+				parseUserName(parts[i], &clickHouseLog)
+				break
+			case "%d":
+				parseDatabaseName(parts[i], &clickHouseLog)
+				break
+			case "%a":
+				parseApplicationName(parts[i], &clickHouseLog)
+				break
+			case "%h":
+				parseRemoteHost(parts[i], &clickHouseLog)
+				break
 			default:
-				return clickHouseLog, errors.New(fmt.Sprintf("Parser not defined for the symbol : %s", partSymbolMap[i]))
+				return clickHouseLog, errors.New(fmt.Sprintf("Parser not defined for the symbol : %s", partSymbolMap[i-1]))
 			}
 		}
 		return clickHouseLog, nil
 	}
 	clickHouseLog.Message = logLine
 	return clickHouseLog, nil
+}
+
+func parseRemoteHost(part string, s *stucts.ExtractedLog) {
+	s.RemoteHost = part
+}
+
+func parseApplicationName(part string, s *stucts.ExtractedLog) {
+	s.ApplicationName = part
+}
+
+func parseDatabaseName(part string, s *stucts.ExtractedLog) {
+	s.DatabaseName = part
+}
+
+func parseUserName(part string, s *stucts.ExtractedLog) {
+	s.UserName = part
+}
+
+func parseSessionLineNumber(part string, s *stucts.ExtractedLog) {
+	s.SessionLineNumber, _ = strconv.ParseInt(part, 0, 0)
+}
+
+func timestampWithoutMilliseconds(part string, s *stucts.ExtractedLog) error {
+	var loc *time.Location
+	var err error
+	if strings.Contains(part, "UTC") {
+		loc, err = time.LoadLocation("UTC")
+		if err != nil {
+			return err
+		}
+	}
+	logTime, err := time.ParseInLocation("2006-01-02 15:04:05", part[:19], loc)
+	if err != nil {
+		return err
+	}
+	s.Timestamp = logTime
+	return nil
 }
 
 func parseProcessID(part string, s *stucts.ExtractedLog) error {
@@ -126,9 +190,7 @@ func parseTimestampWithMilliseconds(part string, s *stucts.ExtractedLog) error {
 }
 
 func postgresLogPrefixToLogRegex(postgresLogPrefix string) *regexp.Regexp {
-	regexString := postgresLogPrefix
-	regexString = strings.Replace(regexString, `[`, `\[`, -1)
-	regexString = strings.Replace(regexString, `]`, `\]`, -1)
+	regexString := regexp.QuoteMeta(postgresLogPrefix)
 	for k, v := range prefixMap {
 		regexString = strings.Replace(regexString, k, v, -1)
 	}

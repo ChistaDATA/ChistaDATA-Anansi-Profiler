@@ -15,6 +15,9 @@ const QueryInfoMDTemplate = `
 | Count | {{.Count}} | | | | | | | 
 | Exec time | {{.Duration.Total}} | {{.Duration.Min}} | {{.Duration.Max}} | {{.Duration.Avg}} | {{.Duration.Percentile95}} | {{.Duration.StdDev}} | {{.Duration.Median}} |
 
+* Databases:    {{.DatabaseInfo}}
+* Hosts:        {{.HostInfo}}
+* Users:        {{.UserInfo}}
 * Completion:   {{.CompletedInfo}}
 
 Query_time distribution

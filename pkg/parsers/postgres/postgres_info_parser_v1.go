@@ -8,7 +8,7 @@ import (
 )
 
 func ParseMessageWithNewQueryV1(extractedLog stucts.ExtractedLog, dBPerfInfoRepository *stucts.DBPerfInfoRepository) error {
-	if parts := LogMessageWithNewQueryRegEx.FindStringSubmatch(extractedLog.Message); len(parts) == 2 {
+	if parts := PostgresLogMessageWithNewQueryRegEx.FindStringSubmatch(extractedLog.Message); len(parts) == 2 {
 		dBPerfInfoRepository.CurrentQuery = &stucts.Query{QueryId: extractedLog.QueryId}
 		processIDs := types.InitIntSet()
 		processIDs.Add(extractedLog.ThreadId)
@@ -18,31 +18,47 @@ func ParseMessageWithNewQueryV1(extractedLog stucts.ExtractedLog, dBPerfInfoRepo
 		dBPerfInfoRepository.Queries.Add(query, extractedLog)
 		return nil
 	}
-	return errors.New("error parsing message as ExecuteQueryLogMessageWithQueryRegEx")
+	return errors.New("error parsing message as LogMessageWithNewQueryRegEx")
 }
 
 func ParseMessageWithQueryDurationV1(extractedLog stucts.ExtractedLog, dBPerfInfoRepository *stucts.DBPerfInfoRepository) error {
-	if parts := LogMessageWithDurationRegEx.FindStringSubmatch(extractedLog.Message); len(parts) == 2 {
-		query := stucts.PartialQuery{QueryId: &dBPerfInfoRepository.CurrentQuery.QueryId}
-		query.Duration = parseDuration(parts[1])
-		dBPerfInfoRepository.Queries.Add(query, extractedLog)
+	if parts := PostgresLogMessageWithDurationRegEx.FindStringSubmatch(extractedLog.Message); len(parts) == 3 {
+		if dBPerfInfoRepository.CurrentQuery != nil {
+			query := stucts.PartialQuery{QueryId: &dBPerfInfoRepository.CurrentQuery.QueryId}
+			query.Duration = parseDuration(parts[1], parts[2])
+			dBPerfInfoRepository.Queries.Add(query, extractedLog)
+			dBPerfInfoRepository.CurrentQuery = nil
+		}
 		return nil
 	}
-	return errors.New("error parsing message as ExecuteQueryLogMessageWithQueryRegEx")
+	return errors.New("error parsing message as LogMessageWithDurationRegEx")
 }
 
 func ParseLogMessageWithErrorRegExV1(extractedLog stucts.ExtractedLog, dBPerfInfoRepository *stucts.DBPerfInfoRepository) error {
-	if parts := LogMessageWithErrorRegEx.FindStringSubmatch(extractedLog.Message); len(parts) == 2 {
-		completed := false
-		query := stucts.PartialQuery{QueryId: &dBPerfInfoRepository.CurrentQuery.QueryId, Completed: &completed}
-		dBPerfInfoRepository.Queries.Add(query, extractedLog)
+	if parts := PostgresLogMessageWithErrorRegEx.FindStringSubmatch(extractedLog.Message); len(parts) == 2 {
+		if dBPerfInfoRepository.CurrentQuery != nil {
+			completed := false
+			query := stucts.PartialQuery{QueryId: &dBPerfInfoRepository.CurrentQuery.QueryId, Completed: &completed}
+			dBPerfInfoRepository.Queries.Add(query, extractedLog)
+		}
 		return nil
 	}
-	return errors.New("error parsing message as ExecuteQueryLogMessageWithQueryRegEx")
+	return errors.New("error parsing message as LogMessageWithErrorRegEx")
 }
 
-func parseDuration(s string) *float64 {
+//func ParseLogMessageWithEndQueryRegExV1(extractedLog stucts.ExtractedLog, dBPerfInfoRepository *stucts.DBPerfInfoRepository) error {
+//	if parts := PostgresLogMessageWithEndQueryRegEx.FindStringSubmatch(extractedLog.Message); len(parts) == 2 {
+//		dBPerfInfoRepository.CurrentQuery = nil
+//		return nil
+//	}
+//	return errors.New("error parsing message as LogMessageWithEndQueryRegEx")
+//}
+
+func parseDuration(s string, unit string) *float64 {
 	sizeInFloat, _ := strconv.ParseFloat(s, 64)
+	if unit == "ms" {
+		sizeInFloat /= 1000
+	}
 	return &sizeInFloat
 }
 

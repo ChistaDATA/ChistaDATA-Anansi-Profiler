@@ -14,7 +14,12 @@ func InitPostgresParserV1() IParser {
 		"0",
 		stucts.PostgresDatabase,
 		postgres.ParseLogV1,
-		[]InfoParserFunc{postgres.ParseMessageWithNewQueryV1, postgres.ParseMessageWithQueryDurationV1, postgres.ParseLogMessageWithErrorRegExV1},
+		[]InfoParserFunc{
+			postgres.ParseMessageWithNewQueryV1,
+			postgres.ParseMessageWithQueryDurationV1,
+			postgres.ParseLogMessageWithErrorRegExV1,
+			//postgres.ParseLogMessageWithEndQueryRegExV1
+		},
 		[]InfoParserFunc{},
 		func(i ...interface{}) error {
 			config := i[0].(*stucts.Config)

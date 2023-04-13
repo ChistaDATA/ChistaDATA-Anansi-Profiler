@@ -10,7 +10,7 @@ func TestLogMessageWithDurationRegEx(t *testing.T) {
 	}
 
 	for log, want := range logMatchMap {
-		got := LogMessageWithDurationRegEx.MatchString(log)
+		got := PostgresLogMessageWithDurationRegEx.MatchString(log)
 		if got != want {
 			t.Errorf("for log %s: got %t, want %t", log, got, want)
 		}
@@ -25,7 +25,7 @@ func TestLogMessageWithNewQueryRegEx(t *testing.T) {
 	}
 
 	for log, want := range logMatchMap {
-		got := LogMessageWithNewQueryRegEx.MatchString(log)
+		got := PostgresLogMessageWithNewQueryRegEx.MatchString(log)
 		if got != want {
 			t.Errorf("for log %s: got %t, want %t", log, got, want)
 		}
@@ -40,7 +40,7 @@ func TestLogMessageWithEndQueryRegEx(t *testing.T) {
 	}
 
 	for log, want := range logMatchMap {
-		got := LogMessageWithEndQueryRegEx.MatchString(log)
+		got := PostgresLogMessageWithEndQueryRegEx.MatchString(log)
 		if got != want {
 			t.Errorf("for log %s: got %t, want %t", log, got, want)
 		}
@@ -55,7 +55,7 @@ func TestLogMessageWithErrorRegEx(t *testing.T) {
 	}
 
 	for log, want := range logMatchMap {
-		got := LogMessageWithErrorRegEx.MatchString(log)
+		got := PostgresLogMessageWithErrorRegEx.MatchString(log)
 		if got != want {
 			t.Errorf("for log %s: got %t, want %t", log, got, want)
 		}

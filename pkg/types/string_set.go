@@ -2,8 +2,12 @@ package types
 
 type StringSet map[string]struct{}
 
-func InitStringSet() StringSet {
-	return map[string]struct{}{}
+func InitStringSet(arr ...string) StringSet {
+	s := map[string]struct{}{}
+	for _, key := range arr {
+		s[key] = struct{}{}
+	}
+	return s
 }
 
 func (set StringSet) Add(s string) {
