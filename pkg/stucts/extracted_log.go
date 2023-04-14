@@ -6,6 +6,7 @@ import (
 
 type ExtractedLog struct {
 	Timestamp         time.Time
+	TimestampZone     string
 	ThreadId          int
 	QueryId           string
 	LogLevel          string

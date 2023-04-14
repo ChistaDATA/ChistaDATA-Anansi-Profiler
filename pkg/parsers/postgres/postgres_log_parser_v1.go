@@ -147,19 +147,12 @@ func parseSessionLineNumber(part string, s *stucts.ExtractedLog) {
 }
 
 func timestampWithoutMilliseconds(part string, s *stucts.ExtractedLog) error {
-	var loc *time.Location
-	var err error
-	if strings.Contains(part, "UTC") {
-		loc, err = time.LoadLocation("UTC")
-		if err != nil {
-			return err
-		}
-	}
-	logTime, err := time.ParseInLocation("2006-01-02 15:04:05", part[:19], loc)
+	logTime, err := time.Parse("2006-01-02 15:04:05", part[:19])
 	if err != nil {
 		return err
 	}
 	s.Timestamp = logTime
+	s.TimestampZone = part[19:]
 	return nil
 }
 
@@ -173,19 +166,12 @@ func parseProcessID(part string, s *stucts.ExtractedLog) error {
 }
 
 func parseTimestampWithMilliseconds(part string, s *stucts.ExtractedLog) error {
-	var loc *time.Location
-	var err error
-	if strings.Contains(part, "UTC") {
-		loc, err = time.LoadLocation("UTC")
-		if err != nil {
-			return err
-		}
-	}
-	logTime, err := time.ParseInLocation("2006-01-02 15:04:05.000", part[:23], loc)
+	logTime, err := time.Parse("2006-01-02 15:04:05.000", part[:23])
 	if err != nil {
 		return err
 	}
 	s.Timestamp = logTime
+	s.TimestampZone = part[23:]
 	return nil
 }
 
@@ -194,7 +180,7 @@ func postgresLogPrefixToLogRegex(postgresLogPrefix string) *regexp.Regexp {
 	for k, v := range prefixMap {
 		regexString = strings.Replace(regexString, k, v, -1)
 	}
-	regexString = `^` + regexString + `(.*)$`
+	regexString = `^` + regexString + `((?:LOG|ERROR|STATEMENT|DETAIL):.*)$`
 	return regexp.MustCompile(regexString)
 }
 

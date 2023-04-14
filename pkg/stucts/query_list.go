@@ -20,7 +20,7 @@ func InitQueryList() QueryList {
 func (queryList *QueryList) Add(pq PartialQuery, log ExtractedLog) {
 	queryList.lock.RLock()
 	queryId := log.QueryId
-	if pq.QueryId != nil {
+	if pq.QueryId != nil && *pq.QueryId != "" {
 		queryId = *pq.QueryId
 	}
 	q, ok := queryList.list[queryId]

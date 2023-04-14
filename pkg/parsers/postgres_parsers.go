@@ -18,7 +18,9 @@ func InitPostgresParserV1() IParser {
 			postgres.ParseMessageWithNewQueryV1,
 			postgres.ParseMessageWithQueryDurationV1,
 			postgres.ParseLogMessageWithErrorRegExV1,
-			//postgres.ParseLogMessageWithEndQueryRegExV1
+			//postgres.ParseLogMessageWithEndQueryRegExV1,
+			postgres.ParseLogMessageWithSystemUsageRegExV1,
+			postgres.ParseMessageDurationAndQueryV1,
 		},
 		[]InfoParserFunc{},
 		func(i ...interface{}) error {
