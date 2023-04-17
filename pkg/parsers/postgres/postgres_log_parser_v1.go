@@ -12,14 +12,24 @@ import (
 )
 
 var prefixMap map[string]string = map[string]string{
-	"%m": `(\d{4}-\d{2}-\d{2}[\sT]\d{2}:\d{2}:\d{2}\.\d+(?:[ \+\-][A-Z\+\-\d]{3,6})?)`,     // timestamp with milliseconds
-	"%p": `(\d+)`,                                                                          // process ID
-	"%t": `(\d{4}-\d{2}-\d{2}[\sT]\d{2}:\d{2}:\d{2}[Z]*(?:[ \+\-][A-Z\+\-\d]{3,6})?)`,      // timestamp without milliseconds
-	"%l": `(\d+)`,                                                                          // session line number
-	"%u": `([0-9a-zA-Z\_\[\]\-\.]*)`,                                                       // user name
-	"%d": `([0-9a-zA-Z\_\[\]\-\.]*)`,                                                       // database name
-	"%a": `(.*?)`,                                                                          // application name
-	"%h": `([a-zA-Z0-9\-\.]+|\[local\]|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|[0-9a-fA-F:]+)?`, // remote host
+	"%a": `(.*?)`,                                                                                       // application name
+	"%u": `([0-9a-zA-Z\_\[\]\-\.]*)`,                                                                    // user name
+	"%d": `([0-9a-zA-Z\_\[\]\-\.]*)`,                                                                    // database name
+	"%r": `((?:[a-zA-Z0-9\-\.]+|\[local\]|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|[0-9a-fA-F:]+)?[\(\d\)]*)`, // remote host and port
+	"%h": `((?:[a-zA-Z0-9\-\.]+|\[local\]|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|[0-9a-fA-F:]+)?)`,          // remote host
+	"%p": `(\d+)`,                                                                                       // process ID
+	"%Q": `([\-]*\d+)`,                                                                                  // Query ID
+	"%n": `(\d{10}\.\d{3})`,                                                                             // timestamp as Unix epoch
+	"%t": `(\d{4}-\d{2}-\d{2}[\sT]\d{2}:\d{2}:\d{2}[Z]*(?:[ \+\-][A-Z\+\-\d]{3,6})?)`,                   // timestamp without milliseconds
+	"%m": `(\d{4}-\d{2}-\d{2}[\sT]\d{2}:\d{2}:\d{2}\.\d+(?:[ \+\-][A-Z\+\-\d]{3,6})?)`,                  // timestamp with milliseconds
+	"%l": `(\d+)`,                                                                                       // session line number
+	"%s": `((?:\d{4}-\d{2}-\d{2}[\sT]\d{2}):\d{2}:\d{2}(?:[ \+\-][A-Z\+\-\d]{3,6})?)`,                   // session start timestamp
+	"%c": `([0-9a-f\.]*)`,                                                                               // session ID
+	"%v": `([0-9a-f\.\/]*)`,                                                                             // virtual transaction ID
+	"%x": `([0-9a-f\.\/]*)`,                                                                             // transaction ID
+	"%i": `([0-9a-zA-Z\.\-\_\s]*)`,                                                                      // command tag
+	"%e": `([0-9a-zA-Z]+)`,                                                                              // SQL state
+	"%b": `(.*?)`,                                                                                       // backend type
 }
 
 //'%a' => [('t_appname',    "(.*?)"  )],
@@ -115,6 +125,8 @@ func ParseLogV1(logLine string) (stucts.ExtractedLog, error) {
 				break
 			case "%h":
 				parseRemoteHost(parts[i], &clickHouseLog)
+				break
+			case "%r", "%Q", "%n", "%s", "%c", "%v", "%x", "%i", "%e", "%b":
 				break
 			default:
 				return clickHouseLog, errors.New(fmt.Sprintf("Parser not defined for the symbol : %s", partSymbolMap[i-1]))

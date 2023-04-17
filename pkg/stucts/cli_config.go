@@ -36,6 +36,11 @@ const (
 	LogLevelInfo             = "info"
 	LogLevelDebug            = "debug"
 	LogLevelTrace            = "trace"
+	SelectQuery              = "select"
+	CreateQuery              = "create"
+	UpdateQuery              = "update"
+	DeleteQuery              = "delete"
+	InsertQuery              = "insert"
 )
 
 var SortFieldOperations = [...]string{SortFieldOperationSum, SortFieldOperationMin, SortFieldOperationMax, SortFieldOperationAvg, SortFieldOperationPer95, SortFieldOperationStdDev, SortFieldOperationMedian}
@@ -48,6 +53,8 @@ var LogLevels = map[string]uint32{LogLevelPanic: 0, LogLevelFatal: 1, LogLevelEr
 var ReportTypes = [...]string{ReportTypeText, ReportTypeMD}
 
 var DatabaseNames = [...]string{ClickHouseDatabase, PostgresDatabase}
+
+var DiscardQueries = []string{SelectQuery, CreateQuery, UpdateQuery, DeleteQuery, InsertQuery}
 
 // TODO : construct config from cli-config
 
@@ -68,6 +75,7 @@ type CliConfig struct {
 	S3SessionToken        string   `name:"s3-session-token"`
 	S3Region              string   `name:"s3-region"`
 	S3FileLocations       []string `name:"s3-object-urls"`
+	DiscardQueries        []string `help:"Type of queries to be discarded, possible values: select, update, delete, insert" default:"update,delete,insert,create"`
 }
 
 func InitializeCliConfig() *CliConfig {
@@ -162,4 +170,28 @@ func (cliConfig *CliConfig) validateCliConfig() {
 		log.Warningln("Invalid LogLevel name, Falling back to default")
 		cliConfig.LogLevel = LogLevelError
 	}
+
+	valid = isSubsetStringArray(cliConfig.DiscardQueries, DiscardQueries)
+	if !valid {
+		log.Warningln("Invalid DiscardQueries name, Falling back to default")
+		cliConfig.DiscardQueries = []string{CreateQuery, UpdateQuery, DeleteQuery, InsertQuery}
+	}
+}
+
+func isSubsetStringArray(sub []string, main []string) bool {
+	isSubset := true
+	for i := 0; i < len(sub); i++ {
+		found := false
+		for j := 0; j < len(main); j++ {
+			if sub[i] == main[j] {
+				found = true
+				break
+			}
+		}
+		if !found {
+			isSubset = false
+			break
+		}
+	}
+	return isSubset
 }

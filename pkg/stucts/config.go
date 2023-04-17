@@ -15,6 +15,7 @@ type Config struct {
 	LogLevel              string
 	S3Config              *S3Config
 	LogPrefix             string
+	DiscardQueries        []string
 }
 
 func InitConfigFromCli(cliConfig *CliConfig) *Config {
@@ -37,6 +38,7 @@ func InitConfigFromCli(cliConfig *CliConfig) *Config {
 			Region:          cliConfig.S3Region,
 			FileLocations:   cliConfig.S3FileLocations,
 		},
-		LogPrefix: cliConfig.LogPrefix,
+		LogPrefix:      cliConfig.LogPrefix,
+		DiscardQueries: cliConfig.DiscardQueries,
 	}
 }

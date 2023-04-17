@@ -4,12 +4,12 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/parsers/clickhouse"
 	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/report_templates/clickhouse_resport_templates"
 	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/report_templates/postgres_resport_templates"
 	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/stucts"
 	log "github.com/sirupsen/logrus"
 	"os"
+	"regexp"
 	"strings"
 	"text/template"
 )
@@ -20,6 +20,7 @@ type ReportGenerator struct {
 	DBPerfInfoRepository *stucts.DBPerfInfoRepository
 	ReportTemplates      ReportTemplates
 	OutputFileExtension  string
+	discardQueryRegex    *regexp.Regexp
 }
 
 type ReportTemplates struct {
@@ -33,6 +34,7 @@ func InitReportGenerator(config *stucts.Config, dBPerfInfoRepository *stucts.DBP
 	reportGenerator := ReportGenerator{
 		Config:               config,
 		DBPerfInfoRepository: dBPerfInfoRepository,
+		discardQueryRegex:    getDiscardQueryRegex(config.DiscardQueries),
 	}
 
 	if config.DatabaseName == stucts.ClickHouseDatabase {
@@ -97,7 +99,7 @@ func (reportGenerator ReportGenerator) GenerateReport() {
 	// like create, insert queries and queries with count less than minimum count
 	var keysToRemove []string
 	for s, info := range simplifiedQueryInfoList {
-		if shouldDiscardQuery(info.Query) || info.Count < reportGenerator.Config.MinimumQueryCallCount {
+		if reportGenerator.shouldDiscardQuery(info.Query) || info.Count < reportGenerator.Config.MinimumQueryCallCount {
 			keysToRemove = append(keysToRemove, s)
 		}
 	}
@@ -173,9 +175,21 @@ func (reportGenerator ReportGenerator) sortSimplifiedQueryInfoList(list stucts.S
 	return list.Sort(reportGenerator.Config.SortField, reportGenerator.Config.SortFieldOperation, reportGenerator.Config.SortOrder, totalDuration)
 }
 
-func shouldDiscardQuery(query string) bool {
-	if clickhouse.QueriesToDiscardRegEx.MatchString(strings.TrimSpace(query)) {
+func (reportGenerator ReportGenerator) shouldDiscardQuery(query string) bool {
+	if reportGenerator.discardQueryRegex != nil && reportGenerator.discardQueryRegex.MatchString(strings.TrimSpace(query)) {
 		return true
 	}
 	return false
+}
+
+func getDiscardQueryRegex(discardQueries []string) *regexp.Regexp {
+	if len(discardQueries) == 0 {
+		return nil
+	}
+	regexText := "^((?i)" + discardQueries[0]
+	for _, query := range discardQueries[1:] {
+		regexText += "|(?i)" + query
+	}
+	regexText += ").*$"
+	return regexp.MustCompile(regexText)
 }
