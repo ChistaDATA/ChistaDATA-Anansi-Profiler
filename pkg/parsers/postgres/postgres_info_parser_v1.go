@@ -28,7 +28,7 @@ func getNewQuery(extractedLog stucts.ExtractedLog, dBPerfInfoRepository *stucts.
 
 func ParseMessageWithQueryDurationV1(extractedLog stucts.ExtractedLog, dBPerfInfoRepository *stucts.DBPerfInfoRepository) error {
 	if parts := PostgresLogMessageWithDurationRegEx.FindStringSubmatch(extractedLog.Message); len(parts) == 3 {
-		if dBPerfInfoRepository.CurrentQuery == nil {
+		if dBPerfInfoRepository.CurrentQuery != nil {
 			query := stucts.PartialQuery{QueryId: &dBPerfInfoRepository.CurrentQuery.QueryId}
 			query.Duration = parseDuration(parts[1], parts[2])
 			dBPerfInfoRepository.Queries.Add(query, extractedLog)

@@ -75,7 +75,7 @@ type CliConfig struct {
 	S3SessionToken        string   `name:"s3-session-token"`
 	S3Region              string   `name:"s3-region"`
 	S3FileLocations       []string `name:"s3-object-urls"`
-	DiscardQueries        []string `help:"Type of queries to be discarded, possible values: select, update, delete, insert" default:"update,delete,insert,create"`
+	DiscardQueries        []string `help:"Type of queries to be discarded, possible values: select, update, delete, insert" default:""`
 }
 
 func InitializeCliConfig() *CliConfig {
