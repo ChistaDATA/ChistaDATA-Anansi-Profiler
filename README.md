@@ -142,11 +142,11 @@ Flags:
       --sort-order="desc"                    Sort order, possible values: asc, desc
       --log-level="error"                    Log level, possible values: panic, fatal, error, warn, info, debug, trace
       --log-prefix=""                        Prefix of log
-      --discard-queries="select"             It will consider all the query types by default but type of queries can be discarded, possible values: select, update, delete, insert
+      --discard-queries=,...                 It will consider all the query types by default but type of queries can be discarded, possible values: select, update, delete, insert
       --s3-access-key-id=STRING
       --s3-secret-access-key=STRING
       --s3-session-token=STRING
       --s3-region=STRING
       --s3-object-urls=S3-OBJECT-URLS,...
-      
+
 ```
