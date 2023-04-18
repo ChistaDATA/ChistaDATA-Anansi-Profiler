@@ -55,7 +55,8 @@ Your executable `anansi-profiler` will be generated in the working directory.
 # ==== =============== ===== ====== =====
 #    1 12340.9  90.24% 16995  0.73s select distinct(city) from salary s1 LEFT JOIN salary s2 ON s1.event_id = s2.eve
 #    2  43.53s   0.32% 17070  0.00s select min(amount) from salary where rand > 10000
-
+#    3   0.49s   0.13%     1  0.49s insert into salary select * from salary
+#    4   0.01s   0.00%     1  0.01s select * from land_registry_price_paid_uk limit 5;
 
 # Query 1 : 1.243 QPS
 # Time range: From 2022-10-03 18:42:08.4814 +0000 UTC to 2022-10-04 02:05:44.907986 +0000 UTC
@@ -130,17 +131,22 @@ Arguments:
 Flags:
 ```
 Flags:
-  -h, --help                          Show context-sensitive help.
-  -n, --top-query-count=10            Count of queries for top x table
-  -r, --report-type="text"            Report type to be generated, types: md, text
-  -c, --minimum-query-call-count=1    Minimum no of query calls needed
-      --database-name="clickhouse"    database type
-      --database-version="0"          database version
-      --sort-field="ExecTime"         Sort queries by the given field, possible values: ExecTime, RowsRead, BytesRead, PeakMemory, QPS, QueryCount
-      --sort-field-operation="max"    Sort queries by the given operation on field, possible values: sum, min, max, avg, per95, stdDev, median
-      --sort-order="desc"             Sort order, possible values: asc, desc
-      --log-level="error"             log level, possible values: panic, fatal, error, warn, info, debug, trace
-      --
-      --
-      --
+  -h, --help                                 Show context-sensitive help.
+  -n, --top-query-count=10                   Count of queries for top x table
+  -r, --report-type="text"                   Report type to be generated, types: md, text
+  -c, --minimum-query-call-count=1           Minimum no of query calls needed
+      --database-name="clickhouse"           Which database? Possible values: clickhouse, postgres
+      --database-version="0"                 Database version
+      --sort-field="ExecTime"                Sort queries by the given field, possible values: ExecTime, RowsRead, BytesRead, PeakMemory, QPS, QueryCount
+      --sort-field-operation="max"           Sort queries by the given operation on field, possible values: sum, min, max, avg, per95, stdDev, median
+      --sort-order="desc"                    Sort order, possible values: asc, desc
+      --log-level="error"                    Log level, possible values: panic, fatal, error, warn, info, debug, trace
+      --log-prefix=""                        Prefix of log
+      --discard-queries="select"             It will consider all the query types by default but type of queries can be discarded, possible values: select, update, delete, insert
+      --s3-access-key-id=STRING
+      --s3-secret-access-key=STRING
+      --s3-session-token=STRING
+      --s3-region=STRING
+      --s3-object-urls=S3-OBJECT-URLS,...
+      
 ```
