@@ -70,12 +70,12 @@ type CliConfig struct {
 	SortOrder             string   `help:"Sort order, possible values: asc, desc" default:"desc"`
 	LogLevel              string   `help:"log level, possible values: panic, fatal, error, warn, info, debug, trace" default:"error"`
 	LogPrefix             string   `help:"prefix of log" default:""`
+	DiscardQueries        []string `help:"It will consider all the query types by default but type of queries can be discarded, possible values: select, update, delete, insert" default:""`
 	S3AccessKeyID         string   `name:"s3-access-key-id"`
 	S3SecretAccessKey     string   `name:"s3-secret-access-key"`
 	S3SessionToken        string   `name:"s3-session-token"`
 	S3Region              string   `name:"s3-region"`
 	S3FileLocations       []string `name:"s3-object-urls"`
-	DiscardQueries        []string `help:"Type of queries to be discarded, possible values: select, update, delete, insert" default:""`
 }
 
 func InitializeCliConfig() *CliConfig {
