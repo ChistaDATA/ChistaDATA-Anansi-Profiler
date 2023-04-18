@@ -140,4 +140,5 @@ Flags:
       --sort-field-operation="max"    Sort queries by the given operation on field, possible values: sum, min, max, avg, per95, stdDev, median
       --sort-order="desc"             Sort order, possible values: asc, desc
       --log-level="error"             log level, possible values: panic, fatal, error, warn, info, debug, trace
+      --
 ```
