@@ -17,7 +17,7 @@ To allow the Anansi profiler to parse the Postgres log file, you will need to pr
 3. This tool captures all of the DML/DDL queries by default. If you discard the any query type, just specify it into like "--discard-queries=insert"   
 
 4. Just set the these parameters on PostgreSQL side:
-log_line_prefix = '%t [%p]: user=%u,db=%d,app=%a,client=%h';
+log_line_prefix = '%t [%p]: user=%u,db=%d,app=%a,client=%h ';
 log_min_duration_statement = 5000 #if we need that queries take longer than 5 second
 log_checkpoints = on
 log_connections = on
@@ -33,8 +33,10 @@ lc_messages='C'
 * Multiple log file support
 * Report customization using CLI arguments
 * Multiple report formats are available (text, markdown)
-* Can be compiled to binaries compatible multiple OS and Architectures
-* Huge files can be processed
+* Can be compiled to binaries compatible with multiple OS and architectures
+* Capable of processing huge files
+* Supports compressed files
+* Capable of fetching files from S3
 * These reports can help shed light on top n queries for now. Errors occurring in the system, checkpoint behaviour, vacuum behaviour, trends and other basic but critical information for a these database systems are also available in the future.
 
 ## Installation
