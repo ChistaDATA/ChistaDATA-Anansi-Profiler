@@ -63,19 +63,19 @@ type CliConfig struct {
 	ReportType            string   `short:"r" help:"Report type to be generated, types: md, text" default:"text"`
 	FilePaths             []string `arg:"" optional:"" help:"Paths of log files" type:"existingfile"`
 	MinimumQueryCallCount int      `short:"c" help:"Minimum no of query calls needed" default:"1"`
-	DatabaseName          string   `help:"database type, possible values: clickhouse, postgres" default:"clickhouse"`
-	DatabaseVersion       string   `help:"database version" default:"0"` //TODO make this a supported stable version
+	DatabaseName          string   `help:"Which database? Possible values: clickhouse, postgres" default:"clickhouse"`
+	DatabaseVersion       string   `help:"Database version" default:"0"` //TODO make this a supported stable version
 	SortField             string   `help:"Sort queries by the given field, possible values: ExecTime, RowsRead, BytesRead, PeakMemory, QPS, QueryCount" default:"ExecTime"`
 	SortFieldOperation    string   `help:"Sort queries by the given operation on field, possible values: sum, min, max, avg, per95, stdDev, median" default:"max"`
 	SortOrder             string   `help:"Sort order, possible values: asc, desc" default:"desc"`
-	LogLevel              string   `help:"log level, possible values: panic, fatal, error, warn, info, debug, trace" default:"error"`
-	LogPrefix             string   `help:"prefix of log" default:""`
+	LogLevel              string   `help:"Log level, possible values: panic, fatal, error, warn, info, debug, trace" default:"error"`
+	LogPrefix             string   `help:"Prefix of log" default:""`
+	DiscardQueries        []string `help:"It will consider all the query types by default but type of queries can be discarded, possible values: select, update, delete, insert" default:""`
 	S3AccessKeyID         string   `name:"s3-access-key-id"`
 	S3SecretAccessKey     string   `name:"s3-secret-access-key"`
 	S3SessionToken        string   `name:"s3-session-token"`
 	S3Region              string   `name:"s3-region"`
 	S3FileLocations       []string `name:"s3-object-urls"`
-	DiscardQueries        []string `help:"Type of queries to be discarded, possible values: select, update, delete, insert" default:""`
 }
 
 func InitializeCliConfig() *CliConfig {
