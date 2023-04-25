@@ -63,7 +63,7 @@ type CliConfig struct {
 	ReportType            string   `short:"r" help:"Report type to be generated, types: md, text" default:"text"`
 	FilePaths             []string `arg:"" optional:"" help:"Paths of log files" type:"existingfile"`
 	MinimumQueryCallCount int      `short:"c" help:"Minimum no of query calls needed" default:"1"`
-	DatabaseName          string   `help:"Which database? Possible values: clickhouse, postgres" default:"clickhouse"`
+	DatabaseType          string   `help:"Which database? Possible values: clickhouse, postgres" default:"clickhouse"`
 	DatabaseVersion       string   `help:"Database version" default:"0"` //TODO make this a supported stable version
 	SortField             string   `help:"Sort queries by the given field, possible values: ExecTime, RowsRead, BytesRead, PeakMemory, QPS, QueryCount" default:"ExecTime"`
 	SortFieldOperation    string   `help:"Sort queries by the given operation on field, possible values: sum, min, max, avg, per95, stdDev, median" default:"max"`
@@ -113,14 +113,14 @@ func (cliConfig *CliConfig) validateCliConfig() {
 
 	valid = false
 	for _, s := range DatabaseNames {
-		if s == cliConfig.DatabaseName {
+		if s == cliConfig.DatabaseType {
 			valid = true
 			break
 		}
 	}
 	if !valid {
 		log.Warningln("Invalid Database name, Falling back to default")
-		cliConfig.DatabaseName = ClickHouseDatabase
+		cliConfig.DatabaseType = ClickHouseDatabase
 	}
 
 	valid = false

@@ -25,7 +25,7 @@ func InitConfigFromCli(cliConfig *CliConfig) *Config {
 		FilePaths:             cliConfig.FilePaths,
 		MinimumQueryCallCount: cliConfig.MinimumQueryCallCount,
 
-		DatabaseName:       cliConfig.DatabaseName,
+		DatabaseName:       cliConfig.DatabaseType,
 		DatabaseVersion:    cliConfig.DatabaseVersion,
 		SortField:          cliConfig.SortField,
 		SortFieldOperation: cliConfig.SortFieldOperation,

@@ -10,7 +10,7 @@ The "anansi" takes the log output from a running ClickHouse/PostgreSQL database 
 
 To allow the Anansi profiler to parse the Postgres log file, you will need to provide the following parameters:
 
-1. Just specify for the which database. It should be specified using the flag "--database-name=postgres".
+1. Just specify for the which database. It should be specified using the flag "--database-type=postgres".
 
 2. If you are using a custom prefix in your Postgres log file, you will need to specify it using the flag "--log-prefix=<YOUR PREFIX>". This will enable the Anansi profiler to correctly identify and parse the relevant information in your log file.
 
@@ -161,7 +161,7 @@ Flags:
   -n, --top-query-count=10                   Count of queries for top x table
   -r, --report-type="text"                   Report type to be generated, types: md, text
   -c, --minimum-query-call-count=1           Minimum no of query calls needed
-      --database-name="clickhouse"           Which database? Possible values: clickhouse, postgres
+      --database-type="clickhouse"           Which database? Possible values: clickhouse, postgres
       --database-version="0"                 Database version
       --sort-field="ExecTime"                Sort queries by the given field, possible values: ExecTime, RowsRead, BytesRead, PeakMemory, QPS, QueryCount
       --sort-field-operation="max"           Sort queries by the given operation on field, possible values: sum, min, max, avg, per95, stdDev, median
