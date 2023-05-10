@@ -8,12 +8,13 @@ import (
 
 var parsers = [...]IParser{
 	InitClickHouseParserV1(),
+	InitPostgresParserV1(),
 }
 
-func GetParser(version string, database string, dBPerfInfoRepository *stucts.DBPerfInfoRepository) (IParser, error) {
+func GetParser(version string, database string, dBPerfInfoRepository *stucts.DBPerfInfoRepository, config *stucts.Config) (IParser, error) {
 	for _, parser := range parsers {
 		if parser.IsUsable(version, database) {
-			parser.SetDBPerfInfoRepository(dBPerfInfoRepository)
+			parser.InitParser(dBPerfInfoRepository, config)
 			return parser, nil
 		}
 	}

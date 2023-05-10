@@ -19,18 +19,30 @@ func InitQueryList() QueryList {
 
 func (queryList *QueryList) Add(pq PartialQuery, log ExtractedLog) {
 	queryList.lock.RLock()
-	q, ok := queryList.list[log.QueryId]
+	queryId := log.QueryId
+	if pq.QueryId != nil && *pq.QueryId != "" {
+		queryId = *pq.QueryId
+	}
+	q, ok := queryList.list[queryId]
 	queryList.lock.RUnlock()
 	if !ok {
 		queryList.lock.Lock()
-		q, ok = queryList.list[log.QueryId]
+		q, ok = queryList.list[queryId]
 		if !ok {
-			q = &Query{QueryId: log.QueryId, Databases: types.InitStringSet(), Tables: types.InitStringSet(), ThreadIds: types.InitIntSet()}
-			queryList.list[log.QueryId] = q
+			q = &Query{QueryId: queryId, Databases: getDatabases(log), Tables: types.InitStringSet(), ThreadIds: types.InitIntSet(), User: log.UserName, ClientHost: log.RemoteHost}
+			queryList.list[queryId] = q
 		}
 		queryList.lock.Unlock()
 	}
 	q.Add(pq)
+}
+
+func getDatabases(log ExtractedLog) types.StringSet {
+	databases := types.InitStringSet()
+	if log.DatabaseName != "" {
+		databases.Add(log.DatabaseName)
+	}
+	return databases
 }
 
 func (queryList *QueryList) GetQuery(key string) *Query {
@@ -42,4 +54,12 @@ func (queryList *QueryList) GetQuery(key string) *Query {
 
 func (queryList *QueryList) GetList() map[string]*Query {
 	return queryList.list
+}
+
+func (queryList *QueryList) AppendQueryList(m QueryList) {
+	queryList.lock.Lock()
+	defer queryList.lock.Unlock()
+	for k, v := range m.GetList() {
+		queryList.list[k] = v
+	}
 }

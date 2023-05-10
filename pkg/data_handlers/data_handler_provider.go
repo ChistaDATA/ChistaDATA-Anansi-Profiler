@@ -3,11 +3,15 @@ package data_handlers
 import "github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/stucts"
 
 // GetDataHandler using configuration it selects the best possible IDataHandler
-func GetDataHandler(config *stucts.Config) IDataHandler {
+func GetDataHandler(config *stucts.Config) []IDataHandler {
+	var handlers []IDataHandler
 	if len(config.FilePaths) > 0 {
-		return InitLocalFilesDataHandler(config.FilePaths, config.DatabaseName, config.DatabaseVersion)
-	} else if len(config.S3Config.AccessKeyID) > 0 {
-		return InitS3DataHandler(config.S3Config, config.DatabaseName, config.DatabaseVersion)
+		for _, path := range config.FilePaths {
+			handlers = append(handlers, InitLocalFilesDataHandler([]string{path}, config.DatabaseName, config.DatabaseVersion))
+		}
 	}
-	return nil
+	if len(config.S3Config.AccessKeyID) > 0 {
+		handlers = append(handlers, InitS3DataHandler(config.S3Config, config.S3Config.FileLocations, config.DatabaseName, config.DatabaseVersion))
+	}
+	return handlers
 }

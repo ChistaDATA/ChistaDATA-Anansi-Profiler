@@ -5,8 +5,8 @@ import (
 )
 
 // InitClickHouseParserV1 is Parser object which is a IParser implementation for clickhouse version 0 - 2.10
-func InitClickHouseParserV1() *Parser {
-	return InitParser(
+func InitClickHouseParserV1() IParser {
+	return NewParser(
 		"0",
 		"2.10",
 		"clickhouse",
@@ -20,6 +20,9 @@ func InitClickHouseParserV1() *Parser {
 			clickhouse.ParseMessageWithDataInfoV1,
 			clickhouse.ParseMessageWithPeakMemoryV1,
 			clickhouse.ParseMessageWithErrorInfoV1,
+		},
+		func(i ...interface{}) error {
+			return nil
 		},
 	)
 }

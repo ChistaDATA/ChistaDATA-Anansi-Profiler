@@ -14,6 +14,8 @@ type Config struct {
 	SortOrder             string
 	LogLevel              string
 	S3Config              *S3Config
+	LogPrefix             string
+	DiscardQueries        []string
 }
 
 func InitConfigFromCli(cliConfig *CliConfig) *Config {
@@ -23,7 +25,7 @@ func InitConfigFromCli(cliConfig *CliConfig) *Config {
 		FilePaths:             cliConfig.FilePaths,
 		MinimumQueryCallCount: cliConfig.MinimumQueryCallCount,
 
-		DatabaseName:       cliConfig.DatabaseName,
+		DatabaseName:       cliConfig.DatabaseType,
 		DatabaseVersion:    cliConfig.DatabaseVersion,
 		SortField:          cliConfig.SortField,
 		SortFieldOperation: cliConfig.SortFieldOperation,
@@ -36,5 +38,7 @@ func InitConfigFromCli(cliConfig *CliConfig) *Config {
 			Region:          cliConfig.S3Region,
 			FileLocations:   cliConfig.S3FileLocations,
 		},
+		LogPrefix:      cliConfig.LogPrefix,
+		DiscardQueries: cliConfig.DiscardQueries,
 	}
 }

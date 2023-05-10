@@ -87,10 +87,10 @@ func (similarQueryInfo *SimilarQueryInfo) CompleteProcessing() {
 }
 
 func GetQPS(similarQueryInfo *SimilarQueryInfo, totalDuration float64) float64 {
-	diff := similarQueryInfo.ToTimestamp.Sub(*similarQueryInfo.FromTimestamp)
-	if diff.Seconds() == 0 {
-		return float64(similarQueryInfo.Count)
-	}
+	//diff := similarQueryInfo.ToTimestamp.Sub(*similarQueryInfo.FromTimestamp)
+	//if diff.Seconds() == 0 {
+	//	return float64(similarQueryInfo.Count)
+	//}
 	return float64(similarQueryInfo.Count) / totalDuration
 }
 

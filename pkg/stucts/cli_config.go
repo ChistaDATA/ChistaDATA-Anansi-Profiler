@@ -13,6 +13,7 @@ const (
 	ReportTypeDefault        = ReportTypeText
 	MinimumQueryCountDefault = 1
 	ClickHouseDatabase       = "clickhouse"
+	PostgresDatabase         = "postgres"
 	SortFieldExecTime        = "ExecTime"
 	SortFieldRowsRead        = "RowsRead"
 	SortFieldBytesRead       = "BytesRead"
@@ -35,6 +36,11 @@ const (
 	LogLevelInfo             = "info"
 	LogLevelDebug            = "debug"
 	LogLevelTrace            = "trace"
+	SelectQuery              = "select"
+	CreateQuery              = "create"
+	UpdateQuery              = "update"
+	DeleteQuery              = "delete"
+	InsertQuery              = "insert"
 )
 
 var SortFieldOperations = [...]string{SortFieldOperationSum, SortFieldOperationMin, SortFieldOperationMax, SortFieldOperationAvg, SortFieldOperationPer95, SortFieldOperationStdDev, SortFieldOperationMedian}
@@ -46,7 +52,9 @@ var LogLevels = map[string]uint32{LogLevelPanic: 0, LogLevelFatal: 1, LogLevelEr
 // ReportTypes List of supported report types
 var ReportTypes = [...]string{ReportTypeText, ReportTypeMD}
 
-var DatabaseNames = [...]string{ClickHouseDatabase}
+var DatabaseNames = [...]string{ClickHouseDatabase, PostgresDatabase}
+
+var DiscardQueries = []string{SelectQuery, CreateQuery, UpdateQuery, DeleteQuery, InsertQuery}
 
 // TODO : construct config from cli-config
 
@@ -55,12 +63,14 @@ type CliConfig struct {
 	ReportType            string   `short:"r" help:"Report type to be generated, types: md, text" default:"text"`
 	FilePaths             []string `arg:"" optional:"" help:"Paths of log files" type:"existingfile"`
 	MinimumQueryCallCount int      `short:"c" help:"Minimum no of query calls needed" default:"1"`
-	DatabaseName          string   `help:"database type" default:"clickhouse"`
-	DatabaseVersion       string   `help:"database version" default:"0"` //TODO make this a supported stable version
+	DatabaseType          string   `help:"Which database? Possible values: clickhouse, postgres" default:"clickhouse"`
+	DatabaseVersion       string   `help:"Database version" default:"0"` //TODO make this a supported stable version
 	SortField             string   `help:"Sort queries by the given field, possible values: ExecTime, RowsRead, BytesRead, PeakMemory, QPS, QueryCount" default:"ExecTime"`
 	SortFieldOperation    string   `help:"Sort queries by the given operation on field, possible values: sum, min, max, avg, per95, stdDev, median" default:"max"`
 	SortOrder             string   `help:"Sort order, possible values: asc, desc" default:"desc"`
-	LogLevel              string   `help:"log level, possible values: panic, fatal, error, warn, info, debug, trace" default:"error"`
+	LogLevel              string   `help:"Log level, possible values: panic, fatal, error, warn, info, debug, trace" default:"error"`
+	LogPrefix             string   `help:"Prefix of log" default:""`
+	DiscardQueries        []string `help:"It will consider all the query types by default but type of queries can be discarded, possible values: select, update, delete, insert" default:""`
 	S3AccessKeyID         string   `name:"s3-access-key-id"`
 	S3SecretAccessKey     string   `name:"s3-secret-access-key"`
 	S3SessionToken        string   `name:"s3-session-token"`
@@ -103,14 +113,14 @@ func (cliConfig *CliConfig) validateCliConfig() {
 
 	valid = false
 	for _, s := range DatabaseNames {
-		if s == cliConfig.DatabaseName {
+		if s == cliConfig.DatabaseType {
 			valid = true
 			break
 		}
 	}
 	if !valid {
 		log.Warningln("Invalid Database name, Falling back to default")
-		cliConfig.DatabaseName = ClickHouseDatabase
+		cliConfig.DatabaseType = ClickHouseDatabase
 	}
 
 	valid = false
@@ -160,4 +170,28 @@ func (cliConfig *CliConfig) validateCliConfig() {
 		log.Warningln("Invalid LogLevel name, Falling back to default")
 		cliConfig.LogLevel = LogLevelError
 	}
+
+	valid = isSubsetStringArray(cliConfig.DiscardQueries, DiscardQueries)
+	if !valid {
+		log.Warningln("Invalid DiscardQueries name, Falling back to default")
+		cliConfig.DiscardQueries = []string{CreateQuery, UpdateQuery, DeleteQuery, InsertQuery}
+	}
+}
+
+func isSubsetStringArray(sub []string, main []string) bool {
+	isSubset := true
+	for i := 0; i < len(sub); i++ {
+		found := false
+		for j := 0; j < len(main); j++ {
+			if sub[i] == main[j] {
+				found = true
+				break
+			}
+		}
+		if !found {
+			isSubset = false
+			break
+		}
+	}
+	return isSubset
 }

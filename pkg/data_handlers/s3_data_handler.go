@@ -18,13 +18,13 @@ type S3DataHandler struct {
 	fileHandler     IFileHandler
 }
 
-func InitS3DataHandler(s3Config *stucts.S3Config, databaseType string, databaseVersion string) IDataHandler {
+func InitS3DataHandler(s3Config *stucts.S3Config, fileLocations []string, databaseType string, databaseVersion string) IDataHandler {
 
 	s3Handler := InitS3Handler(s3Config)
 
 	return &S3DataHandler{
 		s3Handler:       s3Handler,
-		s3filePaths:     s3Config.FileLocations,
+		s3filePaths:     fileLocations,
 		databaseType:    databaseType,
 		databaseVersion: databaseVersion,
 	}

@@ -62,7 +62,8 @@ func InitAccumulatedInfoTemplateInput(queryInfos SimilarQueryInfoList, filePaths
 	}
 
 	return AccumulatedInfoTemplateInput{
-		TotalDuration:         getAccumulatedTotalDuration(durations),
+		//TotalDuration:         getAccumulatedTotalDuration(durations),
+		TotalDuration:         (*timeStamps[len(timeStamps)-1]).Sub(*timeStamps[0]).Seconds(),
 		CurrentDate:           time.Now().String(),
 		Hostname:              hostname,
 		Files:                 filePathsToString(filePaths),

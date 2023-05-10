@@ -6,6 +6,7 @@ import (
 
 type ParseLogFunc func(logLine string) (stucts.ExtractedLog, error)
 type InfoParserFunc func(extractedLog stucts.ExtractedLog, dBPerfInfoRepository *stucts.DBPerfInfoRepository) error
+type InitParserFunc func(...interface{}) error
 
 // Parser is a IParser implementation
 type Parser struct {
@@ -16,9 +17,10 @@ type Parser struct {
 	infoExecuteAllFunctions []InfoParserFunc
 	infoExecuteOneFunctions []InfoParserFunc
 	dBPerfInfoRepository    *stucts.DBPerfInfoRepository
+	initFunc                InitParserFunc
 }
 
-func InitParser(minVersion string, maxVersion string, database string, parseLog ParseLogFunc, infoExecuteAllFunctions []InfoParserFunc, infoExecuteOneFunctions []InfoParserFunc) *Parser {
+func NewParser(minVersion string, maxVersion string, database string, parseLog ParseLogFunc, infoExecuteAllFunctions []InfoParserFunc, infoExecuteOneFunctions []InfoParserFunc, initFunc InitParserFunc) IParser {
 	return &Parser{
 		minVersion:              minVersion,
 		maxVersion:              maxVersion,
@@ -26,11 +28,13 @@ func InitParser(minVersion string, maxVersion string, database string, parseLog 
 		parseLog:                parseLog,
 		infoExecuteAllFunctions: infoExecuteAllFunctions,
 		infoExecuteOneFunctions: infoExecuteOneFunctions,
+		initFunc:                initFunc,
 	}
 }
 
-func (p *Parser) SetDBPerfInfoRepository(DBPerfInfoRepository *stucts.DBPerfInfoRepository) {
+func (p *Parser) InitParser(DBPerfInfoRepository *stucts.DBPerfInfoRepository, config *stucts.Config) {
 	p.dBPerfInfoRepository = DBPerfInfoRepository
+	p.initFunc(config)
 }
 
 func (p *Parser) GetDBPerfInfoRepository() *stucts.DBPerfInfoRepository {
