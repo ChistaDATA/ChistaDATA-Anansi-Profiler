@@ -35,5 +35,5 @@ func init() {
 	PostgresLogMessageWithEndQueryRegEx = regexp.MustCompile("^STATEMENT:  (.*)$")
 	PostgresLogMessageWithErrorRegEx = regexp.MustCompile("^ERROR:  (.*)$")
 	PostgresLogMessageWithSystemUsageRegEx = regexp.MustCompile(`(?s)DETAIL:  ! system usage stats:.*!	(\d+) ([a-zA-Z]+) max resident size.*`)
-	PostgresLogMessageWithDurationAndQueryRegEx = regexp.MustCompile("(?s)LOG:  duration: ([0-9]*\\.[0-9]+) ([a-zA-Z]*)  statement: (.*)")
+	PostgresLogMessageWithDurationAndQueryRegEx = regexp.MustCompile("(?s)LOG:  duration: ([0-9]*\\.[0-9]+) ([a-zA-Z]*)  (?:statement:|execute [a-zA-Z_][a-zA-Z0-9_]*:)(.*)")
 }
