@@ -1,11 +1,12 @@
 package stucts
 
 import (
+	"sort"
+	"time"
+
 	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/types"
 	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/utils"
 	"github.com/montanaflynn/stats"
-	"sort"
-	"time"
 )
 
 // SimilarQueryInfo all important information of similar queries
@@ -23,6 +24,7 @@ type SimilarQueryInfo struct {
 	PeakMemoryUsages []float64
 	FromTimestamp    *time.Time
 	ToTimestamp      *time.Time
+	ErrorMessages    []string
 }
 
 func InitSimilarQueryInfo(queryString string) *SimilarQueryInfo {
@@ -38,6 +40,7 @@ func InitSimilarQueryInfo(queryString string) *SimilarQueryInfo {
 		PeakMemoryUsages: []float64{},
 		FromTimestamp:    nil,
 		ToTimestamp:      nil,
+		ErrorMessages:    []string{},
 	}
 }
 
@@ -76,6 +79,9 @@ func (similarQueryInfo *SimilarQueryInfo) Add(query *Query) {
 	if similarQueryInfo.ToTimestamp == nil || (query.Timestamp != time.Time{} && query.Timestamp.After(*similarQueryInfo.ToTimestamp)) {
 		t := query.Timestamp
 		similarQueryInfo.ToTimestamp = &t
+	}
+	if query.ErrorCompleteText != "" {
+		similarQueryInfo.ErrorMessages = append(similarQueryInfo.ErrorMessages, query.ErrorCompleteText)
 	}
 }
 
