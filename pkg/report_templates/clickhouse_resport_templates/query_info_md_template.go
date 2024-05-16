@@ -22,6 +22,7 @@ const QueryInfoMDTemplate = `
 * Hosts:        {{.HostInfo}}
 * Users:        {{.UserInfo}}
 * Completion:   {{.CompletedInfo}}
+* Errors:       {{.ErrorInfo}}
 
 Query_time distribution
 ` + "```" + ` 

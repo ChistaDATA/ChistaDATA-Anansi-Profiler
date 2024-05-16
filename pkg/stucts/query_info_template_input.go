@@ -2,10 +2,11 @@ package stucts
 
 import (
 	"fmt"
-	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/formatters"
-	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/types"
 	"sort"
 	"strconv"
+
+	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/formatters"
+	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/types"
 )
 
 // QueryInfoTemplateInput input for QueryInfoTemplate
@@ -26,6 +27,7 @@ type QueryInfoTemplateInput struct {
 	UserInfo              string
 	TableInfo             string
 	CompletedInfo         string
+	ErrorInfo             string
 }
 
 func InitQueryInfoTemplateInput(index int, info *SimilarQueryInfo, totalDuration float64) QueryInfoTemplateInput {
@@ -46,6 +48,7 @@ func InitQueryInfoTemplateInput(index int, info *SimilarQueryInfo, totalDuration
 		TableInfo:             getTableInfo(info),
 		UserInfo:              getUserInfo(info),
 		CompletedInfo:         getCompletedInfo(info),
+		ErrorInfo:             getErrorInfo(info),
 	}
 }
 
@@ -230,6 +233,11 @@ func getUserInfo(info *SimilarQueryInfo) string {
 	sort.Sort(usersWithCount)
 	limit := 3
 	return formatStringCountPairArrayWithLimit(info, usersWithCount, limit)
+}
+
+func getErrorInfo(info *SimilarQueryInfo) string {
+
+	return fmt.Sprintf("%d/%d", len(info.ErrorMessages), info.Count)
 }
 
 func formatStringCountPairArrayWithLimit(info *SimilarQueryInfo, array types.StringCountPairArray, limit int) string {
