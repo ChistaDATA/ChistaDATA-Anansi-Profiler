@@ -2,9 +2,10 @@ package clickhouse
 
 import (
 	"errors"
+	"strconv"
+
 	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/stucts"
 	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/types"
-	"strconv"
 )
 
 func ParseMessageWithQueryV1(extractedLog stucts.ExtractedLog, dBPerfInfoRepository *stucts.DBPerfInfoRepository) error {
@@ -68,6 +69,7 @@ func ParseMessageWithErrorInfoV1(extractedLog stucts.ExtractedLog, dBPerfInfoRep
 		query.ErrorCode = &parts[3]
 		query.ErrorMessage = &parts[4]
 		query.ErrorStackTrace = &parts[8]
+		query.Query = &parts[7]
 		dBPerfInfoRepository.Queries.Add(query, extractedLog)
 		return nil
 	}

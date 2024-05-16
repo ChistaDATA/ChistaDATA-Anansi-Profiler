@@ -16,6 +16,7 @@ const QueryInfoTemplate = `
 # Hosts        {{.HostInfo}}
 # Users        {{.UserInfo}}
 # Completion   {{.CompletedInfo}}
+# Errors       {{.ErrorInfo}}
 # Query_time distribution
 # ====================================================================
 #   1us  {{.QueryTimeDistribution.Under10us}}
