@@ -5,6 +5,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+var TempFolder string
+
 // Default config values
 const (
 	TopQueryCountDefault     = 10
@@ -63,7 +65,7 @@ var DiscardQueries = []string{SelectQuery, CreateQuery, UpdateQuery, DeleteQuery
 
 // TODO : construct config from cli-config
 
-type CliConfig struct {
+type Config struct {
 	TopQueryCount         int      `short:"n" help:"Count of queries for top x table" default:"10"`
 	ReportType            string   `short:"r" help:"Report type to be generated, types: md, text" default:"text"`
 	FilePaths             []string `arg:"" optional:"" help:"Paths of log files" type:"existingfile"`
@@ -76,22 +78,18 @@ type CliConfig struct {
 	LogLevel              string   `help:"Log level, possible values: panic, fatal, error, warn, info, debug, trace" default:"error"`
 	LogPrefix             string   `help:"Prefix of log" default:""`
 	DiscardQueries        []string `help:"It will consider all the query types by default but type of queries can be discarded, possible values: select, update, delete, insert" default:""`
-	S3AccessKeyID         string   `name:"s3-access-key-id"`
-	S3SecretAccessKey     string   `name:"s3-secret-access-key"`
-	S3SessionToken        string   `name:"s3-session-token"`
-	S3Region              string   `name:"s3-region"`
-	S3FileLocations       []string `name:"s3-object-urls"`
+	S3Config              S3Config `embed:"s3" prefix:"s3-"`
 }
 
-func InitializeCliConfig() *CliConfig {
-	cliConfig := CliConfig{}
+func InitializeCliConfig() *Config {
+	cliConfig := Config{}
 	kong.Parse(&cliConfig)
 	cliConfig.validateCliConfig()
 	return &cliConfig
 }
 
-// validateCliConfig Validating CliConfig inputs from user
-func (cliConfig *CliConfig) validateCliConfig() {
+// validateCliConfig Validating Config inputs from user
+func (cliConfig *Config) validateCliConfig() {
 	valid := cliConfig.isArgumentListValid(cliConfig.ReportType, ReportTypes)
 	if !valid {
 		log.Warningln("Invalid Report type, Falling back to default")
@@ -152,7 +150,7 @@ func (cliConfig *CliConfig) validateCliConfig() {
 	}
 }
 
-func (cliConfig *CliConfig) isArgumentListValid(value string, validOptions []string) bool {
+func (cliConfig *Config) isArgumentListValid(value string, validOptions []string) bool {
 	valid := false
 	for _, s := range validOptions {
 		if s == value {

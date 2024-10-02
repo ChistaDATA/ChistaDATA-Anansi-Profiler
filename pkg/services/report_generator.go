@@ -14,7 +14,7 @@ import (
 	"text/template"
 )
 
-// ReportGenerator it is used to generate a report using the given *stucts.CliConfig and *stucts.DBPerfInfoRepository
+// ReportGenerator it is used to generate a report using the given *stucts.Config and *stucts.DBPerfInfoRepository
 type ReportGenerator struct {
 	Config               *stucts.Config
 	DBPerfInfoRepository *stucts.DBPerfInfoRepository
@@ -37,7 +37,7 @@ func InitReportGenerator(config *stucts.Config, dBPerfInfoRepository *stucts.DBP
 		discardQueryRegex:    getDiscardQueryRegex(config.DiscardQueries),
 	}
 
-	if config.DatabaseName == stucts.ClickHouseDatabase {
+	if config.DatabaseType == stucts.ClickHouseDatabase {
 		if config.ReportType == stucts.ReportTypeText {
 			reportGenerator.ReportTemplates = initReportTemplates(clickhouse_resport_templates.TopQueryRecord, clickhouse_resport_templates.AccumulatedInfoTemplate, clickhouse_resport_templates.TopQueriesTemplate, clickhouse_resport_templates.QueryInfoTemplate)
 			reportGenerator.OutputFileExtension = "txt"

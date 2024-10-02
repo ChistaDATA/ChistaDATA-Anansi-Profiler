@@ -27,7 +27,7 @@ func InitDBPerfInfoRepositoryGenerator(config *stucts.Config) *DBPerfInfoReposit
 	for i := 0; i < len(dataHandlers); i++ {
 		dBPerfInfoRepository := stucts.InitDBPerfInfoRepository()
 		dBPerfInfoRepositorys = append(dBPerfInfoRepositorys, dBPerfInfoRepository)
-		parser, err := parsers.GetParser(config.DatabaseVersion, config.DatabaseName, dBPerfInfoRepository, config)
+		parser, err := parsers.GetParser(config.DatabaseVersion, config.DatabaseType, dBPerfInfoRepository, config)
 		if err != nil {
 			log.Error(err)
 			panic(err)
@@ -51,10 +51,10 @@ func (g *DBPerfInfoRepositoryGenerator) GenerateDBPerfInfoRepository() *stucts.D
 		lhandler := g.dataHandlers[i]
 		lparser := g.parsers[i]
 		go func() {
-			if g.config.DatabaseName == "clickhouse" {
+			if g.config.DatabaseType == "clickhouse" {
 				g.iterateDataAndParse(lhandler, lparser)
 			}
-			if g.config.DatabaseName == "postgres" {
+			if g.config.DatabaseType == "postgres" {
 				g.iterateDataAndParsePostgres(lhandler, lparser)
 			}
 			wg.Done()

@@ -14,7 +14,7 @@ func init() {
 	openTemp()
 
 	// configuring application on startup
-	config = stucts.InitConfigFromCli(stucts.InitializeCliConfig())
+	config = stucts.InitializeCliConfig()
 
 	// TODO add file log supports
 	log.SetOutput(os.Stdout)
