@@ -8,12 +8,15 @@ import (
 // Default config values
 const (
 	TopQueryCountDefault     = 10
-	ReportTypeText           = "text"
-	ReportTypeMD             = "md"
-	ReportTypeDefault        = ReportTypeText
 	MinimumQueryCountDefault = 1
-	ClickHouseDatabase       = "clickhouse"
-	PostgresDatabase         = "postgres"
+
+	ReportTypeText    = "text"
+	ReportTypeMD      = "md"
+	ReportTypeDefault = ReportTypeText
+
+	ClickHouseDatabase = "clickhouse"
+	PostgresDatabase   = "postgres"
+
 	SortFieldExecTime        = "ExecTime"
 	SortFieldRowsRead        = "RowsRead"
 	SortFieldBytesRead       = "BytesRead"
@@ -29,30 +32,32 @@ const (
 	SortFieldOperationPer95  = "per95"
 	SortFieldOperationStdDev = "stdDev"
 	SortFieldOperationMedian = "median"
-	LogLevelPanic            = "panic"
-	LogLevelFatal            = "fatal"
-	LogLevelError            = "error"
-	LogLevelWarn             = "warn"
-	LogLevelInfo             = "info"
-	LogLevelDebug            = "debug"
-	LogLevelTrace            = "trace"
-	SelectQuery              = "select"
-	CreateQuery              = "create"
-	UpdateQuery              = "update"
-	DeleteQuery              = "delete"
-	InsertQuery              = "insert"
+
+	LogLevelPanic = "panic"
+	LogLevelFatal = "fatal"
+	LogLevelError = "error"
+	LogLevelWarn  = "warn"
+	LogLevelInfo  = "info"
+	LogLevelDebug = "debug"
+	LogLevelTrace = "trace"
+
+	SelectQuery = "select"
+	CreateQuery = "create"
+	UpdateQuery = "update"
+	DeleteQuery = "delete"
+	InsertQuery = "insert"
 )
 
-var SortFieldOperations = [...]string{SortFieldOperationSum, SortFieldOperationMin, SortFieldOperationMax, SortFieldOperationAvg, SortFieldOperationPer95, SortFieldOperationStdDev, SortFieldOperationMedian}
-var SortFields = [...]string{SortFieldExecTime, SortFieldRowsRead, SortFieldBytesRead, SortFieldPeakMemory, SortFieldQPS, SortFieldQueryCount}
-var SortOrders = [...]string{SortOrderAsc, SortOrderDesc}
+var SortFieldOperations = []string{SortFieldOperationSum, SortFieldOperationMin, SortFieldOperationMax, SortFieldOperationAvg, SortFieldOperationPer95, SortFieldOperationStdDev, SortFieldOperationMedian}
+var SortFields = []string{SortFieldExecTime, SortFieldRowsRead, SortFieldBytesRead, SortFieldPeakMemory, SortFieldQPS, SortFieldQueryCount}
+var SortOrders = []string{SortOrderAsc, SortOrderDesc}
 
 var LogLevels = map[string]uint32{LogLevelPanic: 0, LogLevelFatal: 1, LogLevelError: 2, LogLevelWarn: 3, LogLevelInfo: 4, LogLevelDebug: 5, LogLevelTrace: 6}
 
 // ReportTypes List of supported report types
-var ReportTypes = [...]string{ReportTypeText, ReportTypeMD}
+var ReportTypes = []string{ReportTypeText, ReportTypeMD}
 
-var DatabaseNames = [...]string{ClickHouseDatabase, PostgresDatabase}
+var DatabaseNames = []string{ClickHouseDatabase, PostgresDatabase}
 
 var DiscardQueries = []string{SelectQuery, CreateQuery, UpdateQuery, DeleteQuery, InsertQuery}
 
@@ -87,14 +92,7 @@ func InitializeCliConfig() *CliConfig {
 
 // validateCliConfig Validating CliConfig inputs from user
 func (cliConfig *CliConfig) validateCliConfig() {
-
-	valid := false
-	for _, s := range ReportTypes {
-		if s == cliConfig.ReportType {
-			valid = true
-			break
-		}
-	}
+	valid := cliConfig.isArgumentListValid(cliConfig.ReportType, ReportTypes)
 	if !valid {
 		log.Warningln("Invalid Report type, Falling back to default")
 		cliConfig.ReportType = ReportTypeDefault
@@ -111,56 +109,32 @@ func (cliConfig *CliConfig) validateCliConfig() {
 		cliConfig.MinimumQueryCallCount = MinimumQueryCountDefault
 	}
 
-	valid = false
-	for _, s := range DatabaseNames {
-		if s == cliConfig.DatabaseType {
-			valid = true
-			break
-		}
-	}
+	valid = cliConfig.isArgumentListValid(cliConfig.DatabaseType, DatabaseNames)
 	if !valid {
 		log.Warningln("Invalid Database name, Falling back to default")
 		cliConfig.DatabaseType = ClickHouseDatabase
 	}
 
-	valid = false
-	for _, s := range SortFields {
-		if s == cliConfig.SortField {
-			valid = true
-			break
-		}
-	}
+	valid = cliConfig.isArgumentListValid(cliConfig.SortField, SortFields)
 	if !valid {
 		log.Warningln("Invalid SortField name, Falling back to default")
 		cliConfig.SortField = SortFieldExecTime
 	}
 
-	valid = false
-	for _, s := range SortFieldOperations {
-		if s == cliConfig.SortFieldOperation {
-			valid = true
-			break
-		}
-	}
+	valid = cliConfig.isArgumentListValid(cliConfig.SortFieldOperation, SortFieldOperations)
 	if !valid {
 		log.Warningln("Invalid SortFieldOperation name, Falling back to default")
 		cliConfig.SortFieldOperation = SortFieldOperationMax
 	}
 
-	valid = false
-	for _, s := range SortOrders {
-		if s == cliConfig.SortOrder {
-			valid = true
-			break
-		}
-	}
+	valid = cliConfig.isArgumentListValid(cliConfig.SortOrder, SortOrders)
 	if !valid {
 		log.Warningln("Invalid SortOrder name, Falling back to default")
 		cliConfig.SortOrder = SortOrderDesc
 	}
 
 	valid = false
-	for s, _ := range LogLevels {
+	for s := range LogLevels {
 		if s == cliConfig.LogLevel {
 			valid = true
 			break
@@ -176,6 +150,17 @@ func (cliConfig *CliConfig) validateCliConfig() {
 		log.Warningln("Invalid DiscardQueries name, Falling back to default")
 		cliConfig.DiscardQueries = []string{CreateQuery, UpdateQuery, DeleteQuery, InsertQuery}
 	}
+}
+
+func (cliConfig *CliConfig) isArgumentListValid(value string, validOptions []string) bool {
+	valid := false
+	for _, s := range validOptions {
+		if s == value {
+			valid = true
+			break
+		}
+	}
+	return valid
 }
 
 func isSubsetStringArray(sub []string, main []string) bool {
