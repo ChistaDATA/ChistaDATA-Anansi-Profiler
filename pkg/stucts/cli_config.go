@@ -42,7 +42,7 @@ type Config struct {
 	SortField             string   `help:"Sort queries by the given field. Possible values: ${enum}" default:"ExecTime" enum:"ExecTime,RowsRead,BytesRead,PeakMemory,QPS,QueryCount"`
 	SortFieldOperation    string   `help:"Sort queries by the given operation on field. Possible values: ${enum}" default:"max" enum:"sum,min,max,avg,per95,stdDev,median"`
 	SortOrder             string   `help:"Sort order. Possible values: ${enum}" default:"desc" enum:"asc,desc"`
-	LogLevel              string   `help:"Log level. Possible values: ${enum}" default:"error" enum:"panic,fatal,error,warn,info,debug,trace"`
+	LogLevel              string   `help:"Log level. Possible values: ${enum}" default:"info" enum:"panic,fatal,error,warn,info,debug,trace"`
 	LogPrefix             string   `help:"Prefix of log" default:""`
 	DiscardQueries        []string `help:"It will consider all the query types by default but type of queries can be discarded. Possible values: ${enum}" default:"" enum:"select,create,update,delete,insert"`
 	S3Config              S3Config `embed:"s3" prefix:"s3-"`
