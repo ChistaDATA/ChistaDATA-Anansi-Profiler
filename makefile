@@ -12,7 +12,7 @@ build-bins:
 	GOOS=windows GOARCH=amd64 go build -o bin/${BINARY_NAME}-windows-amd64 cmd/main.go
 
 start:
-	go run cmd/main.go -n 20 -r md -c 100 sample.log
+	go run cmd/main.go -n 20 -c 20 -r text --log-level="debug" sample.log
 
 test:
 	go test ./...
