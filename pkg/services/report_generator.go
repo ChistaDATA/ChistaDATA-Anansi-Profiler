@@ -4,14 +4,15 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/report_templates/clickhouse_resport_templates"
-	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/report_templates/postgres_resport_templates"
-	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/stucts"
-	log "github.com/sirupsen/logrus"
 	"os"
 	"regexp"
 	"strings"
 	"text/template"
+
+	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/report_templates/clickhouse_resport_templates"
+	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/report_templates/postgres_resport_templates"
+	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/stucts"
+	log "github.com/sirupsen/logrus"
 )
 
 // ReportGenerator it is used to generate a report using the given *stucts.Config and *stucts.DBPerfInfoRepository
@@ -131,6 +132,8 @@ func (reportGenerator ReportGenerator) GenerateReport() {
 		log.Fatalln(err)
 	}
 
+	log.Debug(reportString)
+
 	// Persisting the output to a file, from buffer
 
 	// TODO externalise output file location
@@ -143,6 +146,7 @@ func (reportGenerator ReportGenerator) GenerateReport() {
 	w := bufio.NewWriter(f)
 	w.WriteString(reportString)
 	w.Flush()
+	log.Info("Report generated successfully, output." + reportGenerator.OutputFileExtension + " created.")
 }
 
 func (reportGenerator ReportGenerator) executeTemplates(accumulatedInfoTemplateInput stucts.AccumulatedInfoTemplateInput, topQueriesTemplateInput stucts.TopQueriesTemplateInput, queryInfoTemplateInputs []stucts.QueryInfoTemplateInput) (string, error) {
@@ -166,7 +170,6 @@ func (reportGenerator ReportGenerator) executeTemplates(accumulatedInfoTemplateI
 			log.Fatalln(err.Error())
 			return "", err
 		}
-		//log.Infoln(bf.String())
 	}
 	return bf.String(), nil
 }
