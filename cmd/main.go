@@ -10,16 +10,17 @@ import (
 var config *stucts.Config
 
 func init() {
-
 	openTemp()
-
-	// configuring application on startup
 	config = stucts.InitializeCliConfig()
 
 	// TODO add file log supports
 	log.SetOutput(os.Stdout)
 
-	log.SetLevel(log.Level(stucts.LogLevels[config.LogLevel]))
+	level, err := log.ParseLevel(config.LogLevel)
+	if err != nil {
+		log.Fatalln("Invalid log level", err)
+	}
+	log.SetLevel(level)
 }
 
 func openTemp() {
