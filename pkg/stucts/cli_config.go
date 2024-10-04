@@ -11,6 +11,7 @@ var TempFolder string
 const (
 	ReportTypeText = "text"
 	ReportTypeMD   = "md"
+	ReportTypeHTML = "html"
 
 	ClickHouseDatabase = "clickhouse"
 	PostgresDatabase   = "postgres"
@@ -35,7 +36,7 @@ const (
 type Config struct {
 	FilePaths             []string `arg:"" optional:"" help:"Paths of log files" type:"existingfile"`
 	TopQueryCount         int      `short:"n" help:"Count of queries for top x table" default:"10"`
-	ReportType            string   `short:"r" help:"Report type to be generated. Possible values: ${enum}" default:"text" enum:"md,text"`
+	ReportType            string   `short:"r" help:"Report type to be generated. Possible values: ${enum}" default:"text" enum:"md,text,html"`
 	MinimumQueryCallCount int      `short:"c" help:"Minimum no of query calls needed" default:"1"`
 	DatabaseType          string   `help:"Database type where the log file was generated. Possible values: ${enum}" default:"clickhouse" enum:"clickhouse,postgres"`
 	DatabaseVersion       string   `help:"Database version" default:"0"` //TODO make this a supported stable version
