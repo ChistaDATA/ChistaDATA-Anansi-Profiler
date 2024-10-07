@@ -1,6 +1,11 @@
 package clickhouse_resport_templates
 
 const AccumulatedInfoHTMLTemplate = `
+<style>
+table {
+  border-collapse: collapse;
+}
+</style>
 <h1>Profiler output</h1>
 <div>Current date: {{.CurrentDate}}</div>
 <div>Hostname: {{.Hostname}}</div>
