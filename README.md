@@ -174,7 +174,7 @@ Flags:
 Flags:
   -h, --help                                 Show context-sensitive help.
   -n, --top-query-count=10                   Count of queries for top x table
-  -r, --report-type="text"                   Report type to be generated, types: md, text
+  -r, --report-type="text"                   Report type to be generated, types: md, text, html
   -c, --minimum-query-call-count=1           Minimum no of query calls needed
       --database-type="clickhouse"           Which database? Possible values: clickhouse, postgres
       --database-version="0"                 Database version
