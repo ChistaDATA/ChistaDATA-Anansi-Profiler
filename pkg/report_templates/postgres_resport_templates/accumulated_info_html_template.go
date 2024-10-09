@@ -5,6 +5,9 @@ const AccumulatedInfoHTMLTemplate = `
 table {
   border-collapse: collapse;
 }
+table, th, td {
+  border: 1px solid;
+}
 </style>
 <h1>Profiler output</h1>
 <div>Current date: {{.CurrentDate}}</div>
