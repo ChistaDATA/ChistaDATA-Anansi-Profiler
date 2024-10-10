@@ -9,8 +9,9 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/report_templates/clickhouse_resport_templates"
 	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/report_templates/postgres_resport_templates"
+
+	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/report_templates/clickhouse_resport_templates"
 	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/stucts"
 	log "github.com/sirupsen/logrus"
 )
@@ -42,17 +43,23 @@ func InitReportGenerator(config *stucts.Config, dBPerfInfoRepository *stucts.DBP
 		if config.ReportType == stucts.ReportTypeText {
 			reportGenerator.ReportTemplates = initReportTemplates(clickhouse_resport_templates.TopQueryRecord, clickhouse_resport_templates.AccumulatedInfoTemplate, clickhouse_resport_templates.TopQueriesTemplate, clickhouse_resport_templates.QueryInfoTemplate)
 			reportGenerator.OutputFileExtension = "txt"
-		} else {
+		} else if config.ReportType == stucts.ReportTypeMD {
 			reportGenerator.ReportTemplates = initReportTemplates(clickhouse_resport_templates.TopQueryMDRecord, clickhouse_resport_templates.AccumulatedInfoMDTemplate, clickhouse_resport_templates.TopQueriesMDTemplate, clickhouse_resport_templates.QueryInfoMDTemplate)
 			reportGenerator.OutputFileExtension = "md"
+		} else {
+			reportGenerator.ReportTemplates = initReportTemplates(clickhouse_resport_templates.TopQueryHTMLRecord, clickhouse_resport_templates.AccumulatedInfoHTMLTemplate, clickhouse_resport_templates.TopQueriesHTMLTemplate, clickhouse_resport_templates.QueryInfoHTMLTemplate)
+			reportGenerator.OutputFileExtension = "html"
 		}
 	} else {
 		if config.ReportType == stucts.ReportTypeText {
 			reportGenerator.ReportTemplates = initReportTemplates(postgres_resport_templates.TopQueryRecord, postgres_resport_templates.AccumulatedInfoTemplate, postgres_resport_templates.TopQueriesTemplate, postgres_resport_templates.QueryInfoTemplate)
 			reportGenerator.OutputFileExtension = "txt"
-		} else {
+		} else if config.ReportType == stucts.ReportTypeMD {
 			reportGenerator.ReportTemplates = initReportTemplates(postgres_resport_templates.TopQueryMDRecord, postgres_resport_templates.AccumulatedInfoMDTemplate, postgres_resport_templates.TopQueriesMDTemplate, postgres_resport_templates.QueryInfoMDTemplate)
 			reportGenerator.OutputFileExtension = "md"
+		} else {
+			reportGenerator.ReportTemplates = initReportTemplates(postgres_resport_templates.TopQueryHTMLRecord, postgres_resport_templates.AccumulatedInfoHTMLTemplate, postgres_resport_templates.TopQueriesHTMLTemplate, postgres_resport_templates.QueryInfoHTMLTemplate)
+			reportGenerator.OutputFileExtension = "html"
 		}
 	}
 
