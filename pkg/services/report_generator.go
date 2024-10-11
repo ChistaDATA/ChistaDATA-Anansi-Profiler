@@ -130,11 +130,11 @@ func (reportGenerator ReportGenerator) GenerateReport() {
 		topQueriesRecords = append(topQueriesRecords, stucts.InitTopQueriesTemplateInputRecord(sortedSimilarQueryInfos[i], &queryInfoTemplateInputs[i], accumulatedInfoTemplateInput.TotalDuration))
 	}
 
-	topQueriesTemplateInput := stucts.InitTopQueriesTemplateInput(topQueriesRecords, reportGenerator.ReportTemplates.TopQueryRecordTemplate)
+	// topQueriesTemplateInput := stucts.InitTopQueriesTemplateInput(topQueriesRecords, reportGenerator.ReportTemplates.TopQueryRecordTemplate)
 
 	// Generating output from templates, to a buffer
 
-	reportString, err := reportGenerator.executeTemplates(accumulatedInfoTemplateInput, topQueriesTemplateInput, queryInfoTemplateInputs)
+	reportString, err := reportGenerator.executeTemplates(accumulatedInfoTemplateInput, topQueriesRecords, queryInfoTemplateInputs)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -156,7 +156,7 @@ func (reportGenerator ReportGenerator) GenerateReport() {
 	log.Info("Report generated successfully, output." + reportGenerator.OutputFileExtension + " created.")
 }
 
-func (reportGenerator ReportGenerator) executeTemplates(accumulatedInfoTemplateInput stucts.AccumulatedInfoTemplateInput, topQueriesTemplateInput stucts.TopQueriesTemplateInput, queryInfoTemplateInputs []stucts.QueryInfoTemplateInput) (string, error) {
+func (reportGenerator ReportGenerator) executeTemplates(accumulatedInfoTemplateInput stucts.AccumulatedInfoTemplateInput, topQueriesTemplateInput []stucts.TopQueriesTemplateInputRecord, queryInfoTemplateInputs []stucts.QueryInfoTemplateInput) (string, error) {
 	var err error
 	var bf bytes.Buffer
 	err = reportGenerator.ReportTemplates.AccumulatedTemplate.Execute(&bf, accumulatedInfoTemplateInput)

@@ -12,7 +12,14 @@ const TopQueriesHTMLTemplate = `
         <td></td>
     </tr>
     <tr>
-        <td>{{.Records}}</td>
+        {{range $record:=.}}
+        <td>{{$record.Pos}}</td>
+        <td>{{$record.TotalDuration}}</td>
+        <td>{{$record.TotalDurationPercentage}}</td>
+        <td>{{$record.Count}}</td>
+        <td>{{$record.ResponseTimePerCall}}</td>
+        <td>{{$record.Query}}</td>
+        {{end}}  
     </tr>
 </table>
 `
