@@ -7,6 +7,7 @@ import (
 	"github.com/montanaflynn/stats"
 	"os"
 	"sort"
+	"strings"
 	"time"
 )
 
@@ -25,6 +26,14 @@ type AccumulatedInfoTemplateInput struct {
 	ReadBytes             QueryInfoTemplateInputReadBytes
 	PeakMemoryUsage       QueryInfoTemplateInputPeakMemoryUsage
 	TotalDuration         float64
+	QueryTypeCount        QueryTypeCount
+}
+
+type QueryTypeCount struct {
+	Select int
+	Insert int
+	Delete int
+	Update int
 }
 
 func InitAccumulatedInfoTemplateInput(queryInfos SimilarQueryInfoList, filePaths []string) AccumulatedInfoTemplateInput {
@@ -37,9 +46,25 @@ func InitAccumulatedInfoTemplateInput(queryInfos SimilarQueryInfoList, filePaths
 	var timeStamps []*time.Time
 	totalQueryCount := 0
 	t := time.Time{}
+	qtc := QueryTypeCount{0, 0, 0, 0}
 
 	for _, info := range queryInfos {
 		totalQueryCount += info.Count
+		if info.Query != "" {
+			queryType := strings.Split(info.Query, " ")[0]
+			if queryType == "select" || queryType == "SELECT" {
+				qtc.Select++
+			}
+			if queryType == "delete" || queryType == "DELETE" {
+				qtc.Delete++
+			}
+			if queryType == "update" || queryType == "UPDATE" {
+				qtc.Update++
+			}
+			if queryType == "insert" || queryType == "INSERT" {
+				qtc.Insert++
+			}
+		}
 		durations = append(durations, info.Durations...)
 		readRows = append(readRows, info.ReadRows...)
 		readBytes = append(readBytes, info.ReadBytes...)
@@ -76,6 +101,7 @@ func InitAccumulatedInfoTemplateInput(queryInfos SimilarQueryInfoList, filePaths
 		TotalQueryCount:       fmt.Sprintf("%d", totalQueryCount),
 		TotalUniqueQueryCount: fmt.Sprintf("%d", len(queryInfos)),
 		TotalQPS:              getTotalQPS(totalQueryCount, timeStamps),
+		QueryTypeCount:        qtc,
 	}
 }
 

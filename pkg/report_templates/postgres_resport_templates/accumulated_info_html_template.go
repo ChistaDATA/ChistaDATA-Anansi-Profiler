@@ -80,4 +80,12 @@ table, th, td {
 		</tr>
 	</tbody>
 </table>
+
+<p>Query Type</p>
+<ul>
+	<li>Selects:{{.QueryTypeCount.Select}}</li>
+	<li>Inserts:{{.QueryTypeCount.Insert}}</li>
+	<li>Updates:{{.QueryTypeCount.Update}}</li>
+	<li>Deletes:{{.QueryTypeCount.Delete}}</li>
+</ul>
 `
