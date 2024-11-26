@@ -51,17 +51,17 @@ func InitAccumulatedInfoTemplateInput(queryInfos SimilarQueryInfoList, filePaths
 	for _, info := range queryInfos {
 		totalQueryCount += info.Count
 		if info.Query != "" {
-			queryType := strings.Split(info.Query, " ")[0]
-			if queryType == "select" || queryType == "SELECT" {
+			queryType := strings.ToUpper(strings.Split(info.Query, " ")[0])
+			if queryType == "SELECT" {
 				qtc.Select++
 			}
-			if queryType == "delete" || queryType == "DELETE" {
+			if queryType == "DELETE" {
 				qtc.Delete++
 			}
-			if queryType == "update" || queryType == "UPDATE" {
+			if queryType == "UPDATE" {
 				qtc.Update++
 			}
-			if queryType == "insert" || queryType == "INSERT" {
+			if queryType == "INSERT" {
 				qtc.Insert++
 			}
 		}
