@@ -6,6 +6,7 @@ const TopQueriesHTMLTemplate = `
     <tr>
         <td>Rank</td>
         <td>Response time</td>
+		<td>Response time(%)</td>
         <td>Calls</td>
         <td>R/Call</td>
         <td>Query</td>
