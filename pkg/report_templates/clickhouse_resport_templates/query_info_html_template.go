@@ -6,8 +6,8 @@ const QueryInfoHTMLTemplate = `
       <div class="query">{{.Query}}</div>
       <div>QPS: {{.QPS}}</div>
       <p>Time range</p>
-      <li>From: {{.FromTimestamp}}</li>
-      <li>To: {{.ToTimestamp}}</li>
+      <div>From: {{.FromTimestamp}}</div>
+      <div>To: {{.ToTimestamp}}</div>
 
       <table>
 		<thead>
