@@ -133,21 +133,39 @@ const AccumulatedInfoHTMLTemplate = `
 <section style="display: flex; flex: 1;background: none">
     <div style="display: flex;flex-wrap: wrap; gap: 32px">
         <div class="card">
+            <div style="display: flex;flex-direction: column;gap: 6px">
             <div>Total Queries</div>
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M22 12H18L15 21L9 3L6 12H2" stroke="#1A74A6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+			</svg>
+			</div>
             <div>
                 <div style="font-size: x-large;color: #0141A1;font-weight: bold">{{.TotalQueryCount}}</div>
                 <div style="font-size: small">Unique: {{.TotalUniqueQueryCount}}</div>
             </div>
         </div>
         <div class="card">
-            <div>Execution Time</div>
+            <div style="display: flex;flex-direction: column;gap: 6px">
+            <div>Total Queries</div>
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#1A74A6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+			<path d="M12 6V12L16 14" stroke="#1A74A6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+			</svg>
+			</div>
             <div>
                 <div style="font-size: x-large;color: #0141A1;font-weight: bold">{{.Duration.Total}}</div>
                 <div style="font-size: small">QPS: {{.TotalQPS}}</div>
             </div>
         </div>
         <div class="card">
-            <div>Data Read</div>
+            <div style="display: flex;flex-direction: column;gap: 6px">
+            <div>Total Queries</div>
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path d="M12 8C16.9706 8 21 6.65685 21 5C21 3.34315 16.9706 2 12 2C7.02944 2 3 3.34315 3 5C3 6.65685 7.02944 8 12 8Z" stroke="#1A74A6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+			<path d="M21 12C21 13.66 17 15 12 15C7 15 3 13.66 3 12" stroke="#1A74A6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+			<path d="M3 5V19C3 20.66 7 22 12 22C17 22 21 20.66 21 19V5" stroke="#1A74A6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+			</svg>
+			</div>
             <div>
                 <div style="font-size: x-large;color: #0141A1;font-weight: bold">{{.ReadBytes.Total}}</div>
                 <div style="font-size: small">{{.ReadRows.Total}} Rows</div>
