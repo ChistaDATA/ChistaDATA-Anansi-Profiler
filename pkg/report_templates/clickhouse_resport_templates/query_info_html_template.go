@@ -83,43 +83,43 @@ const QueryInfoHTMLTemplate = `
         <li>Completion: {{.CompletedInfo}}</li>
         <li>Errors: {{.ErrorInfo}}</li>
       </ul>
+	<script type="text/javascript">
+			google.charts.load("current", {packages:["corechart"]});
+			google.charts.setOnLoadCallback(drawChart);
+			function drawChart() {
+				var data = google.visualization.arrayToDataTable([
+					["Time", "Count", { role: "style" } ],
+					["1us", {{.QueryTimeDistribution.TimeDistNumber.Under10us}}, "#b87333"],
+					["10us", {{.QueryTimeDistribution.TimeDistNumber.Over10usUnder100us}}, "silver"],
+					["100us", {{.QueryTimeDistribution.TimeDistNumber.Over100usUnder1ms}}, "gold"],
+					["1ms", {{.QueryTimeDistribution.TimeDistNumber.Over1msUnder10ms}}, "color: #e5e4e2"],
+					["10ms", {{.QueryTimeDistribution.TimeDistNumber.Under10us}}, "color: #e5e4e2"],
+					["100ms", {{.QueryTimeDistribution.TimeDistNumber.Over100msUnder1s}}, "color: yellow"],
+					["1s", {{.QueryTimeDistribution.TimeDistNumber.Over1sUnder10s}}, "color: orange"],
+					["10s+", {{.QueryTimeDistribution.TimeDistNumber.Over10s}}, "color: red"]
+				]);
 
-      <h1>Query_time distribution</h1>
-      <table>
-        <tr>
-          <td>1us</td>
-          <td>{{.QueryTimeDistribution.Under10us}}</td>
-        </tr>
-        <tr>
-          <td>10us</td>
-          <td>{{.QueryTimeDistribution.Over10usUnder100us}}</td>
-        </tr>
-        <tr>
-          <td>100us</td>
-          <td>{{.QueryTimeDistribution.Over100usUnder1ms}}</td>
-        </tr>
-        <tr>
-          <td>1ms</td>
-          <td>{{.QueryTimeDistribution.Over1msUnder10ms}}</td>
-        </tr>
-        <tr>
-          <td>10ms</td>
-          <td>{{.QueryTimeDistribution.Under10us}}</td>
-        </tr>
-        <tr>
-          <td>100ms</td>
-          <td>{{.QueryTimeDistribution.Over100msUnder1s}}</td>
-        </tr>
-        <tr>
-          <td>1s {{.QueryTimeDistribution.Over1sUnder10s}}</td>
-          <td>{{.QueryTimeDistribution.Over1sUnder10s}}</td>
-        </tr>
-        <tr>
-          <td>10s+ {{.QueryTimeDistribution.Over10s}}</td>
-          <td>{{.QueryTimeDistribution.Over10s}}</td>
-        </tr>
-      </table>
+				var view = new google.visualization.DataView(data);
+				view.setColumns([0, 1,
+					{ calc: "stringify",
+						sourceColumn: 1,
+						type: "string",
+						role: "annotation" },
+					2]);
+
+				var options = {
+					title: "Query Time Distribution",
+					width: 600,
+					height: 400,
+					bar: {groupWidth: "50%"},
+					legend: { position: "none" },
+				};
+				var chart = new google.visualization.BarChart(document.getElementById("barchart_values_{{.Pos}}"));
+				chart.draw(view, options);
+			}
+		</script>
+		<div id="barchart_values_{{.Pos}}" style="width: 900px; height: 400px;"></div>
+
     </section>
-  </body>
-</html>
+
 `
