@@ -26,12 +26,12 @@ const QueryInfoMDTemplate = `
 
 Query_time distribution
 ` + "```" + ` 
-   1us  {{.QueryTimeDistribution.Under10us}}
-  10us  {{.QueryTimeDistribution.Over10usUnder100us}}
- 100us  {{.QueryTimeDistribution.Over100usUnder1ms}}
-   1ms  {{.QueryTimeDistribution.Over1msUnder10ms}}
-  10ms  {{.QueryTimeDistribution.Over10msUnder100ms}}
- 100ms  {{.QueryTimeDistribution.Over100msUnder1s}}
-    1s  {{.QueryTimeDistribution.Over1sUnder10s}}
-  10s+  {{.QueryTimeDistribution.Over10s}}
+   1us  {{.QueryTimeDistribution.TimeDistString.Under10us}}
+  10us  {{.QueryTimeDistribution.TimeDistString.Over10usUnder100us}}
+ 100us  {{.QueryTimeDistribution.TimeDistString.Over100usUnder1ms}}
+   1ms  {{.QueryTimeDistribution.TimeDistString.Over1msUnder10ms}}
+  10ms  {{.QueryTimeDistribution.TimeDistString.Over10msUnder100ms}}
+ 100ms  {{.QueryTimeDistribution.TimeDistString.Over100msUnder1s}}
+    1s  {{.QueryTimeDistribution.TimeDistString.Over1sUnder10s}}
+  10s+  {{.QueryTimeDistribution.TimeDistString.Over10s}}
 ` + "```"
