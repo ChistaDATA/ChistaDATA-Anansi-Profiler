@@ -1,9 +1,9 @@
 package clickhouse_resport_templates
 
 const QueryInfoHTMLTemplate = `
-    <section>
-      <h1>Query {{.Pos}}</h1>
-      <p>{{.Query}}</p>
+    <section style="background: #FFFFFF;padding: 10px">
+      <h3>Query {{.Pos}}</h3>
+      <div class="query">{{.Query}}</div>
       <div>QPS: {{.QPS}}</div>
       <p>Time range</p>
       <li>From: {{.FromTimestamp}}</li>
@@ -89,14 +89,14 @@ const QueryInfoHTMLTemplate = `
 			function drawChart() {
 				var data = google.visualization.arrayToDataTable([
 					["Time", "Count", { role: "style" } ],
-					["1us", {{.QueryTimeDistribution.TimeDistNumber.Under10us}}, "#b87333"],
-					["10us", {{.QueryTimeDistribution.TimeDistNumber.Over10usUnder100us}}, "silver"],
-					["100us", {{.QueryTimeDistribution.TimeDistNumber.Over100usUnder1ms}}, "gold"],
-					["1ms", {{.QueryTimeDistribution.TimeDistNumber.Over1msUnder10ms}}, "color: #e5e4e2"],
-					["10ms", {{.QueryTimeDistribution.TimeDistNumber.Under10us}}, "color: #e5e4e2"],
-					["100ms", {{.QueryTimeDistribution.TimeDistNumber.Over100msUnder1s}}, "color: yellow"],
-					["1s", {{.QueryTimeDistribution.TimeDistNumber.Over1sUnder10s}}, "color: orange"],
-					["10s+", {{.QueryTimeDistribution.TimeDistNumber.Over10s}}, "color: red"]
+					["1us", {{.QueryTimeDistribution.TimeDistNumber.Under10us}}, "#1A74A6"],
+					["10us", {{.QueryTimeDistribution.TimeDistNumber.Over10usUnder100us}}, "#1A74A6"],
+					["100us", {{.QueryTimeDistribution.TimeDistNumber.Over100usUnder1ms}}, "#1A74A6"],
+					["1ms", {{.QueryTimeDistribution.TimeDistNumber.Over1msUnder10ms}}, "#1A74A6"],
+					["10ms", {{.QueryTimeDistribution.TimeDistNumber.Under10us}}, "#1A74A6"],
+					["100ms", {{.QueryTimeDistribution.TimeDistNumber.Over100msUnder1s}}, "#1A74A6"],
+					["1s", {{.QueryTimeDistribution.TimeDistNumber.Over1sUnder10s}}, "#1A74A6"],
+					["10s+", {{.QueryTimeDistribution.TimeDistNumber.Over10s}}, "#1A74A6"]
 				]);
 
 				var view = new google.visualization.DataView(data);

@@ -28,7 +28,7 @@ const AccumulatedInfoHTMLTemplate = `
         }
 
         thead {
-            background: #F5F6FA;
+            background: #EBEBEB;
             font-weight: bold;
             border-bottom: 1px solid black;
             height: 40px;
@@ -39,7 +39,7 @@ const AccumulatedInfoHTMLTemplate = `
 
         tr {
             height: 14px;
-            border-bottom: 1px solid black;
+            border-bottom: 1px solid #E3E3E3;
             text-align: left;
         }
 
@@ -86,6 +86,14 @@ const AccumulatedInfoHTMLTemplate = `
             display: flex;
             justify-content: space-between;
         }
+		h3{
+			padding: 10px;
+		}
+		.query{
+			background: #F7F7F7;
+			font-family: monospace;
+			padding: 12px;
+		}
     </style>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">

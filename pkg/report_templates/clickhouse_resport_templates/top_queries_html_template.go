@@ -2,7 +2,7 @@ package clickhouse_resport_templates
 
 const TopQueriesHTMLTemplate = `
 <section>
-<h1>Top Queries</h1>
+<h3>Top Queries</h3>
   <table>
 	<thead>
 		<tr>
