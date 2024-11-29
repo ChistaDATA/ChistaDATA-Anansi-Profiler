@@ -3,73 +3,77 @@ package clickhouse_resport_templates
 const QueryInfoHTMLTemplate = `
     <section>
       <h1>Query {{.Pos}}</h1>
-      <h2>{{.Query}}</h2>
+      <p>{{.Query}}</p>
       <div>QPS: {{.QPS}}</div>
       <p>Time range</p>
       <li>From: {{.FromTimestamp}}</li>
       <li>To: {{.ToTimestamp}}</li>
 
       <table>
-        <tr>
-          <td>Attribute</td>
-          <td>total</td>
-          <td>min</td>
-          <td>max</td>
-          <td>avg</td>
-          <td>95%</td>
-          <td>stddev</td>
-          <td>median</td>
-        </tr>
-        <tr>
-          <td>Count</td>
-          <td>{{.Count}}</td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>Exec time</td>
-          <td>{{.Duration.Total}}</td>
-          <td>{{.Duration.Min}}</td>
-          <td>{{.Duration.Max}}</td>
-          <td>{{.Duration.Avg}}</td>
-          <td>{{.Duration.Percentile95}}</td>
-          <td>{{.Duration.StdDev}}</td>
-          <td>{{.Duration.Median}}</td>
-        </tr>
-        <tr>
-          <td>Rows read</td>
-          <td>{{.ReadRows.Total}}</td>
-          <td>{{.ReadRows.Min}}</td>
-          <td>{{.ReadRows.Max}}</td>
-          <td>{{.ReadRows.Avg}}</td>
-          <td>{{.ReadRows.Percentile95}}</td>
-          <td>{{.ReadRows.StdDev}}</td>
-          <td>{{.ReadRows.Median}}</td>
-        </tr>
-        <tr>
-          <td>Bytes read</td>
-          <td>{{.ReadBytes.Total}}</td>
-          <td>{{.ReadBytes.Min}}</td>
-          <td>{{.ReadBytes.Max}}</td>
-          <td>{{.ReadBytes.Avg}}</td>
-          <td>{{.ReadBytes.Percentile95}}</td>
-          <td>{{.ReadBytes.StdDev}}</td>
-          <td>{{.ReadBytes.Median}}</td>
-        </tr>
-        <tr>
-          <td>Peak Memory</td>
-          <td></td>
-          <td>{{.PeakMemoryUsage.Min}}</td>
-          <td>{{.PeakMemoryUsage.Max}}</td>
-          <td>{{.PeakMemoryUsage.Avg}}</td>
-          <td>{{.PeakMemoryUsage.Percentile95}}</td>
-          <td>{{.PeakMemoryUsage.StdDev}}</td>
-          <td>{{.PeakMemoryUsage.Median}}</td>
-        </tr>
+		<thead>
+			<tr>
+			  <th>Attribute</th>
+			  <th>total</th>
+			  <th>min</th>
+			  <th>max</th>
+			  <th>avg</th>
+			  <th>95%</th>
+			  <th>stddev</th>
+			  <th>median</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+			  <th>Count</th>
+			  <td>{{.Count}}</td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			</tr>
+			<tr>
+			  <th>Exec time</th>
+			  <td>{{.Duration.Total}}</td>
+			  <td>{{.Duration.Min}}</td>
+			  <td>{{.Duration.Max}}</td>
+			  <td>{{.Duration.Avg}}</td>
+			  <td>{{.Duration.Percentile95}}</td>
+			  <td>{{.Duration.StdDev}}</td>
+			  <td>{{.Duration.Median}}</td>
+			</tr>
+			<tr>
+			  <th>Rows read</th>
+			  <td>{{.ReadRows.Total}}</td>
+			  <td>{{.ReadRows.Min}}</td>
+			  <td>{{.ReadRows.Max}}</td>
+			  <td>{{.ReadRows.Avg}}</td>
+			  <td>{{.ReadRows.Percentile95}}</td>
+			  <td>{{.ReadRows.StdDev}}</td>
+			  <td>{{.ReadRows.Median}}</td>
+			</tr>
+			<tr>
+			  <th>Bytes read</th>
+			  <td>{{.ReadBytes.Total}}</td>
+			  <td>{{.ReadBytes.Min}}</td>
+			  <td>{{.ReadBytes.Max}}</td>
+			  <td>{{.ReadBytes.Avg}}</td>
+			  <td>{{.ReadBytes.Percentile95}}</td>
+			  <td>{{.ReadBytes.StdDev}}</td>
+			  <td>{{.ReadBytes.Median}}</td>
+			</tr>
+			<tr>
+			  <th>Peak Memory</th>
+			  <td></td>
+			  <td>{{.PeakMemoryUsage.Min}}</td>
+			  <td>{{.PeakMemoryUsage.Max}}</td>
+			  <td>{{.PeakMemoryUsage.Avg}}</td>
+			  <td>{{.PeakMemoryUsage.Percentile95}}</td>
+			  <td>{{.PeakMemoryUsage.StdDev}}</td>
+			  <td>{{.PeakMemoryUsage.Median}}</td>
+			</tr>
+		</tbody>
       </table>
 
       <ul>
