@@ -94,6 +94,35 @@ const AccumulatedInfoHTMLTemplate = `
 			font-family: monospace;
 			padding: 12px;
 		}
+		.tabs {
+			display: flex;
+		}
+
+		.tab {
+			padding: 8px 12px;
+			cursor: pointer;
+			background-color: #F7F7F7;
+			border: 1px solid #EBEBEB;
+			margin-right: 5px;
+			border-radius: 4px;
+		}
+
+		.tab.active {
+			background-color: #E8F1F6;
+			border: 1px solid #0141A1;
+		}
+
+		.tab-content {
+			margin-top: 20px;
+		}
+
+		.tab-pane {
+			display: none;
+		}
+
+		.tab-pane.active {
+			display: block;
+		}
     </style>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
