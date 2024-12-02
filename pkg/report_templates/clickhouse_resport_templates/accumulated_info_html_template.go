@@ -110,6 +110,7 @@ const AccumulatedInfoHTMLTemplate = `
 		.tab.active {
 			background-color: #E8F1F6;
 			border: 1px solid #0141A1;
+			color: #0141A1
 		}
 
 		.tab-content {

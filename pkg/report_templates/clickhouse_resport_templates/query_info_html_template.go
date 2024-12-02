@@ -29,7 +29,7 @@ const QueryInfoHTMLTemplate = `
 	}
 </script>
 <div class="tabs" style="margin:10px 0px">
-	<button class="tab" id="Overview_tab_{{.Pos}}" onclick="changeTab_{{.Pos}}(event, 'Overview_{{.Pos}}')">Overview</button>
+	<button class="tab active" id="Overview_tab_{{.Pos}}" onclick="changeTab_{{.Pos}}(event, 'Overview_{{.Pos}}')">Overview</button>
 	<button class="tab" id="Execution_Time_tab_{{.Pos}}" onclick="changeTab_{{.Pos}}(event, 'Execution_Time_{{.Pos}}')">Execution Time</button>
 	<button class="tab" id="Rows_Read_tab_{{.Pos}}" onclick="changeTab_{{.Pos}}(event, 'Rows_Read_{{.Pos}}')">Rows Read</button>
 	<button class="tab" id="Bytes_Read_tab_{{.Pos}}" onclick="changeTab_{{.Pos}}(event, 'Bytes_Read_{{.Pos}}')">Bytes Read</button>
