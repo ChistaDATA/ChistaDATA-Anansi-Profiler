@@ -38,28 +38,33 @@ const QueryInfoHTMLTemplate = `
 
 <div class="tab-content">
 	<div id="Overview_{{.Pos}}" class="tab-pane active">
-		<div>
+		<div style="padding: 20px;border: 1px solid #EBEBEB;border-radius: 4px">
 			<div>
 				<h3>Query Timeline</h3>
-				<div class="query">
-					<p>Time range</p>
-					<div>From: {{.FromTimestamp}}</div>
-					<div>To: {{.ToTimestamp}}</div>
+				<div class="stats" style="margin-bottom:10px;font-family: sans-serif;font-size: small" >
+					<p style="color:#616161">Start time</p>
+					<div><b>{{.FromTimestamp}}</b></div>
+				</div>
+				<div class="stats" style="font-family: sans-serif;font-size: small" >
+					<p style="color:#616161">End Time</p>
+					<div><b>{{.ToTimestamp}}</b></div>
 				</div>
 			</div>
 			<div>
 				<h3>Summary Statistics</h3>
-				<div>
-					<div>Count</div>
-					<div>{{.Count}}</div>
-
-					<ul>
-						<li>Databases: {{.DatabaseInfo}}</li>
-						<li>Hosts: {{.HostInfo}}</li>
-						<li>Users: {{.UserInfo}}</li>
-						<li>Completion: {{.CompletedInfo}}</li>
-						<li>Errors: {{.ErrorInfo}}</li>
-					</ul>
+				<div class="stats" style="font-size: small;margin-bottom: 4px;color:#616161">Hosts<br><b style="color:black">{{.HostInfo}}</b></div>
+				<div style="font-size: small;display: flex;gap: 4px;flex-wrap: wrap;flex-direction: column">
+					<div style="display: flex;gap: 4px; height:60px;color:#616161">
+						<div class="stats" style="flex: 1">Database<br><b style="color:black">{{.DatabaseInfo}}</b></div>
+						<div class="stats" style="flex: 1">Users<br><b style="color:black">{{.UserInfo}}</b></div>
+					</div>
+					<div style="display: flex;gap: 4px; height:60px;color:#616161">
+						<div class="stats" style="flex: 1">Errors<br><b style="color:black">{{.ErrorInfo}}</b></div>
+						<div class="stats" style="flex: 1">Completion<br><b style="color:black">{{.CompletedInfo}}</b></div>
+					</div>
+					<div style="display: flex; height:60px;color:#616161">
+						<div class="stats" style="flex: 1;max-width: 50%">Count<br><b style="color:black">{{.Count}}</b></div>
+					</div>
 				</div>
 			</div>
 		</div>

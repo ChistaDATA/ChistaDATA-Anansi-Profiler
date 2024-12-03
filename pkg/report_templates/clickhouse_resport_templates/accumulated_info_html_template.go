@@ -94,6 +94,10 @@ const AccumulatedInfoHTMLTemplate = `
 			font-family: monospace;
 			padding: 12px;
 		}
+		.stats{
+			background: #F7F7F7;
+			padding: 12px;
+		}
 		.tabs {
 			display: flex;
 		}
