@@ -273,13 +273,21 @@ const AccumulatedInfoHTMLTemplate = `
         </tbody>
       </table>
     </section>
-    <section style="display: flex; justify-content: space-around">
+    <section style="display: flex;justify-content: center;background: white">
+	  <div style="display: flex;flex-wrap: wrap">
       <div id="piechart" style="width:400px; height: 400px;"></div>
-       <ul>
-        <li>Selects:{{.QueryTypeCount.Select}}</li>
-        <li>Inserts:{{.QueryTypeCount.Insert}}</li>
-        <li>Updates:{{.QueryTypeCount.Update}}</li>
-        <li>Deletes:{{.QueryTypeCount.Delete}}</li>
-      </ul>
+	  <div style="background: white;width: 400px;display: flex;flex-direction: column;justify-content: center;align-items: center;font-size: small">
+		  <div style="display: flex;justify-content: center;gap: 4px;flex-direction: column;width: 100%">
+			  <div style="display: flex;gap: 4px; height:60px;color:#616161;flex: 1">
+				  <div class="stats" style="flex: 1">Selects<br><b style="color:black">{{.QueryTypeCount.Select}}</b></div>
+				  <div class="stats" style="flex: 1">Inserts<br><b style="color:black">{{.QueryTypeCount.Insert}}</b></div>
+			  </div>
+			  <div style="display: flex;gap: 4px; height:60px;color:#616161;flex: 1">
+				  <div class="stats" style="flex: 1">Updates<br><b style="color:black">{{.QueryTypeCount.Update}}</b></div>
+				  <div class="stats" style="flex: 1">Deletes<br><b style="color:black">{{.QueryTypeCount.Delete}}</b></div>
+			  </div>
+		  </div>
+	  </div>
+	  </div>
     </section>
 `
