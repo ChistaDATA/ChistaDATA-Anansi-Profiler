@@ -4,7 +4,7 @@ const QueryInfoHTMLTemplate = `
 <section style="background: #ffffff; padding: 10px">
 <details>
 		<summary style="display: flex">
-	<div style="flex: 1;border-bottom: 1px solid #e3e3e3; padding-bottom: 15px">
+		<div style="flex: 1; padding-bottom: 15px">
 		<div style="display: flex; justify-content: space-between">
 			<h3>Query Rank: <span style="color: #0141a1">{{.Pos}}</span></h3>
 			<h3>QPS: <span style="color: #0141a1">{{.QPS}}</span></h3>
@@ -30,7 +30,7 @@ const QueryInfoHTMLTemplate = `
 		document.getElementById(tabId).classList.add('active');
 	}
 </script>
-<div class="tabs" style="margin:10px 0px">
+<div class="tabs" style="margin:10px 0px;">
 	<button class="tab active" id="Overview_tab_{{.Pos}}" onclick="changeTab_{{.Pos}}(event, 'Overview_{{.Pos}}')">Overview</button>
 	<button class="tab" id="Execution_Time_tab_{{.Pos}}" onclick="changeTab_{{.Pos}}(event, 'Execution_Time_{{.Pos}}')">Execution Time</button>
 	<button class="tab" id="Rows_Read_tab_{{.Pos}}" onclick="changeTab_{{.Pos}}(event, 'Rows_Read_{{.Pos}}')">Rows Read</button>
