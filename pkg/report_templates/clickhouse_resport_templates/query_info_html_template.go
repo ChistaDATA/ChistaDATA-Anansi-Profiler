@@ -2,14 +2,16 @@ package clickhouse_resport_templates
 
 const QueryInfoHTMLTemplate = `
 <section style="background: #ffffff; padding: 10px">
-	<div style="border-bottom: 1px solid #e3e3e3; padding-bottom: 15px">
+<details>
+		<summary style="display: flex">
+	<div style="flex: 1;border-bottom: 1px solid #e3e3e3; padding-bottom: 15px">
 		<div style="display: flex; justify-content: space-between">
 			<h3>Query Rank: <span style="color: #0141a1">{{.Pos}}</span></h3>
 			<h3>QPS: <span style="color: #0141a1">{{.QPS}}</span></h3>
 		</div>
 		<div class="query">{{.Query}}</div>
 	</div>
-
+</summary>
 <script>
 	function changeTab_{{.Pos}}(event, tabId) {
 		document.getElementById("Overview_tab_{{.Pos}}").classList.remove('active');
@@ -269,5 +271,6 @@ const QueryInfoHTMLTemplate = `
       }
 	</script>
 	<div id="barchart_values_{{.Pos}}" style="width: 900px; height: 400px"></div>
+</details>
 </section>
 `

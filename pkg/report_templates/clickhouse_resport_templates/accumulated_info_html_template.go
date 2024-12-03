@@ -128,6 +128,31 @@ const AccumulatedInfoHTMLTemplate = `
 		.tab-pane.active {
 			display: block;
 		}
+
+		details>summary {
+		  list-style: none;
+		}
+		summary::-webkit-details-marker {
+		  display: none
+		}
+		
+		summary::after {
+		   content: '+';
+			font-size: x-large;
+			margin-left: 10px;
+			background: #F7F7F7;
+			display: flex;
+			color: #616161;
+			justify-content: center;
+			border-radius: 100px;
+			height: 35px;
+			width: 35px;
+			align-items: center;
+		}
+		details[open] summary:after {
+			font-size: x-large;
+		    content: "−";
+		}
     </style>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
