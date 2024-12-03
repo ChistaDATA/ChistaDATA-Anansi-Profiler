@@ -213,7 +213,7 @@ const AccumulatedInfoHTMLTemplate = `
         </div>
         <div class="card">
             <div style="display: flex;flex-direction: column;gap: 6px">
-            <div>Total Queries</div>
+            <div>Execution Time</div>
 			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#1A74A6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 			<path d="M12 6V12L16 14" stroke="#1A74A6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -226,7 +226,7 @@ const AccumulatedInfoHTMLTemplate = `
         </div>
         <div class="card">
             <div style="display: flex;flex-direction: column;gap: 6px">
-            <div>Total Queries</div>
+            <div>Date Read</div>
 			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<path d="M12 8C16.9706 8 21 6.65685 21 5C21 3.34315 16.9706 2 12 2C7.02944 2 3 3.34315 3 5C3 6.65685 7.02944 8 12 8Z" stroke="#1A74A6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 			<path d="M21 12C21 13.66 17 15 12 15C7 15 3 13.66 3 12" stroke="#1A74A6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
