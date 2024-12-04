@@ -186,14 +186,14 @@ const AccumulatedInfoHTMLTemplate = `
 <section style="margin: 0px;padding: 20px;font-weight: bold">Log analysis and optimization report</section>
 
 <section
-        style="display: flex;justify-content:space-between;flex-wrap: wrap; font-size: small; gap: 20px; padding: 20px">
+        style="background: #FFFFFF;display: flex;justify-content:space-between;flex-wrap: wrap; font-size: small; gap: 20px; padding: 20px">
     <div style="display: flex;flex-direction: column;gap:10px">
-        <div>Execution Timestamp<br>{{.CurrentDate}}</div>
-        <div>Hostname<br>{{.Hostname}}</div>
+        <div style="font-size: small;color: #616161">Execution Timestamp<br><p style="color: #303030">{{.CurrentDate}}</p></div>
+        <div style="font-size: small;color: #616161">Hostname<br><p style="color: #303030">{{.Hostname}}</p></div>
     </div>
     <div style="display: flex;flex-direction: column;gap:10px">
-        <div>Files<br>{{.Files}}</div>
-        <div>Analysis Period<br>From: {{.FromTimestamp}} - To: {{.ToTimestamp}}</div>
+        <div style="font-size: small;color: #616161">Files<br><p style="color: #303030">{{.Files}}</p></div>
+        <div style="font-size: small;color: #616161">Analysis Period<br><p style="color: #303030">{{.FromTimestamp}} - {{.ToTimestamp}}</p></div>
     </div>
 </section>
 
