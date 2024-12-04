@@ -52,7 +52,7 @@ func InitQueryInfoTemplateInput(index int, info *SimilarQueryInfo, totalDuration
 	}
 }
 
-type QueryInfoTemplateInputQueryTimeDistribution struct {
+type QueryTimeDistributionString struct {
 	Under10us          string
 	Over10usUnder100us string
 	Over100usUnder1ms  string
@@ -61,6 +61,21 @@ type QueryInfoTemplateInputQueryTimeDistribution struct {
 	Over100msUnder1s   string
 	Over1sUnder10s     string
 	Over10s            string
+}
+type QueryTimeDistributionNumber struct {
+	Under10us          int
+	Over10usUnder100us int
+	Over100usUnder1ms  int
+	Over1msUnder10ms   int
+	Over10msUnder100ms int
+	Over100msUnder1s   int
+	Over1sUnder10s     int
+	Over10s            int
+}
+
+type QueryInfoTemplateInputQueryTimeDistribution struct {
+	TimeDistString QueryTimeDistributionString
+	TimeDistNumber QueryTimeDistributionNumber
 }
 
 func InitQueryInfoTemplateInputQueryTimeDistribution(info *SimilarQueryInfo) QueryInfoTemplateInputQueryTimeDistribution {
@@ -87,7 +102,7 @@ func InitQueryInfoTemplateInputQueryTimeDistribution(info *SimilarQueryInfo) Que
 			counts[7]++
 		}
 	}
-	return QueryInfoTemplateInputQueryTimeDistribution{
+	qts := QueryTimeDistributionString{
 		Under10us:          formatToString(counts[0]),
 		Over10usUnder100us: formatToString(counts[1]),
 		Over100usUnder1ms:  formatToString(counts[2]),
@@ -97,6 +112,17 @@ func InitQueryInfoTemplateInputQueryTimeDistribution(info *SimilarQueryInfo) Que
 		Over1sUnder10s:     formatToString(counts[6]),
 		Over10s:            formatToString(counts[7]),
 	}
+	qtn := QueryTimeDistributionNumber{
+		Under10us:          counts[0],
+		Over10usUnder100us: counts[1],
+		Over100usUnder1ms:  counts[2],
+		Over1msUnder10ms:   counts[3],
+		Over10msUnder100ms: counts[4],
+		Over100msUnder1s:   counts[5],
+		Over1sUnder10s:     counts[6],
+		Over10s:            counts[7],
+	}
+	return QueryInfoTemplateInputQueryTimeDistribution{qts, qtn}
 }
 
 type QueryInfoTemplateInputPeakMemoryUsage struct {
