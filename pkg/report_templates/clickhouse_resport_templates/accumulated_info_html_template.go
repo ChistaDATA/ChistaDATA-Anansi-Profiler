@@ -7,6 +7,9 @@ const AccumulatedInfoHTMLTemplate = `
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Anansi-report</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after {
             box-sizing: border-box;
@@ -58,7 +61,6 @@ const AccumulatedInfoHTMLTemplate = `
         }
 
         header {
-            font-family: monospace;
             color: #0141A1;
         }
 
@@ -72,7 +74,7 @@ const AccumulatedInfoHTMLTemplate = `
             width: 100vw;
             display: flex;
             flex-direction: column;
-            font-family: sans-serif;
+            font-family: Roboto,sans-serif;
             background: #F1F1F1;
             overflow-x: auto;
         }
@@ -170,7 +172,7 @@ const AccumulatedInfoHTMLTemplate = `
             ]);
 
             var options = {
-                title: 'Query types'
+                title: 'Unique query types'
             };
 
             var chart = new google.visualization.PieChart(document.getElementById('piechart'));
@@ -182,7 +184,7 @@ const AccumulatedInfoHTMLTemplate = `
 </head>
 
 <body>
-<header style="background: #FFFFFF;padding-left: 20px;"><h1>Anansi Profiler</h1></header>
+<header style="background: #FFFFFF;padding-left: 20px;"><h1>ANANSI PROFILER</h1></header>
 <section style="margin: 0px;padding: 20px;font-weight: bold">Log analysis and optimization report</section>
 
 <section
@@ -240,6 +242,24 @@ const AccumulatedInfoHTMLTemplate = `
         </div>
     </div>
 </section>
+
+    <section style="display: flex;justify-content: center;background: white">
+	  <div style="display: flex;flex-wrap: wrap">
+      <div id="piechart" style="width:400px; height: 400px;"></div>
+	  <div style="background: white;width: 400px;display: flex;flex-direction: column;justify-content: center;align-items: center;font-size: small">
+		  <div style="display: flex;justify-content: center;gap: 4px;flex-direction: column;width: 100%">
+			  <div style="display: flex;gap: 4px; height:60px;color:#616161;flex: 1">
+				  <div class="stats" style="flex: 1">Selects<br><b style="color:black">{{.QueryTypeCount.Select}}</b></div>
+				  <div class="stats" style="flex: 1">Inserts<br><b style="color:black">{{.QueryTypeCount.Insert}}</b></div>
+			  </div>
+			  <div style="display: flex;gap: 4px; height:60px;color:#616161;flex: 1">
+				  <div class="stats" style="flex: 1">Updates<br><b style="color:black">{{.QueryTypeCount.Update}}</b></div>
+				  <div class="stats" style="flex: 1">Deletes<br><b style="color:black">{{.QueryTypeCount.Delete}}</b></div>
+			  </div>
+		  </div>
+	  </div>
+	  </div>
+    </section>
 <section>
       <table>
         <thead>
@@ -297,22 +317,5 @@ const AccumulatedInfoHTMLTemplate = `
           </tr>
         </tbody>
       </table>
-    </section>
-    <section style="display: flex;justify-content: center;background: white">
-	  <div style="display: flex;flex-wrap: wrap">
-      <div id="piechart" style="width:400px; height: 400px;"></div>
-	  <div style="background: white;width: 400px;display: flex;flex-direction: column;justify-content: center;align-items: center;font-size: small">
-		  <div style="display: flex;justify-content: center;gap: 4px;flex-direction: column;width: 100%">
-			  <div style="display: flex;gap: 4px; height:60px;color:#616161;flex: 1">
-				  <div class="stats" style="flex: 1">Selects<br><b style="color:black">{{.QueryTypeCount.Select}}</b></div>
-				  <div class="stats" style="flex: 1">Inserts<br><b style="color:black">{{.QueryTypeCount.Insert}}</b></div>
-			  </div>
-			  <div style="display: flex;gap: 4px; height:60px;color:#616161;flex: 1">
-				  <div class="stats" style="flex: 1">Updates<br><b style="color:black">{{.QueryTypeCount.Update}}</b></div>
-				  <div class="stats" style="flex: 1">Deletes<br><b style="color:black">{{.QueryTypeCount.Delete}}</b></div>
-			  </div>
-		  </div>
-	  </div>
-	  </div>
     </section>
 `
