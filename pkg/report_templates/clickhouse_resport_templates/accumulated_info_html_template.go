@@ -167,10 +167,10 @@ const AccumulatedInfoHTMLTemplate = `
 
             var data = google.visualization.arrayToDataTable([
                 ['Query Type', 'Count'],
-                ['Select', 4943],
-                ['Insert', 1],
-                ['Delete', 0],
-                ['Update', 0],
+                ['Select', {{.QueryTypeCount.Select}}],
+                ['Insert', {{.QueryTypeCount.Insert}}],
+                ['Delete', {{.QueryTypeCount.Update}}],
+                ['Update', {{.QueryTypeCount.Delete}}],
             ]);
 
             var options = {
