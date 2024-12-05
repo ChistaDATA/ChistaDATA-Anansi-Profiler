@@ -35,7 +35,7 @@ var QueriesToDiscardRegEx *regexp.Regexp
 
 func init() {
 	ClickHouseLogRegEx = regexp.MustCompile(`^(\d{4}\.\d{2}\.\d{2} \d{2}:\d{2}:\d{2}\.\d{6}) \[ (\d+) ] \{([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})} <([a-zA-Z]+)> (.*)$`)
-	LogMessageWithQueryInfoRegEx = regexp.MustCompile(`^executeQuery: \(from ([\[\]a-zA-Z0-9.:]+):(\d+)(, user: (\w+))?(, initial_query_id: ([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}))?\)(.*)?? (((?i)select|(?i)update|(?i)alter)?.*) \(stage: \w+\)$`)
+	LogMessageWithQueryInfoRegEx = regexp.MustCompile(`^executeQuery: \(from ([\[\]a-zA-Z0-9.:]+):(\d+)(, user: (\w+))?(, initial_query_id: ([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}))?\)(.*)?? (((?i)select|(?i)update|(?i)alter)?.*)(\n)? \(stage: \w+\)$`)
 	LogMessageWithDataRegEx = regexp.MustCompile(`^executeQuery: Read (\d+) rows, (\d+(\.\d+)?) (\w+) in (\d+(\.\d+)?) sec\.,.*$`)
 	LogMessageWithPeakMemoryRegEx = regexp.MustCompile(`^MemoryTracker: Peak memory usage( .*)?: (\d+(\.\d+)?) (\w+)\.$`)
 	LogMessageWithErrorRegEx = regexp.MustCompile(`^executeQuery: ((Code: (\d+). DB::Exception: (.*))?(.*)??) \(from (.*)\).* \(in query: (.*)\)(, Stack trace \(when copying this message, always include the lines below\):)?$`)

@@ -10,7 +10,7 @@ import (
 
 func ParseMessageWithQueryV1(extractedLog stucts.ExtractedLog, dBPerfInfoRepository *stucts.DBPerfInfoRepository) error {
 	query := stucts.PartialQuery{}
-	if parts := LogMessageWithQueryInfoRegEx.FindStringSubmatch(extractedLog.Message); len(parts) == 10 {
+	if parts := LogMessageWithQueryInfoRegEx.FindStringSubmatch(extractedLog.Message); len(parts) == 11 {
 		query.Query = &parts[8]
 		query.ClientHost = &parts[1]
 		clientPort, _ := strconv.Atoi(parts[2])
