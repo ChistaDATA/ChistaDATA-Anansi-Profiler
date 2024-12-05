@@ -97,6 +97,8 @@ const AccumulatedInfoHTMLTemplate = `
 			font-family: 'Roboto Mono',monospace;
 			font-size: small;
 			padding: 12px;
+			overflow: auto;
+			max-height: 200px;
 		}
 		.stats{
 			background: #F7F7F7;
