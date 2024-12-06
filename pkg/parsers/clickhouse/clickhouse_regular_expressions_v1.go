@@ -43,5 +43,5 @@ func init() {
 	LogMessageWithErrorRegEx = regexp.MustCompile(`^executeQuery: ((Code: (\d+). DB::Exception: (.*))?(.*)??) \(from (.*)\).* \(in query: (.*)\)(, Stack trace \(when copying this message, always include the lines below\):)?$`)
 	LogMessageWithAccessInfoRegEx = regexp.MustCompile(`^ContextAccess \(\w+\): Access \w+: .* (\w+|\*).(\w+|\*)$`)
 	QueriesToDiscardRegEx = regexp.MustCompile(`^((?i)update|(?i)alter|(?i)create|(?i)insert).*$`)
-	LogMessageWithDBInfoRegEx = regexp.MustCompile(`^([\w\.]+) \(([\w\-]+)\) \(([\w]+)\): (.*)$`)
+	LogMessageWithDBInfoRegEx = regexp.MustCompile(`^([\w\.]+) \(([\w\-]+)\) \(SelectExecutor\): (.*)$`)
 }
