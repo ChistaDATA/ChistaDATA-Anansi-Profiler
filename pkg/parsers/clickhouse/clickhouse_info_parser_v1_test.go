@@ -154,3 +154,29 @@ func TestParseMessageWithAccessInfo(t *testing.T) {
 	}
 
 }
+
+func TestParseMessageWithDBInfo(t *testing.T) {
+	messageQueryMap := map[string]stucts.Query{
+		"poc.wide_item_daily (368dfb93-a0dc-4220-80d3-501a873db5e6) (SelectExecutor): Key condition: unknown": {Databases: map[string]struct{}{"poc": {}}, Tables: map[string]struct{}{"wide_item_daily": {}}},
+	}
+
+	for message, want := range messageQueryMap {
+		got := stucts.InitDBPerfInfoRepository()
+		err := ParseMessageWithDBInfo(stucts.ExtractedLog{Message: message}, got)
+		tes := got.Queries.GetQuery(message)
+		if err != nil || !reflect.DeepEqual(tes, want.Tables) || !reflect.DeepEqual(got.Queries.GetQuery(message).Databases, want.Databases) {
+			t.Errorf("for message %s: error: %s, got %v, want %v", message, err, got, want)
+		}
+	}
+
+	//messageErrorMap := map[string]string{
+	//	"ContextAccess (default): Access granted: SHOW TABLES ON *.": "error parsing message as LogMessageWithAccessInfoRegEx",
+	//}
+	//
+	//for message, want := range messageErrorMap {
+	//	got := ParseMessageWithAccessInfoV1(stucts.ExtractedLog{Message: message}, stucts.InitDBPerfInfoRepository())
+	//	if !(got == nil && want == "") && (got == nil || got.Error() != want) {
+	//		t.Errorf("for message %s: got %s, want %s", message, got, want)
+	//	}
+	//}
+}
