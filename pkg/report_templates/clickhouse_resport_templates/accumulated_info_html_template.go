@@ -142,10 +142,10 @@ const AccumulatedInfoHTMLTemplate = `
 		  display: none
 		}
 		
-		summary::after {
+		summary::before {
 		   content: '+';
 			font-size: x-large;
-			margin-left: 10px;
+			margin: 10px;
 			background: #F7F7F7;
 			display: flex;
 			color: #616161;
@@ -155,7 +155,7 @@ const AccumulatedInfoHTMLTemplate = `
 			width: 35px;
 			align-items: center;
 		}
-		details[open] summary:after {
+		details[open] summary:before {
 			font-size: x-large;
 		    content: "−";
 		}
