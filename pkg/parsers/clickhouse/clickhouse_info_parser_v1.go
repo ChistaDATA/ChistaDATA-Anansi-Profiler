@@ -2,10 +2,10 @@ package clickhouse
 
 import (
 	"errors"
-	"strconv"
-
 	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/stucts"
 	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/types"
+	"strconv"
+	"strings"
 )
 
 func ParseMessageWithQueryV1(extractedLog stucts.ExtractedLog, dBPerfInfoRepository *stucts.DBPerfInfoRepository) error {
@@ -96,6 +96,20 @@ func ParseThreadIdAndTimeV1(extractedLog stucts.ExtractedLog, dBPerfInfoReposito
 	query.Timestamp = &extractedLog.Timestamp
 	dBPerfInfoRepository.Queries.Add(query, extractedLog)
 	return nil
+}
+
+func ParseMessageWithDBInfo(extractedLog stucts.ExtractedLog, dBPerfInfoRepository *stucts.DBPerfInfoRepository) error {
+	parts := LogMessageWithDBInfoRegEx.FindStringSubmatch(extractedLog.Message)
+	databases := types.InitStringSet()
+	tables := types.InitStringSet()
+	query := stucts.PartialQuery{Databases: &databases, Tables: &tables}
+	if parts != nil {
+		query.Databases.Add(strings.Split(parts[1], ".")[0])
+		query.Tables.Add(strings.Split(parts[1], ".")[1])
+		dBPerfInfoRepository.Queries.Add(query, extractedLog)
+		return nil
+	}
+	return errors.New("error parsing message as ExecuteQueryLogMessageWithQueryRegEx")
 }
 
 func formattedSizeToBytes(size string, unit string) (float64, error) {

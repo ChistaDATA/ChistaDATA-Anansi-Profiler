@@ -1,9 +1,10 @@
 package clickhouse
 
 import (
-	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/stucts"
 	"reflect"
 	"testing"
+
+	"github.com/ChistaDATA/ChistaDATA-Profiler-for-ClickHouse.git/pkg/stucts"
 )
 
 func TestParseMessageWithQuery(t *testing.T) {
@@ -153,4 +154,18 @@ func TestParseMessageWithAccessInfo(t *testing.T) {
 		}
 	}
 
+}
+
+func TestParseMessageWithDBInfo(t *testing.T) {
+	var message string
+	var want stucts.Query
+	message = "poc.wide_item_daily (368dfb93-a0dc-4220-80d3-501a873db5e6) (SelectExecutor): Key condition: unknown"
+	want = stucts.Query{Databases: map[string]struct{}{"poc": {}}, Tables: map[string]struct{}{"wide_item_daily": {}}}
+
+	got := stucts.InitDBPerfInfoRepository()
+	err := ParseMessageWithDBInfo(stucts.ExtractedLog{Message: message}, got)
+
+	if err != nil || !reflect.DeepEqual(got.Queries.GetQuery("").Tables, want.Tables) || !reflect.DeepEqual(got.Queries.GetQuery("").Databases, want.Databases) {
+		t.Errorf("for message %s: error: %s, got %v, want %v", message, err, got, want)
+	}
 }

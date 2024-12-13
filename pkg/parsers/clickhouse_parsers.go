@@ -15,6 +15,7 @@ func InitClickHouseParserV1() IParser {
 			clickhouse.ParseThreadIdAndTimeV1,
 		},
 		[]InfoParserFunc{
+			clickhouse.ParseMessageWithDBInfo,
 			clickhouse.ParseMessageWithAccessInfoV1,
 			clickhouse.ParseMessageWithQueryV1,
 			clickhouse.ParseMessageWithDataInfoV1,

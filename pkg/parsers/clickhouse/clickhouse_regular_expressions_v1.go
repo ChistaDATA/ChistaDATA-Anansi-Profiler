@@ -33,6 +33,8 @@ var LogMessageWithAccessInfoRegEx *regexp.Regexp
 // QueriesToDiscardRegEx regex for the queries to be discarded, while processing
 var QueriesToDiscardRegEx *regexp.Regexp
 
+var LogMessageWithDBInfoRegEx *regexp.Regexp
+
 func init() {
 	ClickHouseLogRegEx = regexp.MustCompile(`^(\d{4}\.\d{2}\.\d{2} \d{2}:\d{2}:\d{2}\.\d{6}) \[ (\d+) ] \{([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})} <([a-zA-Z]+)> (.*)$`)
 	LogMessageWithQueryInfoRegEx = regexp.MustCompile(`^executeQuery: \(from ([\[\]a-zA-Z0-9.:]+):(\d+)(, user: (\w+))?(, initial_query_id: ([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}))?\)(.*)?? (((?i)select|(?i)update|(?i)alter)?.*) \(stage: \w+\)$`)
@@ -41,4 +43,5 @@ func init() {
 	LogMessageWithErrorRegEx = regexp.MustCompile(`^executeQuery: ((Code: (\d+). DB::Exception: (.*))?(.*)??) \(from (.*)\).* \(in query: (.*)\)(, Stack trace \(when copying this message, always include the lines below\):)?$`)
 	LogMessageWithAccessInfoRegEx = regexp.MustCompile(`^ContextAccess \(\w+\): Access \w+: .* (\w+|\*).(\w+|\*)$`)
 	QueriesToDiscardRegEx = regexp.MustCompile(`^((?i)update|(?i)alter|(?i)create|(?i)insert).*$`)
+	LogMessageWithDBInfoRegEx = regexp.MustCompile(`^([\w\.]+) \(([\w\-]+)\) \(SelectExecutor\): (.*)$`)
 }
