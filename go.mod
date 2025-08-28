@@ -11,7 +11,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/montanaflynn/stats v0.6.6
 	github.com/sirupsen/logrus v1.9.0
-	github.com/ulikunitz/xz v0.5.11
+	github.com/ulikunitz/xz v0.5.14
 )
 
 require (
