@@ -10,7 +10,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.29.6
 	github.com/google/uuid v1.3.0
 	github.com/montanaflynn/stats v0.6.6
-	github.com/sirupsen/logrus v1.9.0
+	github.com/sirupsen/logrus v1.9.1
 	github.com/ulikunitz/xz v0.5.11
 )
 
